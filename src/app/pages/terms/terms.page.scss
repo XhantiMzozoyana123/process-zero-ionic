@@ -1,0 +1,155 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$teal: #1d7874;
+$gold: #d7a449;
+$blue: #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+.legal-page {
+  --background: linear-gradient(180deg, #{$sand} 0%, #{$paper} 40%);
+}
+
+// -- Topbar --
+.legal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba($ink, 0.06);
+
+  .back-btn {
+    --color: #{$teal};
+    font-weight: 600;
+    text-transform: none;
+    font-size: 0.95rem;
+  }
+
+  .auth-btn {
+    --background: #{$teal};
+    --border-radius: 14px;
+    --padding-start: 18px;
+    --padding-end: 18px;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 0.9rem;
+  }
+}
+
+// -- Content --
+.legal-content {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+.legal-header {
+  margin-bottom: 36px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 8px;
+  }
+
+  .legal-updated {
+    font-size: 0.88rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.legal-section {
+  margin-bottom: 32px;
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba($teal, 0.15);
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: $muted;
+    margin: 0 0 10px;
+  }
+
+  ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+
+    li {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: $muted;
+      margin-bottom: 6px;
+      position: relative;
+
+      &::marker {
+        color: $teal;
+      }
+    }
+  }
+}
+
+// -- Footer --
+.legal-footer {
+  text-align: center;
+  padding: 20px 18px 32px;
+  border-top: 1px solid rgba($ink, 0.06);
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    a {
+      color: $teal;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .dot {
+      color: $muted;
+      font-size: 0.9rem;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: $muted;
+  }
+}
+
+// -- Responsive --
+@media (max-width: 600px) {
+  .legal-content {
+    padding: 28px 16px 48px;
+  }
+
+  .legal-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .legal-section h2 {
+    font-size: 1.05rem;
+  }
+}

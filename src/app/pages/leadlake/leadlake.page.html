@@ -1,0 +1,88 @@
+<ion-content class="leadlake-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Lead Intelligence</h1>
+        <p>Discover and promote leads from the LeadLake database.</p>
+      </div>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search leads..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" (ionInput)="filterLeads()" class="themed-search"></ion-searchbar>
+    </div>
+  </section>
+
+  <!-- Industry filters -->
+  <section class="filter-section">
+    <h4 class="filter-title">Industry Filters</h4>
+    <div class="filter-chips">
+      <span class="filter-chip" *ngFor="let industry of industries"
+        [class.selected]="selectedIndustry === industry.value"
+        (click)="selectIndustry(industry.value)">
+        {{ industry.label }}
+      </span>
+      <span class="filter-chip clear" (click)="clearIndustryFilter()">Clear</span>
+    </div>
+  </section>
+
+  <!-- Lead table -->
+  <section class="table-section">
+    <div class="table-card">
+      <ion-grid class="lead-table">
+        <ion-row class="table-header">
+          <ion-col size="12" size-md="2">Name</ion-col>
+          <ion-col size="12" size-md="2">Email</ion-col>
+          <ion-col size="12" size-md="2">Company</ion-col>
+          <ion-col size="12" size-md="2">Role</ion-col>
+          <ion-col size="12" size-md="2">Industry</ion-col>
+          <ion-col size="12" size-md="2">Action</ion-col>
+        </ion-row>
+
+        <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
+          <ion-col size="12" size-md="2">
+            <div class="cell-title">{{ lead.firstName }} {{ lead.lastName }}</div>
+            <div class="cell-sub">{{ lead.location || 'No location' }}</div>
+          </ion-col>
+          <ion-col size="12" size-md="2" class="email-col">{{ lead.email }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.company || '-' }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.job || '-' }}</ion-col>
+          <ion-col size="12" size-md="2">{{ getIndustryLabel(lead.industry) }}</ion-col>
+          <ion-col size="12" size-md="2">
+            <button class="promote-btn" (click)="promoteToClient(lead)">
+              <ion-icon name="person-add-outline"></ion-icon> Add
+            </button>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="!filteredLeads.length" class="table-row">
+          <ion-col size="12" class="no-results">
+            No leads found for the current search/filter.
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <section *ngIf="filteredLeads.length > 0" class="pagination-section">
+    <div class="pagination-card">
+      <div class="pagination-row">
+        <div class="pagination-meta">Showing {{ pageRangeLabel }} of {{ filteredLeads.length }} leads</div>
+
+        <ion-item lines="none" class="page-size-item">
+          <ion-label>Rows per page</ion-label>
+          <ion-select [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (ionChange)="changePageSize()">
+            <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="page-nav-wrap">
+          <button class="page-btn" (click)="previousPage()" [disabled]="currentPage <= 1">Previous</button>
+          <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+          <button class="page-btn" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</ion-content>

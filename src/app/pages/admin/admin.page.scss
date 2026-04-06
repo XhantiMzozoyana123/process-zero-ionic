@@ -1,0 +1,128 @@
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$muted: #607078;
+$gold:  #d7a449;
+$teal:  #1d7874;
+$blue:  #335c67;
+$coral: #c06c52;
+
+#admin-content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Main toolbar ────────────────────────────
+.main-toolbar {
+  --background: #{$ink};
+  --color: #fff;
+}
+
+.brand-title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 6px;
+}
+
+.admin-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, $gold, $coral);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+// ── Sidebar toolbars ────────────────────────
+.sidebar-toolbar {
+  --background: #{$ink};
+  --color: #fff;
+}
+
+.sidebar-toolbar-end {
+  --background: #{$blue};
+  --color: #fff;
+}
+
+// ── Sidebar content ─────────────────────────
+.sidebar-content {
+  --background: linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+}
+
+.sidebar-list {
+  background: transparent;
+  padding: 8px;
+}
+
+.sidebar-item {
+  --background: transparent;
+  --color: #{$ink};
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --min-height: 48px;
+  border-radius: 12px;
+  margin-bottom: 2px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+
+  ion-icon {
+    color: $coral;
+    font-size: 20px;
+    margin-right: 12px;
+  }
+
+  ion-label {
+    font-size: 0.92rem;
+  }
+
+  &:hover {
+    --background: rgba(#{red($paper)}, #{green($paper)}, #{blue($paper)}, 0.92);
+  }
+
+  &.active-link {
+    --background: rgba(#{red($paper)}, #{green($paper)}, #{blue($paper)}, 0.92);
+    --color: #{$ink};
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+
+    ion-icon {
+      color: $teal;
+    }
+  }
+}
+
+// ── Quick-action sidebar items ──────────────
+.user-switch {
+  margin-top: 4px;
+
+  ion-icon {
+    color: $gold;
+  }
+}
+
+.logout-item {
+  margin-top: 8px;
+  border-top: 1px solid rgba($ink, 0.08);
+  padding-top: 8px;
+
+  ion-icon {
+    color: $coral;
+  }
+}

@@ -1,0 +1,221 @@
+<ion-content class="assessment-page" [scrollY]="phase === 'quiz'">
+
+  <!-- ═══════════ PHASE: LOADING ═══════════ -->
+  <div *ngIf="phase === 'loading'" class="fullscreen-center fade-in">
+    <div class="loader-card">
+      <div class="pulse-ring"></div>
+      <ion-icon name="school-outline" class="loader-icon"></ion-icon>
+      <h2>Preparing your assessment</h2>
+      <p>Please wait while we load your questions...</p>
+      <div class="shimmer-bar"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHASE: ERROR ═══════════ -->
+  <div *ngIf="phase === 'error'" class="fullscreen-center fade-in">
+    <div class="error-card">
+      <ion-icon name="cloud-offline-outline" class="error-icon"></ion-icon>
+      <h2>Something went wrong</h2>
+      <p>{{ errorMessage }}</p>
+      <ion-button shape="round" class="retry-btn" (click)="loadAssessment()">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Try Again
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHASE: WELCOME ═══════════ -->
+  <div *ngIf="phase === 'welcome' && assessment" class="fullscreen-center fade-in">
+    <div class="welcome-card">
+      <div class="welcome-badge">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+      </div>
+      <h1>{{ assessment.title }}</h1>
+      <p *ngIf="assessment.description" class="welcome-desc">{{ assessment.description }}</p>
+
+      <div class="welcome-meta">
+        <div class="meta-item" *ngIf="assessment.mcqs.length">
+          <ion-icon name="list-outline"></ion-icon>
+          <span>{{ assessment.mcqs.length }} multiple-choice question{{ assessment.mcqs.length > 1 ? 's' : '' }}</span>
+        </div>
+        <div class="meta-item" *ngIf="assessment.openQuestions.length">
+          <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+          <span>{{ assessment.openQuestions.length }} open-ended question{{ assessment.openQuestions.length > 1 ? 's' : '' }}</span>
+        </div>
+        <div class="meta-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Take your time — no time limit</span>
+        </div>
+      </div>
+
+      <div class="welcome-notice">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <span *ngIf="!productId">You must pass this assessment to access the platform.</span>
+        <span *ngIf="productId">You must pass this assessment to sell this product.</span>
+      </div>
+
+      <ion-button expand="block" shape="round" class="start-btn" (click)="startAssessment()">
+        <ion-icon slot="start" name="play-outline"></ion-icon>
+        Begin Assessment
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHASE: QUIZ ═══════════ -->
+  <div *ngIf="phase === 'quiz' && assessment" class="quiz-container fade-in">
+
+    <!-- Top bar -->
+    <div class="quiz-topbar">
+      <div class="topbar-left">
+        <span class="step-indicator">Question {{ currentStep + 1 }} of {{ totalQuestions }}</span>
+      </div>
+      <div class="topbar-right">
+        <span class="answered-count">{{ answeredPercent | number:'1.0-0' }}% answered</span>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-track">
+      <div class="progress-fill" [style.width.%]="progressPercent"></div>
+    </div>
+
+    <!-- Question card -->
+    <div class="question-stage" [class.slide-forward]="animDirection === 'forward'" [class.slide-backward]="animDirection === 'backward'">
+
+      <!-- MCQ Question -->
+      <div *ngIf="isMcqStep" class="q-card" [attr.data-step]="currentStep">
+        <div class="q-type-badge mcq">Multiple Choice</div>
+        <div class="q-number">Q{{ currentStep + 1 }}</div>
+        <p class="q-text">{{ assessment.mcqs[currentMcqIndex].text }}</p>
+
+        <div class="q-options">
+          <button *ngFor="let opt of assessment.mcqs[currentMcqIndex].options; let j = index"
+            class="q-option" [class.selected]="mcqAnswers[currentMcqIndex] === j"
+            (click)="selectMcqOption(j)">
+            <span class="q-option-letter" [class.selected]="mcqAnswers[currentMcqIndex] === j">{{ 'ABCDEFGHIJ'[j] }}</span>
+            <span class="q-option-text">{{ opt }}</span>
+            <ion-icon *ngIf="mcqAnswers[currentMcqIndex] === j" name="checkmark-circle" class="q-option-check"></ion-icon>
+          </button>
+        </div>
+
+        <div class="q-weight">
+          <ion-icon name="star-outline"></ion-icon>
+          {{ assessment.mcqs[currentMcqIndex].weight }} point{{ assessment.mcqs[currentMcqIndex].weight > 1 ? 's' : '' }}
+        </div>
+      </div>
+
+      <!-- Open Question -->
+      <div *ngIf="isOpenStep" class="q-card" [attr.data-step]="currentStep">
+        <div class="q-type-badge open">Open-Ended</div>
+        <div class="q-number">Q{{ currentStep + 1 }}</div>
+        <p class="q-text">{{ assessment.openQuestions[currentOpenIndex].text }}</p>
+
+        <ion-textarea [(ngModel)]="openAnswers[currentOpenIndex]"
+          placeholder="Type your answer here..."
+          rows="5" class="q-textarea" autoGrow="true"></ion-textarea>
+
+        <div class="q-weight">
+          <ion-icon name="star-outline"></ion-icon>
+          {{ assessment.openQuestions[currentOpenIndex].weight }} point{{ assessment.openQuestions[currentOpenIndex].weight > 1 ? 's' : '' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="quiz-nav">
+      <ion-button fill="outline" shape="round" class="nav-btn prev"
+        [disabled]="currentStep === 0" (click)="prevStep()">
+        <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+        Previous
+      </ion-button>
+
+      <ion-button *ngIf="!isLastStep" shape="round" class="nav-btn next" (click)="nextStep()">
+        Next
+        <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button *ngIf="isLastStep" shape="round" class="nav-btn submit" (click)="confirmSubmit()">
+        <ion-icon slot="start" name="paper-plane-outline"></ion-icon>
+        Submit
+      </ion-button>
+    </div>
+
+    <!-- Step dots (optional quick-nav) -->
+    <div class="step-dots">
+      <button *ngFor="let q of assessment.mcqs; let i = index"
+        class="dot" [class.active]="i === currentStep"
+        [class.answered]="mcqAnswers[i] >= 0"
+        (click)="animDirection = i > currentStep ? 'forward' : 'backward'; currentStep = i">
+      </button>
+      <button *ngFor="let q of assessment.openQuestions; let i = index"
+        class="dot open" [class.active]="(assessment.mcqs.length + i) === currentStep"
+        [class.answered]="(openAnswers[i]?.trim()?.length ?? 0) > 0"
+        (click)="animDirection = (assessment.mcqs.length + i) > currentStep ? 'forward' : 'backward'; currentStep = assessment.mcqs.length + i">
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHASE: SUBMITTING ═══════════ -->
+  <div *ngIf="phase === 'submitting'" class="fullscreen-center fade-in">
+    <div class="submitting-card">
+      <div class="submit-anim">
+        <ion-spinner name="dots" class="submit-spinner"></ion-spinner>
+      </div>
+      <h2>Submitting your answers</h2>
+      <p>Please wait while we grade your assessment...</p>
+      <div class="submit-progress-track">
+        <div class="submit-progress-fill" [style.width.%]="submittingProgress"></div>
+      </div>
+      <span class="submit-pct">{{ submittingProgress | number:'1.0-0' }}%</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHASE: RESULT ═══════════ -->
+  <div *ngIf="phase === 'result' && result" class="fullscreen-center fade-in">
+    <div class="result-card" [class.passed]="result.passed" [class.failed]="!result.passed">
+
+      <div class="result-badge" [class.passed]="result.passed" [class.failed]="!result.passed">
+        <ion-icon [name]="result.passed ? 'trophy-outline' : 'sad-outline'"></ion-icon>
+      </div>
+
+      <h1>{{ result.passed ? 'Congratulations!' : 'Not Quite There' }}</h1>
+      <p class="result-subtitle">{{ result.passed ? 'You have successfully passed the assessment.' : 'Unfortunately, you did not reach the required pass mark.' }}</p>
+
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-ring" [class.passed]="result.passed" [class.failed]="!result.passed">
+            <span class="result-stat-val">{{ result.percentage | number:'1.0-0' }}%</span>
+          </div>
+          <span class="result-stat-lbl">Score</span>
+        </div>
+        <div class="result-stat-details">
+          <div class="detail-row">
+            <span class="detail-lbl">Correct</span>
+            <span class="detail-val">{{ result.score }} / {{ result.total }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Percentage</span>
+            <span class="detail-val">{{ result.percentage | number:'1.1-1' }}%</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Status</span>
+            <span class="detail-val status" [class.passed]="result.passed" [class.failed]="!result.passed">
+              {{ result.passed ? 'PASSED' : 'FAILED' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <ion-button *ngIf="result.passed" expand="block" shape="round" class="result-action-btn passed" (click)="goToDashboard()">
+        <ion-icon slot="start" name="rocket-outline"></ion-icon>
+        Continue to Dashboard
+      </ion-button>
+
+      <ion-button *ngIf="!result.passed" expand="block" shape="round" class="result-action-btn failed" (click)="retake()">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Retake Assessment
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>

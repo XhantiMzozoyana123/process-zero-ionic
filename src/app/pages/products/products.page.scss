@@ -1,0 +1,524 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.products-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+.search-row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.themed-search {
+  flex: 1;
+  --background: rgba(255, 255, 255, 0.85);
+  --border-radius: 14px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --placeholder-color: #{$muted};
+  --icon-color: #{$teal};
+  font-size: 14px;
+  padding: 0;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.toggle-btn {
+  --border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --background: transparent;
+  --color: #{$muted};
+  --border-color: #{$muted};
+  min-width: 36px;
+
+  &[fill='solid'] {
+    --background: linear-gradient(135deg, #{$coral}, #{$gold});
+    --color: #fff;
+    --border-color: transparent;
+  }
+}
+
+// ── Loading ─────────────────────────────────────────────
+.loading-wrap {
+  display: grid;
+  justify-items: center;
+  padding: 48px 0;
+}
+
+// ── Empty state ─────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 24px;
+
+  ion-icon {
+    font-size: 64px;
+    color: rgba($coral, 0.5);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  p {
+    margin: 0;
+    color: $muted;
+    font-size: 14px;
+  }
+}
+
+// ── Cards section ───────────────────────────────────────
+.cards-section {
+  padding: 20px 28px 20px;
+}
+
+// ── Table section ───────────────────────────────────────
+.table-section {
+  padding: 20px 28px 20px;
+}
+
+.table-wrap {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  overflow-x: auto;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+
+  thead {
+    background: rgba($ink, 0.03);
+
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: $muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border-bottom: 2px solid rgba($ink, 0.08);
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba($ink, 0.05);
+    transition: background 0.15s ease;
+    cursor: pointer;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: rgba($gold, 0.06); }
+  }
+
+  td {
+    padding: 12px 16px;
+    color: $ink;
+    vertical-align: middle;
+  }
+}
+
+.product-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.table-thumb {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba($sand, 0.8), rgba($paper, 0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.placeholder ion-icon {
+    font-size: 20px;
+    color: rgba($coral, 0.4);
+  }
+}
+
+.product-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: $ink;
+}
+
+.product-desc-short {
+  display: block;
+  font-size: 0.78rem;
+  color: $muted;
+  margin-top: 1px;
+}
+
+.price-cell {
+  font-weight: 700;
+  color: $teal;
+  white-space: nowrap;
+}
+
+// ── Pagination ──────────────────────────────────────────
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 16px 28px 100px;
+
+  .page-btn {
+    --border-radius: 8px;
+    min-width: 36px;
+    font-weight: 600;
+  }
+
+  .page-info {
+    font-size: 13px;
+    color: $muted;
+    margin-left: 8px;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+// ── Product card ────────────────────────────────────────
+.item-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+  }
+}
+
+// ── Image thumbnail ─────────────────────────────────────
+.product-thumb-wrap {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, rgba($sand, 0.8), rgba($paper, 0.6));
+  overflow: hidden;
+}
+
+.product-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 56px;
+    color: rgba($coral, 0.35);
+  }
+}
+
+// ── Product body ────────────────────────────────────────
+.product-body {
+  padding: 18px 20px 6px;
+
+  .product-price {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    color: $teal;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  .product-desc {
+    font-size: 14px;
+    line-height: 1.45;
+    color: $ink;
+    margin: 0 0 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    &.muted {
+      color: $muted;
+      font-style: italic;
+    }
+  }
+}
+
+// ── Card meta ───────────────────────────────────────────
+.card-meta {
+  padding: 10px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: $muted;
+
+    ion-icon {
+      font-size: 16px;
+      color: $coral;
+      flex-shrink: 0;
+    }
+
+    a {
+      color: $blue;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+// ── Detail modal ────────────────────────────────────────
+.modal-content {
+  --background: #{$sand};
+
+  .detail-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 18px;
+    text-align: center;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: $ink;
+    }
+  }
+
+  .detail-thumb {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba($sand, 0.8), rgba($paper, 0.6));
+    margin-bottom: 16px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ion-icon {
+        font-size: 64px;
+        color: rgba($coral, 0.35);
+      }
+    }
+  }
+
+  .detail-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: $teal;
+    margin-bottom: 6px;
+  }
+
+  .detail-section {
+    background: rgba($paper, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin: 0 20px 16px;
+
+    h4 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: $muted;
+    }
+
+    .description-text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: $ink;
+    }
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+
+    .detail-label {
+      font-size: 13px;
+      color: $muted;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: $ink;
+    }
+  }
+
+  .detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: $blue;
+    text-decoration: none;
+    word-break: break-all;
+    font-size: 14px;
+
+    &:hover { text-decoration: underline; }
+
+    ion-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ── Assessment status ───────────────────────────────────
+.assess-btn {
+  --color: #{$coral};
+  --border-color: #{$coral};
+  --border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  ion-icon {
+    font-size: 15px;
+  }
+}
+
+.assess-spinner {
+  width: 20px;
+  height: 20px;
+  color: $muted;
+}
+
+.status-chip {
+  font-size: 0.72rem;
+  font-weight: 600;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 24px;
+}
+
+.card-assess {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba($ink, 0.06);
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .page-header {
+    padding: 24px 16px 0;
+  }
+
+  .cards-section {
+    padding: 16px 16px 100px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

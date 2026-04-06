@@ -1,0 +1,209 @@
+<ion-content class="meetings-page">
+  <ion-refresher slot="fixed" (ionRefresh)="loadMeetings(); $any($event).target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Meetings</h1>
+        <p>Schedule and manage your upcoming meetings.</p>
+      </div>
+      <ion-button shape="round" class="add-btn" (click)="openAddMeetingModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        New Meeting
+      </ion-button>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search meetings..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" (ionInput)="onSearchChange()" class="themed-search"></ion-searchbar>
+      <div class="view-toggle">
+        <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+        </ion-button>
+        <ion-button [fill]="viewMode === 'cards' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'cards'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="filteredMeetings.length === 0 && !searchTerm" class="empty-state">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <p>No meetings yet. Create one to get started.</p>
+  </div>
+
+  <div *ngIf="filteredMeetings.length === 0 && searchTerm" class="empty-state">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No meetings match your search.</p>
+  </div>
+
+  <!-- Meeting table -->
+  <section *ngIf="displayedMeetings.length > 0 && viewMode === 'table'" class="table-section">
+    <div class="table-wrap">
+      <table class="meetings-table">
+        <thead>
+          <tr>
+            <th>Contact</th>
+            <th>Product</th>
+            <th>Date &amp; Time</th>
+            <th>Status</th>
+            <th>Notes</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of displayedMeetings">
+            <td>
+              <div class="contact-cell">
+                <span class="table-avatar">
+                  {{ (m.contact.firstName.charAt(0) || '') + (m.contact.lastName.charAt(0) || '') }}
+                </span>
+                <span>{{ m.contact.firstName }} {{ m.contact.lastName }}</span>
+              </div>
+            </td>
+            <td>{{ m.product.name }}</td>
+            <td>{{ m.meeting.meetingDate | date:'medium' }}</td>
+            <td>
+              <ion-chip [color]="isFuture(m.meeting.meetingDate) ? 'success' : 'medium'" outline class="status-chip">
+                {{ isFuture(m.meeting.meetingDate) ? 'Upcoming' : 'Past' }}
+              </ion-chip>
+            </td>
+            <td class="notes-cell">{{ m.meeting.notes || '—' }}</td>
+            <td class="actions-col">
+              <ion-button size="small" fill="clear" (click)="openEditMeetingModal(m)">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button size="small" fill="clear" color="danger" (click)="confirmDelete(m)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Meeting cards -->
+  <section *ngIf="displayedMeetings.length > 0 && viewMode === 'cards'" class="cards-section">
+    <div class="cards-grid">
+      <div class="item-card" *ngFor="let m of displayedMeetings">
+        <div class="card-top">
+          <div class="meeting-avatar">
+            {{ (m.contact.firstName.charAt(0) || '') + (m.contact.lastName.charAt(0) || '') }}
+          </div>
+          <div class="meeting-info">
+            <h3>{{ m.contact.firstName }} {{ m.contact.lastName }}</h3>
+            <p class="meeting-product">{{ m.product.name }}</p>
+          </div>
+          <ion-chip [color]="isFuture(m.meeting.meetingDate) ? 'success' : 'medium'" outline class="status-chip">
+            {{ isFuture(m.meeting.meetingDate) ? 'Upcoming' : 'Past' }}
+          </ion-chip>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ m.meeting.meetingDate | date:'medium' }}</span>
+          </div>
+          <div class="meta-item" *ngIf="m.meeting.notes">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <span class="notes-preview">{{ m.meeting.notes }}</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <ion-button size="small" fill="clear" (click)="openEditMeetingModal(m)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button size="small" fill="clear" color="danger" (click)="confirmDelete(m)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+    <div class="pagination-controls" *ngIf="filteredMeetings.length > pageSize">
+      <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngFor="let p of pageNumbers" [fill]="p === currentPage ? 'solid' : 'clear'" size="small"
+        (click)="goToPage(p)" class="page-btn">
+        {{ p }}
+      </ion-button>
+      <ion-button fill="clear" size="small" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+      <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+    </div>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button class="themed-fab" (click)="openAddMeetingModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Form Modal -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeMeetingModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingMeeting ? 'Edit Meeting' : 'Create Meeting' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeMeetingModal()">Cancel</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <form [formGroup]="meetingForm" (ngSubmit)="saveMeeting()">
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label position="stacked">Client *</ion-label>
+              <ion-select formControlName="contactId" interface="popover" placeholder="Select client">
+                <ion-select-option *ngFor="let c of contacts" [value]="c.id">
+                  {{ c.firstName }} {{ c.lastName }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Product *</ion-label>
+              <ion-select formControlName="productId" interface="popover" placeholder="Select product">
+                <ion-select-option *ngFor="let p of qualifiedProducts" [value]="p.id">
+                  {{ p.name }}
+                </ion-select-option>
+              </ion-select>
+              <p class="field-hint" *ngIf="qualifiedProducts.length === 0">
+                No qualified products. Pass a product assessment first.
+              </p>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Date &amp; Time *</ion-label>
+              <ion-input type="datetime-local" formControlName="meetingDate"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="meetingForm.get('meetingDate')?.hasError('weekend')">
+              Meetings cannot be scheduled on weekends.
+            </p>
+
+            <ion-item>
+              <ion-label position="stacked">Notes</ion-label>
+              <ion-textarea formControlName="notes" autoGrow="true" rows="3" placeholder="Add notes..."></ion-textarea>
+            </ion-item>
+          </ion-list>
+
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" [disabled]="meetingForm.invalid || submitting">
+              <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+              {{ editingMeeting ? 'Update Meeting' : 'Save Meeting' }}
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

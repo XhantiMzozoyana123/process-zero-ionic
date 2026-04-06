@@ -1,0 +1,252 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>KPI Metrics</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <ng-container *ngIf="!initializing; else loadingTpl">
+    <div class="product-picker" *ngIf="products.length > 0; else noProductsTpl">
+      <ion-item>
+        <ion-label position="stacked">Product</ion-label>
+        <ion-select [(ngModel)]="productId" [ngModelOptions]="{ standalone: true }" (ionChange)="onProductChange()">
+          <ion-select-option *ngFor="let product of products" [value]="product.id">
+            {{ product.name || ('Product #' + product.id) }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <form [formGroup]="kpiForm" *ngIf="productId">
+
+      <!-- Core Activity -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Core Activity</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Outreach Attempts</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="outreachAttempts"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('outreachAttempts')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Calls Booked</ion-label>
+            <span class="kpi-value">{{ kpiForm.get('callsBooked')?.value }}</span>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('callsBooked')">+1</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Call Attended</ion-label>
+            <ion-input class="kpi-input" type="number" min="0" step="1" inputmode="numeric" formControlName="callsAttended"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('callsAttended')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Deals Influenced</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="dealsInfluenced"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('dealsInfluenced')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Revenue Generated</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="revenueGenerated"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('revenueGenerated')">Save</ion-button>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Deal Performance -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Deal Performance</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <div class="kpi-group">
+            <div class="kpi-group-row">
+              <div class="kpi-group-field">
+                <ion-label class="kpi-label">Deals Closed</ion-label>
+                <ion-input class="kpi-input" type="number" formControlName="dealsClosed"></ion-input>
+              </div>
+              <div class="kpi-group-field">
+                <ion-label class="kpi-label">Deals Attempted</ion-label>
+                <ion-input class="kpi-input" type="number" formControlName="dealsAttempted"></ion-input>
+              </div>
+            </div>
+            <ion-button type="button" expand="block" size="small" fill="outline" (click)="submitField('dealsClosed')">Update Close Rate</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Average Deal Size</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="averageDealSize"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('averageDealSize')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Revenue Influenced</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="revenueInfluenced"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('revenueInfluenced')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Client Retention (0–1)</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="basicClientRetention"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('basicClientRetention')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Activity Consistency</ion-label>
+            <ion-toggle formControlName="activityConsistency"></ion-toggle>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('activityConsistency')">Submit</ion-button>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Team Metrics (Calculated) -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            Team Metrics
+            <ion-badge color="medium" class="calc-badge">Calculated</ion-badge>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="kpi-stat-grid">
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Team Size</span>
+              <span class="kpi-stat-value">{{ kpiForm.get('activeTeamSize')?.value }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('activeTeamSize')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Team Revenue</span>
+              <span class="kpi-stat-value">{{ kpiForm.get('teamRevenue')?.value | number:'1.0-0' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('teamRevenue')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Close Rate</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('teamCloseRate')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('teamCloseRate')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Churn Rate</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('teamChurnRate')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('teamChurnRate')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Leader Activity</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('leaderActivityLevel')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('leaderActivityLevel')">Sync</ion-button>
+            </div>
+
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Business Health -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Business Health</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <div class="kpi-stat-grid">
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">MRR</span>
+              <span class="kpi-stat-value">{{ kpiForm.get('monthlyRecurringRevenue')?.value | number:'1.0-0' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('monthlyRecurringRevenue')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Growth Rate</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('growthRate')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('growthRate')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Team Health</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('teamPerformanceHealth')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('teamPerformanceHealth')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Retention</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('clientRetention')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('clientRetention')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">LT Growth</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('longTermRevenueGrowth')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('longTermRevenueGrowth')">Sync</ion-button>
+            </div>
+
+            <div class="kpi-stat">
+              <span class="kpi-stat-label">Leadership</span>
+              <span class="kpi-stat-value">{{ (kpiForm.get('leadershipStability')?.value || 0) | percent:'1.0-1' }}</span>
+              <ion-button type="button" size="small" fill="clear" (click)="submitField('leadershipStability')">Sync</ion-button>
+            </div>
+
+          </div>
+
+          <div class="kpi-row ion-margin-top">
+            <ion-label class="kpi-label">Brand Compliance (0–1)</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="brandCompliance"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('brandCompliance')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Strategic Initiatives</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="strategicInitiativesDelivered"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('strategicInitiativesDelivered')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Brand Risk (0–1)</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="brandRiskManagement"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('brandRiskManagement')">Save</ion-button>
+          </div>
+
+          <div class="kpi-row">
+            <ion-label class="kpi-label">Innovation (0–1)</ion-label>
+            <ion-input class="kpi-input" type="number" formControlName="innovationContribution"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('innovationContribution')">Save</ion-button>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+    </form>
+
+    <div class="kpi-feedback" *ngIf="loading || message">
+      <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+      <ion-text [color]="message.startsWith('Failed') ? 'danger' : 'primary'" *ngIf="message">{{ message }}</ion-text>
+    </div>
+
+  </ng-container>
+
+  <ng-template #noProductsTpl>
+    <div class="kpi-loading">
+      <ion-text color="medium">No products available for KPI tracking.</ion-text>
+    </div>
+  </ng-template>
+
+  <ng-template #loadingTpl>
+    <div class="kpi-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <ion-text color="medium">Loading KPI data...</ion-text>
+    </div>
+  </ng-template>
+
+</ion-content>

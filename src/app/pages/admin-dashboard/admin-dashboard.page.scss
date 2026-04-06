@@ -1,0 +1,93 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.admin-dashboard-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+}
+
+.admin-hero {
+  padding: 48px 24px 32px;
+  text-align: center;
+}
+
+.admin-hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.quick-nav {
+  padding: 0 18px 48px;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.nav-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 14px 0 6px;
+    color: $ink;
+  }
+
+  p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.nav-icon-wrap {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba($gold, 0.18), rgba($coral, 0.12));
+
+  ion-icon {
+    font-size: 24px;
+    color: $coral;
+  }
+}

@@ -1,0 +1,294 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.leadlake-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+.search-row {
+  margin-top: 18px;
+}
+
+.themed-search {
+  --background: rgba(255, 255, 255, 0.85);
+  --border-radius: 14px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --placeholder-color: #{$muted};
+  --icon-color: #{$teal};
+  font-size: 14px;
+  padding: 0;
+}
+
+// ── Filter section ──────────────────────────────────────
+.filter-section {
+  padding: 20px 28px 0;
+}
+
+.filter-title {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: $muted;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba($paper, 0.9);
+  color: $muted;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: rgba($teal, 0.3);
+    color: $teal;
+  }
+
+  &.selected {
+    background: linear-gradient(135deg, $teal, $blue);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  &.clear {
+    background: rgba($coral, 0.08);
+    color: $coral;
+    border-color: rgba($coral, 0.2);
+
+    &:hover {
+      background: rgba($coral, 0.14);
+    }
+  }
+}
+
+// ── Table section ───────────────────────────────────────
+.table-section {
+  padding: 20px 28px 0;
+}
+
+.table-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.lead-table {
+  padding: 0;
+}
+
+.table-header {
+  border-bottom: 2px solid rgba($teal, 0.15);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $muted;
+
+  ion-col {
+    padding: 14px 10px;
+  }
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  align-items: center;
+  font-size: 14px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba($sand, 0.4);
+  }
+
+  ion-col {
+    padding: 14px 10px;
+    color: $ink;
+  }
+}
+
+.cell-title {
+  font-weight: 700;
+  color: $ink;
+}
+
+.cell-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: $muted;
+}
+
+.email-col {
+  color: $teal !important;
+  font-weight: 500;
+}
+
+.no-results {
+  text-align: center;
+  color: $muted;
+  padding: 32px 10px;
+  font-size: 14px;
+}
+
+.promote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 10px;
+  background: rgba($teal, 0.1);
+  color: $teal;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba($teal, 0.18);
+  }
+
+  ion-icon {
+    font-size: 15px;
+  }
+}
+
+// ── Pagination ──────────────────────────────────────────
+.pagination-section {
+  padding: 16px 28px 60px;
+}
+
+.pagination-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.pagination-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-meta {
+  color: $muted;
+  font-size: 13px;
+}
+
+.page-size-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: transparent;
+  min-width: 190px;
+  font-size: 13px;
+}
+
+.page-nav-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-btn {
+  padding: 6px 14px;
+  border: 1px solid rgba($teal, 0.25);
+  border-radius: 10px;
+  background: transparent;
+  color: $teal;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($teal, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.page-indicator {
+  font-weight: 700;
+  color: $ink;
+  font-size: 13px;
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  .page-header,
+  .filter-section,
+  .table-section,
+  .pagination-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .table-header {
+    display: none;
+  }
+
+  .table-row {
+    margin-bottom: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    padding: 6px 8px;
+  }
+
+  .pagination-row {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .page-nav-wrap {
+    justify-content: flex-start;
+  }
+}

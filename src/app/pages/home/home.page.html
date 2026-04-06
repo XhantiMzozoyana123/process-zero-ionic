@@ -1,0 +1,192 @@
+<ion-content [fullscreen]="true" class="landing-page">
+
+  <!-- Navigation Bar -->
+  <nav class="landing-nav">
+    <div class="nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Process Zero</p>
+      <h1 class="hero-title">
+        Turn sales into<br />
+        <span class="highlight">recurring income.</span>
+      </h1>
+      <p class="hero-subtitle">
+        A performance-driven sales network where commission-based reps earn 20%
+        on every sale — plus recurring payouts for as long as the customer stays active.
+      </p>
+      <div class="hero-actions">
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+          Start Earning
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/login')" size="large" shape="round" fill="outline" class="cta-secondary">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-primary">
+          Go to Dashboard
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="video-section">
+    <div class="video-wrapper">
+      <div class="video-container">
+        <iframe
+          allow="fullscreen"
+          allowfullscreen
+          src="https://streamable.com/e/xqoogz?"
+          style="border:none; width:100%; height:100%; position:absolute; left:0; top:0; overflow:hidden;">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">20%</span>
+      <span class="stat-label">Commission Per Sale</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number">Recurring</span>
+      <span class="stat-label">Ongoing Payouts</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number">$0</span>
+      <span class="stat-label">Product Dev Cost</span>
+    </div>
+  </section>
+
+  <!-- Value Proposition -->
+  <section class="value-section">
+    <div class="value-content">
+      <h2 class="section-title">Sell proven digital products.<br />Build compounding income.</h2>
+      <p class="value-description">
+        Process Zero connects skilled sales reps with high-quality digital offers —
+        eliminating the need to create a product from scratch. Focus purely on what
+        you do best: <strong>selling</strong>. Every deal you close earns you a 20% commission,
+        and you keep earning for as long as the customer remains active.
+      </p>
+      <div class="value-highlights">
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>No product development required</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>No complex setup</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Your effort compounds over time</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="section-header">
+      <p class="section-eyebrow">Why Process Zero</p>
+      <h2 class="section-title">Everything you need to earn more</h2>
+      <p class="section-subtitle">
+        A clear system, strong offers, and real earning potential — whether you're
+        an experienced closer or just stepping into sales.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon-wrap">
+          <ion-icon [name]="feature.icon"></ion-icon>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works-section">
+    <div class="section-header">
+      <p class="section-eyebrow">How It Works</p>
+      <h2 class="section-title">Four steps to recurring income</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" *ngFor="let step of howItWorks">
+        <div class="step-number">{{ step.step }}</div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <h2>Ready to turn your sales skills into recurring income?</h2>
+      <p>Join Process Zero — where your effort compounds over time.</p>
+      <div class="cta-actions">
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+          Create Account
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-light">
+          Open Dashboard
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/help')">
+        <ion-icon name="book-outline"></ion-icon>
+        Help &amp; Guide
+      </a>
+      <span class="footer-dot">&middot;</span>
+      <a class="footer-link" (click)="navigateTo('/terms')">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Terms of Use
+      </a>
+      <span class="footer-dot">&middot;</span>
+      <a class="footer-link" (click)="navigateTo('/privacy')">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        Privacy Policy
+      </a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>

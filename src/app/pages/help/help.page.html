@@ -1,0 +1,58 @@
+﻿<ion-content class="docs-page" scrollEvents="true">
+  <!-- Mobile TOC toggle -->
+  <button class="toc-toggle" (click)="toggleSidebar()" [class.active]="sidebarOpen">
+    <ion-icon [name]="sidebarOpen ? 'close-outline' : 'list-outline'"></ion-icon>
+    <span>On this page</span>
+  </button>
+
+  <div class="docs-layout">
+    <!-- Sidebar TOC -->
+    <aside class="docs-sidebar" [class.open]="sidebarOpen">
+      <div class="sidebar-inner">
+        <h4 class="sidebar-title">Documentation</h4>
+        <nav class="toc-nav">
+          <a *ngFor="let section of sections"
+             class="toc-link"
+             [class.active]="activeSection === section.id"
+             (click)="scrollTo(section.id)">
+            <ion-icon [name]="section.icon" class="toc-icon"></ion-icon>
+            <span>{{ section.title }}</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="docs-content">
+      <div class="docs-header">
+        <h1>Help &amp; Guide</h1>
+        <p class="docs-lead">Complete documentation for Process Zero. Learn how to use every feature to grow your sales and earn recurring commissions.</p>
+      </div>
+
+      <div *ngFor="let section of sections" [id]="section.id" class="doc-section">
+        <div class="section-heading">
+          <ion-icon [name]="section.icon" class="section-icon"></ion-icon>
+          <h2>{{ section.title }}</h2>
+        </div>
+        <p class="section-intro">{{ section.content }}</p>
+
+        <div *ngFor="let sub of section.subsections" [id]="sub.id" class="doc-subsection">
+          <h3>{{ sub.title }}</h3>
+          <p class="subsection-text">{{ sub.content }}</p>
+          <ol *ngIf="sub.steps" class="step-list">
+            <li *ngFor="let step of sub.steps; let i = index" class="step-item">
+              <span class="step-num">{{ i + 1 }}</span>
+              <span class="step-text">{{ step.text }}</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="docs-footer">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <p>Still need help? Contact your administrator for support.</p>
+      </div>
+    </main>
+  </div>
+</ion-content>

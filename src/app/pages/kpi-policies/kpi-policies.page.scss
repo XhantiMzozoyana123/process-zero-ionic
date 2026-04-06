@@ -1,0 +1,540 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.kpi-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+.search-row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.themed-search {
+  flex: 1;
+  --background: rgba(255, 255, 255, 0.85);
+  --border-radius: 14px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --placeholder-color: #{$muted};
+  --icon-color: #{$teal};
+  font-size: 14px;
+  padding: 0;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.toggle-btn {
+  --border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --background: transparent;
+  --color: #{$muted};
+  --border-color: #{$muted};
+  min-width: 36px;
+
+  &[fill='solid'] {
+    --background: linear-gradient(135deg, #{$coral}, #{$gold});
+    --color: #fff;
+    --border-color: transparent;
+  }
+}
+
+// ── Loading ─────────────────────────────────────────────
+.loading-wrap {
+  display: grid;
+  justify-items: center;
+  padding: 48px 0;
+}
+
+// ── Empty state ─────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 24px;
+
+  ion-icon {
+    font-size: 64px;
+    color: rgba($coral, 0.5);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  p {
+    margin: 0;
+    color: $muted;
+    font-size: 14px;
+  }
+}
+
+// ── Cards section ───────────────────────────────────────
+.cards-section {
+  padding: 20px 28px 20px;
+}
+
+// ── Table section ───────────────────────────────────────
+.table-section {
+  padding: 20px 28px 20px;
+}
+
+.table-wrap {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  overflow-x: auto;
+}
+
+.policies-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+
+  thead {
+    background: rgba($ink, 0.03);
+
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: $muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border-bottom: 2px solid rgba($ink, 0.08);
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba($ink, 0.05);
+    transition: background 0.15s ease;
+    cursor: pointer;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: rgba($gold, 0.06); }
+  }
+
+  td {
+    padding: 12px 16px;
+    color: $ink;
+    vertical-align: middle;
+  }
+}
+
+.policy-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.table-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, $teal, $blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 16px;
+    color: #fff;
+  }
+}
+
+.revenue-cell {
+  font-weight: 700;
+  color: $teal;
+  white-space: nowrap;
+}
+
+// ── Pagination ──────────────────────────────────────────
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 16px 28px 100px;
+
+  .page-btn {
+    --border-radius: 8px;
+    min-width: 36px;
+    font-weight: 600;
+  }
+
+  .page-info {
+    font-size: 13px;
+    color: $muted;
+    margin-left: 8px;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
+}
+
+// ── Item card ───────────────────────────────────────────
+.item-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 22px 22px 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+  }
+}
+
+// ── Card top ────────────────────────────────────────────
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, $teal, $blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 22px;
+    color: #fff;
+  }
+}
+
+.card-info {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 2px;
+    font-size: 16px;
+    font-weight: 700;
+    color: $ink;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: $muted;
+  }
+}
+
+.chip-group {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+
+  &.active {
+    background: rgba($teal, 0.12);
+    color: $teal;
+  }
+
+  &.inactive {
+    background: rgba($muted, 0.12);
+    color: $muted;
+  }
+}
+
+.promo-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba($gold, 0.14);
+  color: $gold;
+}
+
+// ── Metrics preview ─────────────────────────────────────
+.metrics-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  background: rgba($sand, 0.5);
+  border-radius: 14px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $muted;
+}
+
+.metric-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: $teal;
+}
+
+// ── Card meta ───────────────────────────────────────────
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: $muted;
+
+    ion-icon {
+      font-size: 16px;
+      color: $coral;
+      flex-shrink: 0;
+    }
+
+    &.freeze ion-icon {
+      color: $blue;
+    }
+  }
+}
+
+// ── Detail modal ────────────────────────────────────────
+.modal-content {
+  --background: #{$sand};
+}
+
+.detail-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  margin: 20px 20px 16px;
+  font-size: 16px;
+  font-weight: 700;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  &.active {
+    background: rgba($teal, 0.1);
+    color: $teal;
+  }
+
+  &.inactive {
+    background: rgba($muted, 0.1);
+    color: $muted;
+  }
+}
+
+.detail-section {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 0 20px 16px;
+
+  h4 {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: $muted;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 8px;
+  }
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    color: $muted;
+  }
+
+  .detail-value {
+    font-weight: 600;
+    color: $ink;
+  }
+}
+
+// ── Detail metrics grid ─────────────────────────────────
+.detail-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  &.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.detail-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 14px 8px;
+  background: rgba($sand, 0.6);
+  border-radius: 12px;
+}
+
+.detail-metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: $teal;
+  margin-bottom: 4px;
+}
+
+.detail-metric-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: $muted;
+}
+
+// ── Consequence list ────────────────────────────────────
+.consequence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.consequence-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: $ink;
+
+  ion-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    color: $coral;
+  }
+}
+
+.detail-timestamps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 20px 32px;
+  font-size: 12px;
+  color: $muted;
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .page-header {
+    padding: 24px 16px 0;
+  }
+
+  .cards-section {
+    padding: 16px 16px 100px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

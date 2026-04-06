@@ -1,0 +1,132 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.settings-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+// ── Cards section ───────────────────────────────────────
+.cards-section {
+  padding: 28px 28px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+  }
+
+  &.logout {
+    border-color: rgba($coral, 0.2);
+  }
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 22px;
+    color: #fff;
+  }
+
+  &.banking {
+    background: linear-gradient(135deg, $teal, $blue);
+  }
+
+  &.password {
+    background: linear-gradient(135deg, $gold, $coral);
+  }
+
+  &.help {
+    background: linear-gradient(135deg, $blue, $teal);
+  }
+
+  &.logout-icon {
+    background: linear-gradient(135deg, $coral, darken($coral, 10%));
+  }
+}
+
+.card-label {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 2px;
+    font-size: 16px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: $muted;
+  }
+}
+
+.card-arrow {
+  font-size: 18px;
+  color: $muted;
+  flex-shrink: 0;
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .page-header {
+    padding: 24px 16px 0;
+  }
+
+  .cards-section {
+    padding: 20px 16px 60px;
+  }
+}

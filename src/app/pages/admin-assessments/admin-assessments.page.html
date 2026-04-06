@@ -1,0 +1,174 @@
+<ion-content class="admin-assessments-page">
+  <ion-refresher slot="fixed" (ionRefresh)="loadProducts(); $event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Assessment Management</h1>
+        <p>Upload and manage assessments for the platform and individual products.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Target Selector -->
+  <section class="target-section">
+    <div class="target-card">
+      <div class="target-row">
+        <div class="field">
+          <label>Target</label>
+          <ion-select [(ngModel)]="targetMode" (ionChange)="onTargetModeChange($event)" interface="popover" placeholder="Select target" class="select-input">
+            <ion-select-option value="global">Global (Platform)</ion-select-option>
+            <ion-select-option value="product">Product-Specific</ion-select-option>
+          </ion-select>
+        </div>
+        <div class="field" *ngIf="targetMode === 'product'">
+          <label>Product</label>
+          <ion-select [(ngModel)]="targetProductId" (ionChange)="onProductChange($event)" interface="popover" placeholder="Select product" class="select-input">
+            <ion-select-option *ngFor="let p of products" [value]="p.id">{{ p.name }}</ion-select-option>
+          </ion-select>
+        </div>
+      </div>
+      <div *ngIf="loadingExisting" class="loading-existing">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <span>Loading existing assessment...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assessment Form -->
+  <form [formGroup]="assessmentForm" (ngSubmit)="upload()" class="form-section">
+
+    <!-- Title & PassMark -->
+    <div class="form-card">
+      <h3 class="card-heading">Assessment Details</h3>
+      <div class="form-row">
+        <div class="field grow">
+          <label>Title *</label>
+          <ion-input formControlName="title" placeholder="e.g. Platform Onboarding Quiz" class="form-input"
+            [class.invalid]="isInvalid('title')"></ion-input>
+        </div>
+        <div class="field narrow">
+          <label>Pass Mark (%)</label>
+          <ion-input formControlName="passMark" type="number" placeholder="Default" class="form-input"></ion-input>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field grow">
+          <label>Description</label>
+          <ion-textarea formControlName="description" placeholder="Brief description of what this assessment covers..." rows="3" class="form-input"></ion-textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- MCQs -->
+    <div class="form-card" formArrayName="mcqs">
+      <div class="card-heading-row">
+        <h3 class="card-heading">Multiple Choice Questions ({{ mcqs.length }})</h3>
+        <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addMcq()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Add MCQ
+        </ion-button>
+      </div>
+
+      <div *ngIf="mcqs.length === 0" class="empty-inline">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <span>No MCQs added yet. Tap "Add MCQ" to start.</span>
+      </div>
+
+      <div class="mcq-block" *ngFor="let mcq of mcqs.controls; let mi = index" [formGroupName]="mi">
+        <div class="mcq-header">
+          <span class="mcq-badge">MCQ {{ mi + 1 }}</span>
+          <ion-button fill="clear" color="danger" size="small" (click)="removeMcq(mi)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="field">
+          <label>Question Text *</label>
+          <ion-textarea formControlName="text" placeholder="Enter the question..." rows="2" class="form-input"></ion-textarea>
+        </div>
+
+        <div class="field narrow-inline">
+          <label>Weight</label>
+          <ion-input formControlName="weight" type="number" placeholder="1" class="form-input small"></ion-input>
+        </div>
+
+        <div class="options-section" formArrayName="options">
+          <label>Options *</label>
+          <div class="option-row" *ngFor="let opt of getMcqOptions(mi).controls; let oi = index">
+            <span class="option-letter">{{ 'ABCDEFGHIJ'[oi] }}</span>
+            <ion-input [formControlName]="oi" placeholder="Option {{ oi + 1 }}" class="form-input option-input"></ion-input>
+            <ion-button fill="clear" color="danger" size="small" (click)="removeOption(mi, oi)"
+              [disabled]="getMcqOptions(mi).length <= 2">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </div>
+          <ion-button fill="clear" size="small" class="add-option-btn" (click)="addOption(mi)">
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Add Option
+          </ion-button>
+        </div>
+
+        <div class="field narrow-inline">
+          <label>Correct Answer</label>
+          <ion-select formControlName="correctIndex" interface="popover" class="select-input small">
+            <ion-select-option *ngFor="let opt of getMcqOptions(mi).controls; let oi = index" [value]="oi">
+              {{ 'ABCDEFGHIJ'[oi] }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open Questions -->
+    <div class="form-card" formArrayName="openQuestions">
+      <div class="card-heading-row">
+        <h3 class="card-heading">Open-Ended Questions ({{ openQuestions.length }})</h3>
+        <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addOpenQuestion()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Add Question
+        </ion-button>
+      </div>
+
+      <div *ngIf="openQuestions.length === 0" class="empty-inline">
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+        <span>No open-ended questions yet.</span>
+      </div>
+
+      <div class="oq-block" *ngFor="let oq of openQuestions.controls; let oi = index" [formGroupName]="oi">
+        <div class="mcq-header">
+          <span class="mcq-badge oq">OQ {{ oi + 1 }}</span>
+          <ion-button fill="clear" color="danger" size="small" (click)="removeOpenQuestion(oi)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <div class="field">
+          <label>Question Text *</label>
+          <ion-textarea formControlName="text" placeholder="Enter the question..." rows="2" class="form-input"></ion-textarea>
+        </div>
+        <div class="field narrow-inline">
+          <label>Weight</label>
+          <ion-input formControlName="weight" type="number" placeholder="1" class="form-input small"></ion-input>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-section">
+      <ion-button expand="block" shape="round" type="submit" class="upload-btn"
+        [disabled]="submitting">
+        <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!submitting" slot="start" name="cloud-upload-outline"></ion-icon>
+        {{ submitting ? 'Uploading...' : 'Upload Assessment' }}
+      </ion-button>
+      <ion-button expand="block" shape="round" fill="outline" class="reset-btn" (click)="resetForm()">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Reset Form
+      </ion-button>
+    </div>
+  </form>
+
+</ion-content>

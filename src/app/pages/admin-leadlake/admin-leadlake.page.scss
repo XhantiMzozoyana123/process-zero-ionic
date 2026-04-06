@@ -1,0 +1,537 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.admin-leadlake-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba($coral, 0.3);
+  }
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+.search-row {
+  margin-top: 18px;
+}
+
+.themed-search {
+  --background: rgba(255, 255, 255, 0.85);
+  --border-radius: 14px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --placeholder-color: #{$muted};
+  --icon-color: #{$teal};
+  font-size: 14px;
+  padding: 0;
+}
+
+// ── Loading ─────────────────────────────────────────────
+.loading-wrap {
+  display: grid;
+  justify-items: center;
+  padding: 48px 0;
+}
+
+// ── Filter section ──────────────────────────────────────
+.filter-section {
+  padding: 20px 28px 0;
+}
+
+.filter-title {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: $muted;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba($paper, 0.9);
+  color: $muted;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: rgba($coral, 0.3);
+    color: $coral;
+  }
+
+  &.selected {
+    background: linear-gradient(135deg, $coral, $gold);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  &.clear {
+    background: rgba($muted, 0.08);
+    color: $muted;
+    border-color: rgba($muted, 0.2);
+
+    &:hover {
+      background: rgba($muted, 0.14);
+    }
+  }
+}
+
+// ── Table section ───────────────────────────────────────
+.table-section {
+  padding: 20px 28px 0;
+}
+
+.table-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.lead-table {
+  padding: 0;
+}
+
+.table-header {
+  border-bottom: 2px solid rgba($coral, 0.15);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $muted;
+
+  ion-col {
+    padding: 14px 10px;
+  }
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  align-items: center;
+  font-size: 14px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba($sand, 0.4);
+  }
+
+  ion-col {
+    padding: 14px 10px;
+    color: $ink;
+  }
+}
+
+.cell-title {
+  font-weight: 700;
+  color: $ink;
+}
+
+.cell-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: $muted;
+}
+
+.email-col {
+  color: $teal !important;
+  font-weight: 500;
+}
+
+.industry-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba($gold, 0.12);
+  color: darken($gold, 8%);
+}
+
+.no-results {
+  text-align: center;
+  color: $muted;
+  padding: 48px 10px;
+
+  ion-icon {
+    font-size: 48px;
+    display: block;
+    margin: 0 auto 12px;
+    color: rgba($coral, 0.4);
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// ── Pagination ──────────────────────────────────────────
+.pagination-section {
+  padding: 16px 28px 100px;
+}
+
+.pagination-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.pagination-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-meta {
+  color: $muted;
+  font-size: 13px;
+}
+
+.page-size-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: transparent;
+  min-width: 140px;
+  font-size: 13px;
+}
+
+.page-nav-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-btn {
+  padding: 6px 14px;
+  border: 1px solid rgba($coral, 0.25);
+  border-radius: 10px;
+  background: transparent;
+  color: $coral;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($coral, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.page-indicator {
+  font-weight: 700;
+  color: $ink;
+  font-size: 13px;
+}
+
+// ── FAB ─────────────────────────────────────────────────
+.themed-fab {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+  --box-shadow: 0 4px 16px rgba($coral, 0.35);
+}
+
+// ── Upload Modal ────────────────────────────────────────
+.modal-content {
+  --background: #{$sand};
+}
+
+.upload-body {
+  padding: 24px 20px 40px;
+}
+
+.upload-instructions {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  p {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: $muted;
+    line-height: 1.5;
+  }
+
+  .hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: $muted;
+  }
+}
+
+.column-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.col-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba($muted, 0.08);
+  color: $ink;
+  font-family: monospace;
+
+  &.required {
+    background: rgba($coral, 0.12);
+    color: $coral;
+  }
+}
+
+// ── File picker ─────────────────────────────────────────
+.file-picker {
+  margin-bottom: 16px;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border: 2px dashed rgba($coral, 0.3);
+  border-radius: 16px;
+  background: rgba($paper, 0.7);
+  color: $muted;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $coral;
+    background: rgba($paper, 0.92);
+    color: $coral;
+  }
+
+  ion-icon {
+    font-size: 22px;
+    color: $coral;
+  }
+}
+
+.parse-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba($coral, 0.08);
+  color: $coral;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+
+  ion-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+// ── Preview ─────────────────────────────────────────────
+.preview-section {
+  margin-bottom: 20px;
+
+  h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: $ink;
+  }
+}
+
+.preview-table-wrap {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $muted;
+    border-bottom: 2px solid rgba($coral, 0.12);
+  }
+
+  td {
+    padding: 8px 12px;
+    color: $ink;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  tr:hover td {
+    background: rgba($sand, 0.4);
+  }
+}
+
+.preview-note {
+  text-align: center;
+  font-size: 12px;
+  color: $muted;
+  padding: 10px;
+  margin: 0;
+}
+
+// ── Submit button ───────────────────────────────────────
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba($coral, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  ion-spinner {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  .page-header,
+  .filter-section,
+  .table-section,
+  .pagination-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .table-header {
+    display: none;
+  }
+
+  .table-row {
+    margin-bottom: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    padding: 6px 8px;
+  }
+
+  .pagination-row {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .page-nav-wrap {
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,106 @@
+<!-- LEFT SIDEBAR -->
+<ion-menu contentId="dashboard-content" side="start" type="overlay" menuId="account-menu">
+  <ion-header>
+    <ion-toolbar class="sidebar-toolbar">
+      <ion-title>Process Zero</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="sidebar-content">
+    <ion-list class="sidebar-list" lines="none">
+      <ion-item routerLink="dashboard" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="home-outline" slot="start"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-item>
+      <ion-item routerLink="leadlake" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="globe-outline" slot="start"></ion-icon>
+        <ion-label>Lead Lake</ion-label>
+      </ion-item>
+      <ion-item routerLink="contacts" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <ion-label>My Contacts</ion-label>
+      </ion-item>
+      <ion-item routerLink="meetings" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        <ion-label>Meetings</ion-label>
+      </ion-item>
+      <ion-item routerLink="products" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+        <ion-label>Products</ion-label>
+      </ion-item>
+      <ion-item routerLink="kpi-policies" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+        <ion-label>KPI Policies</ion-label>
+      </ion-item>
+      <ion-item routerLink="help" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="help-circle-outline" slot="start"></ion-icon>
+        <ion-label>Help &amp; Guide</ion-label>
+      </ion-item>
+      <ion-item routerLink="settings" routerLinkActive="active-link" class="sidebar-item">
+        <ion-icon name="settings-outline" slot="start"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<!-- RIGHT SIDEBAR (QUICK ACTIONS) -->
+<ion-menu contentId="dashboard-content" side="end" type="overlay" menuId="settings-menu">
+  <ion-header>
+    <ion-toolbar class="sidebar-toolbar-end">
+      <ion-title>Quick Actions</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="sidebar-content">
+    <ion-list class="sidebar-list" lines="none">
+      <ion-item routerLink="/account/bank-account" routerDirection="forward" class="sidebar-item">
+        <ion-icon name="card-outline" slot="start"></ion-icon>
+        <ion-label>Banking Details</ion-label>
+      </ion-item>
+      <ion-item routerLink="/account/change-password" routerDirection="forward" class="sidebar-item">
+        <ion-icon name="key-outline" slot="start"></ion-icon>
+        <ion-label>Change Password</ion-label>
+      </ion-item>
+      <ion-item *ngIf="isAdmin" routerLink="/admin/dashboard" routerDirection="forward" class="sidebar-item admin-switch">
+        <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
+        <ion-label>Switch to Admin</ion-label>
+      </ion-item>
+      <ion-item button (click)="logout()" class="sidebar-item">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        <ion-label>Logout</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<div id="dashboard-content">
+  <ion-header>
+    <ion-toolbar class="main-toolbar">
+      <ion-buttons slot="start">
+        <ion-menu-button menu="account-menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        <span class="brand-title">Process Zero</span>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-menu-button menu="settings-menu"></ion-menu-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-router-outlet></ion-router-outlet>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="kpi-fab">
+      <ion-fab-button class="kpi-fab-btn" (click)="openKpiModal()" aria-label="Open KPI Tools">
+        <ion-icon name="stats-chart"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
+
+  <ion-modal [isOpen]="isKpiModalOpen" (didDismiss)="closeKpiModal()">
+    <ng-template>
+      <app-kpi-form></app-kpi-form>
+    </ng-template>
+  </ion-modal>
+</div>

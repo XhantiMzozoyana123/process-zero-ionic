@@ -1,0 +1,198 @@
+<ion-content class="admin-leadlake-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>LeadLake</h1>
+        <p>Manage and upload leads for your sales network.</p>
+      </div>
+      <button class="add-btn" (click)="openUploadModal()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+        Upload CSV
+      </button>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search leads..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" (ionInput)="filterLeads()" class="themed-search"></ion-searchbar>
+    </div>
+  </section>
+
+  <!-- Industry filters -->
+  <section class="filter-section">
+    <h4 class="filter-title">Industry Filters</h4>
+    <div class="filter-chips">
+      <span class="filter-chip" *ngFor="let industry of industries"
+        [class.selected]="selectedIndustry === industry.value"
+        (click)="selectIndustry(industry.value)">
+        {{ industry.label }}
+      </span>
+      <span class="filter-chip clear" (click)="clearIndustryFilter()">Clear</span>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Lead table -->
+  <section *ngIf="!loading" class="table-section">
+    <div class="table-card">
+      <ion-grid class="lead-table">
+        <ion-row class="table-header">
+          <ion-col size="12" size-md="2">Name</ion-col>
+          <ion-col size="12" size-md="2">Email</ion-col>
+          <ion-col size="12" size-md="2">Company</ion-col>
+          <ion-col size="12" size-md="2">Role</ion-col>
+          <ion-col size="12" size-md="2">Industry</ion-col>
+          <ion-col size="12" size-md="2">Location</ion-col>
+        </ion-row>
+
+        <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
+          <ion-col size="12" size-md="2">
+            <div class="cell-title">{{ lead.firstName }} {{ lead.lastName }}</div>
+            <div class="cell-sub" *ngIf="lead.phone">{{ lead.phone }}</div>
+          </ion-col>
+          <ion-col size="12" size-md="2" class="email-col">{{ lead.email }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.company || '–' }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.job || '–' }}</ion-col>
+          <ion-col size="12" size-md="2">
+            <span class="industry-tag">{{ getIndustryLabel(lead.industry) }}</span>
+          </ion-col>
+          <ion-col size="12" size-md="2">{{ lead.location || '–' }}</ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="!filteredLeads.length" class="table-row">
+          <ion-col size="12" class="no-results">
+            <ion-icon name="globe-outline"></ion-icon>
+            <p>No leads found for the current search/filter.</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <section *ngIf="!loading && filteredLeads.length > 0" class="pagination-section">
+    <div class="pagination-card">
+      <div class="pagination-row">
+        <div class="pagination-meta">Showing {{ pageRangeLabel }} of {{ filteredLeads.length }} leads</div>
+
+        <ion-item lines="none" class="page-size-item">
+          <ion-label>Rows</ion-label>
+          <ion-select [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }" (ionChange)="changePageSize()">
+            <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="page-nav-wrap">
+          <button class="page-btn" (click)="previousPage()" [disabled]="currentPage <= 1">Prev</button>
+          <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+          <button class="page-btn" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openUploadModal()" class="themed-fab" aria-label="Upload CSV">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Upload Modal -->
+  <ion-modal [isOpen]="isUploadModalOpen" (didDismiss)="closeUploadModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Upload Leads CSV</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeUploadModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <div class="upload-body">
+          <!-- Instructions -->
+          <div class="upload-instructions">
+            <h3>CSV Format</h3>
+            <p>Your CSV file should include a header row with these columns:</p>
+            <div class="column-tags">
+              <span class="col-tag required">email *</span>
+              <span class="col-tag">firstName</span>
+              <span class="col-tag">lastName</span>
+              <span class="col-tag">phone</span>
+              <span class="col-tag">company</span>
+              <span class="col-tag">job</span>
+              <span class="col-tag">location</span>
+              <span class="col-tag">industry</span>
+            </div>
+            <p class="hint">Only the <strong>email</strong> column is required. Other columns are optional.</p>
+          </div>
+
+          <!-- File picker -->
+          <div class="file-picker">
+            <label class="file-label" for="csvFileInput">
+              <ion-icon name="document-outline"></ion-icon>
+              <span *ngIf="!csvFileName">Choose a CSV file…</span>
+              <span *ngIf="csvFileName">{{ csvFileName }}</span>
+            </label>
+            <input type="file" id="csvFileInput" accept=".csv" (change)="onFileSelected($event)" hidden />
+          </div>
+
+          <!-- Parse error -->
+          <div class="parse-error" *ngIf="parseError">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            {{ parseError }}
+          </div>
+
+          <!-- Preview -->
+          <div *ngIf="parsedLeads.length > 0" class="preview-section">
+            <h4>Preview ({{ parsedLeads.length }} leads)</h4>
+            <div class="preview-table-wrap">
+              <table class="preview-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Company</th>
+                    <th>Industry</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let lead of parsedLeads | slice:0:10; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ lead.firstName }} {{ lead.lastName }}</td>
+                    <td>{{ lead.email }}</td>
+                    <td>{{ lead.company || '–' }}</td>
+                    <td>{{ lead.industry }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="preview-note" *ngIf="parsedLeads.length > 10">
+                …and {{ parsedLeads.length - 10 }} more leads
+              </p>
+            </div>
+          </div>
+
+          <!-- Upload button -->
+          <button class="submit-btn" (click)="uploadLeads()"
+            [disabled]="!parsedLeads.length || uploading">
+            <ion-spinner *ngIf="uploading" name="crescent"></ion-spinner>
+            <span *ngIf="!uploading">
+              <ion-icon name="cloud-upload-outline"></ion-icon>
+              Upload {{ parsedLeads.length }} Lead{{ parsedLeads.length !== 1 ? 's' : '' }}
+            </span>
+          </button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

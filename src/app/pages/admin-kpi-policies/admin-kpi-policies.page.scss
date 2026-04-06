@@ -1,0 +1,358 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.admin-kpi-policies-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+}
+
+// ── Header ──────────────────────────────────
+.page-header {
+  padding: 32px 18px 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.add-btn {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+  --border-radius: 50px;
+  --color: #fff;
+  font-weight: 600;
+}
+
+.search-row {
+  margin-top: 16px;
+}
+
+.policy-search {
+  --background: rgba($paper, 0.92);
+  --border-radius: 14px;
+  --box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+}
+
+// ── Loading / Empty ─────────────────────────
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+
+  ion-icon {
+    font-size: 48px;
+    color: rgba($muted, 0.4);
+  }
+
+  p {
+    color: $muted;
+    margin: 12px 0 0;
+  }
+}
+
+// ── Grid ────────────────────────────────────
+.policies-section {
+  padding: 24px 18px 100px;
+}
+
+.policies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// ── Card ────────────────────────────────────
+.policy-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+  }
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.policy-icon-wrap {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.policy-info {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.policy-dates {
+  font-size: 0.8rem;
+  color: $muted;
+  margin: 2px 0 0;
+}
+
+.status-chip {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 24px;
+}
+
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba($ink, 0.06);
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metric-value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: $teal;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  --padding-start: 6px;
+  --padding-end: 6px;
+  height: 22px;
+}
+
+.grace-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: $muted;
+
+  ion-icon {
+    font-size: 14px;
+    color: $coral;
+  }
+}
+
+// ── FAB ─────────────────────────────────────
+.admin-fab {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+}
+
+// ── Detail modal ────────────────────────────
+.modal-content {
+  --background: linear-gradient(180deg, #f8f3eb, #f1ece4);
+}
+
+.detail-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  margin: 18px 18px 0;
+
+  &.active {
+    background: rgba($teal, 0.12);
+    color: $teal;
+  }
+
+  &.inactive {
+    background: rgba($muted, 0.1);
+    color: $muted;
+  }
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.detail-section {
+  margin: 18px 18px 0;
+  background: rgba($paper, 0.92);
+  border-radius: 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  h4 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $coral;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 10px;
+  }
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+  & + .detail-row {
+    border-top: 1px solid rgba($ink, 0.06);
+  }
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: $ink;
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+
+  &.amount {
+    color: $teal;
+    font-weight: 700;
+  }
+
+  &.mono {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: $muted;
+  }
+
+  &.danger {
+    color: $coral;
+    font-weight: 700;
+  }
+
+  &.promo {
+    color: $teal;
+    font-weight: 700;
+  }
+}
+
+.detail-actions {
+  padding: 18px 18px 32px;
+
+  ion-button {
+    margin-bottom: 8px;
+  }
+}
+
+// ── Form modal ──────────────────────────────
+.form-section-header {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $coral;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 20px 16px 6px;
+}
+
+.field-error {
+  color: var(--ion-color-danger);
+  font-size: 0.78rem;
+  margin: 2px 0 8px 16px;
+}
+
+.form-actions {
+  padding: 16px;
+}
+
+// ── Responsive ──────────────────────────────
+@media (max-width: 600px) {
+  .header-row {
+    flex-direction: column;
+  }
+
+  .policies-grid {
+    grid-template-columns: 1fr;
+  }
+}

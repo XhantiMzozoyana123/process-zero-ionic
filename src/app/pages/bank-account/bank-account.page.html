@@ -1,0 +1,115 @@
+<ion-content class="bank-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Bank Account</h1>
+        <p>Manage your payout banking details.</p>
+      </div>
+      <button class="add-btn" (click)="openFormModal()">
+        <ion-icon name="create-outline"></ion-icon>
+        {{ myAccount ? 'Edit' : 'Add' }}
+      </button>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Account card -->
+  <section *ngIf="!loading" class="cards-section">
+    <div class="item-card" *ngIf="myAccount; else noAccount">
+      <div class="card-top">
+        <div class="card-avatar">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </div>
+        <div class="card-info">
+          <h3>{{ myAccount.accountHolderName }}</h3>
+          <span class="card-subtitle">{{ myAccount.bankName || 'Bank not set' }}</span>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item">
+          <ion-icon name="card-outline"></ion-icon>
+          <span>{{ myAccount.maskedAccountNumber || 'Hidden' }}</span>
+        </div>
+        <div class="meta-item" *ngIf="myAccount.bankCode">
+          <ion-icon name="code-outline"></ion-icon>
+          <span>Code: {{ myAccount.bankCode }}</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn edit" (click)="openFormModal()">
+          <ion-icon name="create-outline"></ion-icon> Edit
+        </button>
+      </div>
+    </div>
+
+    <ng-template #noAccount>
+      <div class="empty-state">
+        <ion-icon name="wallet-outline"></ion-icon>
+        <h3>No banking details yet</h3>
+        <p>Add your banking details to receive payouts.</p>
+        <button class="add-empty-btn" (click)="openFormModal()">
+          <ion-icon name="add-outline"></ion-icon> Add Banking Details
+        </button>
+      </div>
+    </ng-template>
+  </section>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openFormModal()" class="themed-fab" aria-label="Add Bank Account">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Form Modal -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeFormModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ myAccount ? 'Edit Bank Account' : 'Add Bank Account' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeFormModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <form [formGroup]="accountForm" (ngSubmit)="submit()" novalidate class="modal-form">
+          <div class="form-card">
+            <ion-item>
+              <ion-label position="stacked">Account Holder Name *</ion-label>
+              <ion-input type="text" maxlength="200" formControlName="accountHolderName"></ion-input>
+            </ion-item>
+            <ion-note color="danger" *ngIf="isInvalid('accountHolderName')" class="field-error">Account holder name is required.</ion-note>
+
+            <ion-item>
+              <ion-label position="stacked">Account Number *</ion-label>
+              <ion-input type="text" maxlength="64" formControlName="accountNumber"></ion-input>
+            </ion-item>
+            <ion-note class="field-hint" color="medium" *ngIf="myAccount">Re-enter the full account number to update this account.</ion-note>
+            <ion-note color="danger" *ngIf="isInvalid('accountNumber')" class="field-error">Enter a valid account number.</ion-note>
+
+            <ion-item>
+              <ion-label position="stacked">Bank Name</ion-label>
+              <ion-input type="text" maxlength="200" formControlName="bankName"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Bank Code</ion-label>
+              <ion-input type="text" maxlength="20" formControlName="bankCode"></ion-input>
+            </ion-item>
+          </div>
+
+          <button type="submit" class="submit-btn" [disabled]="accountForm.invalid || submitting">
+            {{ myAccount ? 'Save Changes' : 'Save Bank Account' }}
+          </button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

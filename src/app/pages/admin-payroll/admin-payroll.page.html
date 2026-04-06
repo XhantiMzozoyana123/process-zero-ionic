@@ -1,0 +1,101 @@
+<ion-content class="admin-payroll-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Payroll Management</h1>
+        <p>Generate monthly commission reports and notify the team.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Action Card -->
+  <section class="payroll-section">
+    <div class="action-card">
+      <div class="action-icon-wrap">
+        <ion-icon name="calculator-outline"></ion-icon>
+      </div>
+      <h2>Monthly Commission Report</h2>
+      <p class="action-description">
+        Compute payouts for <strong>{{ currentMonth }}</strong>, generate a downloadable CSV,
+        and send email notifications to admins and sales representatives.
+      </p>
+
+      <div class="action-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-text">Calculate commissions from closed deals</div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-text">Generate CSV with payout details</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">Email notifications to admins &amp; reps</div>
+        </div>
+      </div>
+
+      <ion-button expand="block" shape="round" class="generate-btn"
+        (click)="confirmGenerate()" [disabled]="generating">
+        <ion-spinner *ngIf="generating" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!generating" slot="start" name="document-text-outline"></ion-icon>
+        {{ generating ? 'Generating...' : 'Generate Report' }}
+      </ion-button>
+    </div>
+
+    <!-- Result Card -->
+    <div class="result-card" *ngIf="lastDownloadUrl">
+      <div class="result-header">
+        <ion-icon name="checkmark-circle" class="result-icon"></ion-icon>
+        <div>
+          <h3>Report Ready</h3>
+          <p class="result-time">Generated {{ lastGeneratedAt | date:'medium' }}</p>
+        </div>
+      </div>
+
+      <div class="csv-info">
+        <div class="csv-row">
+          <span class="csv-label">Format</span>
+          <span class="csv-value">CSV (Comma-Separated Values)</span>
+        </div>
+        <div class="csv-row">
+          <span class="csv-label">Columns</span>
+          <span class="csv-value">UserId, UserName, AccountNumber, BankName, Amount</span>
+        </div>
+      </div>
+
+      <ion-button expand="block" shape="round" class="download-btn" (click)="downloadReport()">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        Download CSV
+      </ion-button>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-icon-wrap">
+          <ion-icon name="mail-outline"></ion-icon>
+        </div>
+        <h4>Admin Notifications</h4>
+        <p>All admin users receive an email with the download link to the generated report.</p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon-wrap">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <h4>Rep Notifications</h4>
+        <p>Each sales rep is emailed their individual payout amount for the month.</p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon-wrap">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+        </div>
+        <h4>Secure Download</h4>
+        <p>CSV files are stored server-side and only accessible to authenticated admins.</p>
+      </div>
+    </div>
+  </section>
+</ion-content>

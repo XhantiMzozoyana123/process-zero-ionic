@@ -1,0 +1,57 @@
+<ion-content class="settings-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Settings</h1>
+        <p>Manage your account preferences.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings cards -->
+  <section class="cards-section">
+    <div class="settings-card" button routerLink="bank-account">
+      <div class="card-icon banking">
+        <ion-icon name="wallet-outline"></ion-icon>
+      </div>
+      <div class="card-label">
+        <h3>Banking Details</h3>
+        <p>Manage your payout account</p>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+    </div>
+
+    <div class="settings-card" button routerLink="/account/change-password">
+      <div class="card-icon password">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+      </div>
+      <div class="card-label">
+        <h3>Change Password</h3>
+        <p>Update your login credentials</p>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+    </div>
+
+    <div class="settings-card" button routerLink="/account/help">
+      <div class="card-icon help">
+        <ion-icon name="help-circle-outline"></ion-icon>
+      </div>
+      <div class="card-label">
+        <h3>Help &amp; Guide</h3>
+        <p>Learn how to use the app</p>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+    </div>
+
+    <div class="settings-card logout" button (click)="logout()">
+      <div class="card-icon logout-icon">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </div>
+      <div class="card-label">
+        <h3>Logout</h3>
+        <p>Sign out of your account</p>
+      </div>
+    </div>
+  </section>
+</ion-content>

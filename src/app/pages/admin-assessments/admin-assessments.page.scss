@@ -1,0 +1,302 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$teal: #1d7874;
+$gold: #d7a449;
+$blue: #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+.admin-assessments-page {
+  --background: #{$sand};
+}
+
+// -- Header --
+.page-header {
+  padding: 28px 20px 12px;
+
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+// -- Target selector --
+.target-section {
+  padding: 0 20px 16px;
+}
+
+.target-card {
+  background: $paper;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 18px rgba(19, 31, 31, 0.06);
+  border: 1px solid rgba($ink, 0.05);
+}
+
+.target-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.loading-existing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 0.88rem;
+  color: $muted;
+
+  ion-spinner {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.field {
+  min-width: 180px;
+
+  &.grow {
+    flex: 1;
+  }
+
+  &.narrow {
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  &.narrow-inline {
+    width: 120px;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+}
+
+.select-input {
+  --background: #{$sand};
+  --border-radius: 12px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  font-size: 0.92rem;
+  border: 1px solid rgba($ink, 0.08);
+  border-radius: 12px;
+  width: 100%;
+
+  &.small {
+    width: 100px;
+  }
+}
+
+.form-input {
+  --background: #{$sand};
+  --border-radius: 12px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  font-size: 0.92rem;
+  border: 1px solid rgba($ink, 0.08);
+  border-radius: 12px;
+
+  &.small {
+    width: 100px;
+  }
+
+  &.invalid {
+    border-color: $coral;
+  }
+
+  &.option-input {
+    flex: 1;
+  }
+}
+
+// -- Form section --
+.form-section {
+  padding: 0 20px 40px;
+}
+
+.form-card {
+  background: $paper;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 18px rgba(19, 31, 31, 0.06);
+  border: 1px solid rgba($ink, 0.05);
+}
+
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $teal;
+  margin: 0;
+}
+
+.card-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.add-btn {
+  --color: #{$teal};
+  --border-color: #{$teal};
+  font-weight: 600;
+  text-transform: none;
+  font-size: 0.82rem;
+}
+
+.empty-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $muted;
+  font-size: 0.88rem;
+  padding: 12px 0;
+
+  ion-icon {
+    font-size: 1.2rem;
+    color: rgba($ink, 0.2);
+  }
+}
+
+// -- MCQ blocks --
+.mcq-block,
+.oq-block {
+  background: $sand;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba($ink, 0.05);
+}
+
+.mcq-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mcq-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, $teal, $blue);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+
+  &.oq {
+    background: linear-gradient(135deg, $gold, $coral);
+  }
+}
+
+// -- Options --
+.options-section {
+  margin-top: 10px;
+
+  > label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba($ink, 0.06);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: $muted;
+  flex-shrink: 0;
+}
+
+.add-option-btn {
+  --color: #{$teal};
+  font-size: 0.82rem;
+  text-transform: none;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+// -- Submit --
+.submit-section {
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upload-btn {
+  --background: linear-gradient(135deg, #{$teal}, #{$blue});
+  --border-radius: 16px;
+  --box-shadow: 0 8px 24px rgba(29, 120, 116, 0.3);
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: none;
+  height: 52px;
+}
+
+.reset-btn {
+  --color: #{$muted};
+  --border-color: rgba(#{$ink}, 0.12);
+  --border-radius: 16px;
+  font-weight: 600;
+  text-transform: none;
+}
+
+// -- Responsive --
+@media (max-width: 600px) {
+  .target-row,
+  .form-row {
+    flex-direction: column;
+  }
+
+  .field.narrow,
+  .field.narrow-inline {
+    width: 100%;
+  }
+}

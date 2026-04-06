@@ -1,0 +1,425 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.admin-clients-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+}
+
+// ── Header ──────────────────────────────────
+.page-header {
+  padding: 32px 18px 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.add-btn {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+  --border-radius: 50px;
+  --color: #fff;
+  font-weight: 600;
+}
+
+.search-row {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-search {
+  flex: 1;
+  --background: rgba($paper, 0.92);
+  --border-radius: 14px;
+  --box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+}
+
+// ── View Toggle ─────────────────────────────
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.toggle-btn {
+  --border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --background: transparent;
+  --color: #{$muted};
+  --border-color: #{$muted};
+
+  &[fill='solid'] {
+    --background: linear-gradient(135deg, #{$coral}, #{$gold});
+    --color: #fff;
+    --border-color: transparent;
+  }
+}
+
+// ── Loading / Empty ─────────────────────────
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+
+  ion-icon {
+    font-size: 48px;
+    color: rgba($muted, 0.4);
+  }
+
+  p {
+    color: $muted;
+    margin: 12px 0 0;
+  }
+}
+
+// ── Table ───────────────────────────────────
+.table-section {
+  padding: 24px 18px 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.table-wrap {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  overflow-x: auto;
+}
+
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid rgba($ink, 0.08);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba($ink, 0.05);
+    transition: background 0.15s ease;
+  }
+
+  .clickable-row {
+    cursor: pointer;
+    &:hover { background: rgba($gold, 0.06); }
+  }
+}
+
+.contact-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.email-cell {
+  color: $muted;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+// ── Grid ────────────────────────────────────
+.clients-section {
+  padding: 24px 18px 100px;
+}
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// ── Card ────────────────────────────────────
+.client-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+  }
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.client-info {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.client-email {
+  font-size: 0.82rem;
+  color: $muted;
+  margin: 2px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-chip {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 24px;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba($ink, 0.06);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: $muted;
+
+  ion-icon {
+    font-size: 14px;
+    color: $coral;
+  }
+}
+
+// ── Pagination ──────────────────────────────
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 18px 100px;
+
+  .page-btn {
+    --border-radius: 10px;
+    min-width: 36px;
+    font-weight: 600;
+  }
+
+  .page-info {
+    font-size: 0.82rem;
+    color: $muted;
+    margin-left: 8px;
+  }
+}
+
+// ── FAB ─────────────────────────────────────
+.admin-fab {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+}
+
+// ── Detail modal ────────────────────────────
+.modal-content {
+  --background: linear-gradient(180deg, #f8f3eb, #f1ece4);
+}
+
+.detail-header {
+  text-align: center;
+  padding: 32px 24px 16px;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 12px 0 8px;
+  }
+}
+
+.detail-avatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $coral, $gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.detail-section {
+  margin: 0 18px 18px;
+  background: rgba($paper, 0.92);
+  border-radius: 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+  & + .detail-row {
+    border-top: 1px solid rgba($ink, 0.06);
+  }
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: $ink;
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+
+  &.amount {
+    color: $teal;
+    font-weight: 700;
+  }
+
+  &.mono {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: $muted;
+  }
+}
+
+.detail-actions {
+  padding: 8px 18px 32px;
+
+  ion-button {
+    margin-bottom: 8px;
+  }
+}
+
+// ── Form modal ──────────────────────────────
+.field-error {
+  color: var(--ion-color-danger);
+  font-size: 0.78rem;
+  margin: 2px 0 8px 16px;
+}
+
+.form-actions {
+  padding: 16px;
+}
+
+// ── Responsive ──────────────────────────────
+@media (max-width: 600px) {
+  .header-row {
+    flex-direction: column;
+  }
+
+  .clients-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clients-table th:nth-child(n+3),
+  .clients-table td:nth-child(n+3) {
+    display: none;
+  }
+}

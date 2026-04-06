@@ -1,0 +1,29 @@
+﻿<ion-content class="auth-page">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="brand">Process Zero</h1>
+        <p class="subtitle">Two-factor authentication</p>
+      </div>
+
+      <div class="auth-form">
+        <p class="form-hint">Enter the 6-digit code from your authenticator app.</p>
+
+        <div class="form-group">
+          <label class="form-label">Verification Code</label>
+          <input type="text" class="form-input code-input" placeholder="000000"
+                 [(ngModel)]="token" maxlength="6" />
+        </div>
+
+        <button class="btn-primary" (click)="verifyCode()" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          {{ loading ? 'Verifying...' : 'Verify' }}
+        </button>
+
+        <div class="auth-links">
+          <a routerLink="/login" class="link-accent">Back to Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

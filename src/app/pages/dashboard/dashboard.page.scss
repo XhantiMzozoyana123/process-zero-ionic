@@ -1,0 +1,465 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+:host {
+	--dashboard-sand: #{$sand};
+	--dashboard-paper: #{$paper};
+	--dashboard-ink: #{$ink};
+	--dashboard-muted: #{$muted};
+	--dashboard-line: rgba($ink, 0.09);
+	--dashboard-gold: #{$gold};
+	--dashboard-teal: #{$teal};
+	--dashboard-blue: #{$blue};
+	--dashboard-coral: #{$coral};
+	--dashboard-shadow: 0 18px 45px rgba(19, 31, 31, 0.12);
+}
+
+.dashboard-page {
+	--background: radial-gradient(circle at top left, rgba(215, 164, 73, 0.15), transparent 32%), linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+	color: var(--dashboard-ink);
+}
+
+.dashboard-hero {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+	gap: 18px;
+	padding: 20px 18px 12px;
+}
+
+.hero-copy,
+.hero-panel,
+.panel,
+.metric-card,
+.dashboard-message {
+	background: rgba(255, 253, 249, 0.92);
+	backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.7);
+	border-radius: 24px;
+	box-shadow: var(--dashboard-shadow);
+}
+
+.hero-copy {
+	padding: 26px;
+	background: linear-gradient(140deg, rgba(23, 33, 33, 0.98), rgba(51, 92, 103, 0.92));
+	color: var(--dashboard-sand);
+	position: relative;
+	overflow: hidden;
+}
+
+.hero-copy::after {
+	content: '';
+	position: absolute;
+	width: 220px;
+	height: 220px;
+	right: -60px;
+	top: -90px;
+	background: radial-gradient(circle, rgba(215, 164, 73, 0.42), transparent 66%);
+}
+
+.eyebrow {
+	margin: 0 0 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	font-size: 0.72rem;
+	font-weight: 700;
+	opacity: 0.8;
+}
+
+.hero-copy h1 {
+	margin: 0;
+	font-size: clamp(2rem, 4vw, 3.25rem);
+	line-height: 1.05;
+	max-width: 11ch;
+}
+
+.hero-text {
+	margin: 18px 0 0;
+	max-width: 56ch;
+	line-height: 1.65;
+	color: rgba(249, 246, 240, 0.82);
+}
+
+.hero-panel {
+	padding: 20px;
+	border-color: rgba(23, 33, 33, 0.06);
+}
+
+.hero-panel-top,
+.hero-product-meta,
+.panel-header,
+.revenue-topline,
+.funnel-copy,
+.metrics-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.hero-label,
+.hero-date,
+.hero-product-meta span,
+.snapshot-list span,
+.metric-label,
+.metric-detail,
+.metrics-row p,
+.health-card p,
+.funnel-copy span,
+.revenue-topline span {
+	color: var(--dashboard-muted);
+}
+
+.hero-label,
+.panel-badge {
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.14em;
+	font-weight: 700;
+}
+
+.hero-date {
+	font-weight: 600;
+}
+
+.product-selector {
+	--background: transparent;
+	--padding-start: 0;
+	--inner-padding-end: 0;
+	margin-top: 16px;
+	border-top: 1px solid var(--dashboard-line);
+	border-bottom: 1px solid var(--dashboard-line);
+}
+
+.product-selector ion-label {
+	margin-bottom: 8px;
+	color: var(--dashboard-muted);
+}
+
+.hero-product-meta {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid var(--dashboard-line);
+}
+
+.hero-product-meta strong {
+	color: var(--dashboard-ink);
+	font-size: 1.05rem;
+}
+
+.dashboard-state,
+.dashboard-message {
+	margin: 4px 18px 18px;
+}
+
+.dashboard-state {
+	display: grid;
+	place-items: center;
+	gap: 12px;
+	padding: 28px;
+	color: var(--dashboard-muted);
+}
+
+.dashboard-message {
+	border-radius: 22px;
+}
+
+.dashboard-message.error {
+	border-left: 4px solid var(--dashboard-coral);
+}
+
+.dashboard-message.empty {
+	border-left: 4px solid var(--dashboard-gold);
+}
+
+.hero-metrics-grid,
+.report-grid,
+.health-grid {
+	display: grid;
+	gap: 18px;
+	padding: 0 18px 18px;
+}
+
+.hero-metrics-grid {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric-card {
+	padding: 20px;
+	border: 1px solid rgba(23, 33, 33, 0.06);
+}
+
+.metric-card h2 {
+	margin: 10px 0 8px;
+	font-size: 1.9rem;
+	line-height: 1;
+}
+
+.metric-card.gold {
+	background: linear-gradient(180deg, rgba(215, 164, 73, 0.16), rgba(255, 253, 249, 0.92));
+}
+
+.metric-card.teal {
+	background: linear-gradient(180deg, rgba(29, 120, 116, 0.16), rgba(255, 253, 249, 0.92));
+}
+
+.metric-card.coral {
+	background: linear-gradient(180deg, rgba(192, 108, 82, 0.16), rgba(255, 253, 249, 0.92));
+}
+
+.metric-card.slate {
+	background: linear-gradient(180deg, rgba(51, 92, 103, 0.16), rgba(255, 253, 249, 0.92));
+}
+
+.report-grid {
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.panel {
+	grid-column: span 4;
+	padding: 22px;
+	border: 1px solid rgba(23, 33, 33, 0.06);
+}
+
+.panel-wide {
+	grid-column: span 8;
+}
+
+.panel-dark {
+	background: linear-gradient(160deg, rgba(23, 33, 33, 0.98), rgba(47, 55, 55, 0.94));
+	color: var(--dashboard-sand);
+}
+
+.panel-dark .eyebrow,
+.panel-dark .panel-badge,
+.panel-dark .funnel-copy span {
+	color: rgba(246, 241, 232, 0.7);
+}
+
+.panel-accent {
+	background: linear-gradient(180deg, rgba(215, 164, 73, 0.18), rgba(255, 253, 249, 0.94));
+}
+
+.panel-soft {
+	background: linear-gradient(180deg, rgba(29, 120, 116, 0.08), rgba(255, 253, 249, 0.94));
+}
+
+.panel-header {
+	margin-bottom: 18px;
+}
+
+.panel-header.compact {
+	margin-bottom: 14px;
+}
+
+.panel-header h3,
+.health-card h4 {
+	margin: 4px 0 0;
+	font-size: 1.25rem;
+}
+
+.panel-badge {
+	background: rgba(255, 255, 255, 0.1);
+	padding: 8px 10px;
+	border-radius: 999px;
+}
+
+.funnel-list {
+	display: grid;
+	gap: 14px;
+}
+
+.funnel-row {
+	display: grid;
+	gap: 10px;
+}
+
+.funnel-copy strong,
+.snapshot-list strong,
+.metrics-row strong,
+.revenue-topline strong {
+	font-size: 0.98rem;
+}
+
+.funnel-track,
+.revenue-track {
+	background: rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.funnel-track {
+	height: 12px;
+}
+
+.funnel-fill {
+	height: 100%;
+	border-radius: inherit;
+}
+
+.snapshot-list,
+.metrics-table {
+	display: grid;
+	gap: 12px;
+}
+
+.snapshot-list div,
+.metrics-row {
+	padding: 14px 0;
+	border-top: 1px solid var(--dashboard-line);
+}
+
+.snapshot-list div:first-child,
+.metrics-row:first-child {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.snapshot-list strong {
+	display: block;
+	margin-top: 4px;
+	color: var(--dashboard-ink);
+}
+
+.revenue-chart {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 16px;
+	align-items: end;
+	min-height: 280px;
+}
+
+.revenue-bar {
+	display: grid;
+	gap: 12px;
+}
+
+.revenue-topline {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.revenue-track {
+	height: 190px;
+	display: flex;
+	align-items: flex-end;
+	background: linear-gradient(180deg, rgba(23, 33, 33, 0.04), rgba(23, 33, 33, 0.12));
+}
+
+.revenue-fill {
+	width: 100%;
+	border-radius: 18px 18px 0 0;
+	background: linear-gradient(180deg, var(--dashboard-teal), var(--dashboard-blue));
+}
+
+.health-grid {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	padding: 0;
+}
+
+.health-card {
+	background: rgba(255, 255, 255, 0.76);
+	border: 1px solid rgba(23, 33, 33, 0.05);
+	border-radius: 22px;
+	padding: 18px;
+	text-align: center;
+}
+
+.health-ring {
+	width: 124px;
+	height: 124px;
+	margin: 0 auto 16px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+}
+
+.health-ring-core {
+	width: 86px;
+	height: 86px;
+	border-radius: 50%;
+	background: var(--dashboard-paper);
+	display: grid;
+	place-items: center;
+	color: var(--dashboard-ink);
+}
+
+.health-ring-core strong {
+	font-size: 1.15rem;
+}
+
+.metrics-row {
+	align-items: flex-start;
+}
+
+.metrics-row span {
+	display: block;
+	font-weight: 700;
+	color: var(--dashboard-ink);
+}
+
+.metrics-row p {
+	margin: 4px 0 0;
+}
+
+@media (max-width: 1024px) {
+	.dashboard-hero,
+	.hero-metrics-grid,
+	.health-grid,
+	.revenue-chart {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.report-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.panel,
+	.panel-wide {
+		grid-column: auto;
+	}
+}
+
+@media (max-width: 720px) {
+	.dashboard-hero,
+	.hero-metrics-grid,
+	.health-grid,
+	.revenue-chart {
+		grid-template-columns: 1fr;
+	}
+
+	.dashboard-hero {
+		padding-top: 14px;
+	}
+
+	.hero-copy,
+	.hero-panel,
+	.panel,
+	.metric-card {
+		border-radius: 20px;
+	}
+
+	.hero-copy h1 {
+		max-width: none;
+		font-size: 2.2rem;
+	}
+
+	.revenue-track {
+		height: 120px;
+	}
+
+	.health-ring {
+		width: 108px;
+		height: 108px;
+	}
+
+	.health-ring-core {
+		width: 74px;
+		height: 74px;
+	}
+}

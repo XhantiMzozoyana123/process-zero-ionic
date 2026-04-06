@@ -1,0 +1,230 @@
+<ion-content class="admin-users-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>User Management</h1>
+        <p>View and manage registered sales representatives.</p>
+      </div>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search users..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" class="user-search"></ion-searchbar>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && displayedUsers.length === 0" class="empty-state">
+    <ion-icon name="people-outline"></ion-icon>
+    <p>No users found.</p>
+  </div>
+
+  <!-- User cards -->
+  <section *ngIf="!loading && displayedUsers.length > 0" class="users-section">
+    <div class="users-grid">
+      <div class="user-card" *ngFor="let u of displayedUsers" (click)="openDetailModal(u)">
+        <div class="card-top">
+          <div class="user-avatar">{{ getInitials(u) }}</div>
+          <div class="user-info">
+            <h3>{{ u.userName }}</h3>
+            <p class="user-email">{{ u.email }}</p>
+          </div>
+          <ion-chip [color]="u.isBanned ? 'danger' : u.emailConfirmed ? 'success' : 'warning'" outline class="status-chip">
+            {{ u.isBanned ? 'Banned' : u.emailConfirmed ? 'Confirmed' : 'Unconfirmed' }}
+          </ion-chip>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item" *ngIf="u.phoneNumber">
+            <ion-icon name="call-outline"></ion-icon>
+            <span>{{ u.phoneNumber }}</span>
+          </div>
+          <div class="meta-item">
+            <ion-icon name="finger-print-outline"></ion-icon>
+            <span class="user-id">{{ u.id }}</span>
+          </div>
+          <div class="meta-item" *ngIf="u.lockoutEnd">
+            <ion-icon name="lock-closed-outline" color="danger"></ion-icon>
+            <span>Locked</span>
+          </div>
+          <div class="meta-item" *ngIf="u.isBanned && u.banReason">
+            <ion-icon name="ban-outline" color="danger"></ion-icon>
+            <span>{{ u.banReason }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detail Modal -->
+  <ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>User Details</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content" *ngIf="detailUser as u">
+        <div class="detail-header">
+          <div class="detail-avatar">{{ getInitials(u) }}</div>
+          <h2>{{ u.userName }}</h2>
+          <ion-chip [color]="u.isBanned ? 'danger' : u.emailConfirmed ? 'success' : 'warning'" outline>
+            {{ u.isBanned ? 'Banned' : u.emailConfirmed ? 'Confirmed' : 'Unconfirmed' }}
+          </ion-chip>
+        </div>
+
+        <div class="detail-section">
+          <h4>Account</h4>
+          <div class="detail-row">
+            <span class="detail-label">Username</span>
+            <span class="detail-value">{{ u.userName }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ u.email }}</span>
+          </div>
+          <div class="detail-row" *ngIf="u.phoneNumber">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ u.phoneNumber }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email Confirmed</span>
+            <span class="detail-value">{{ u.emailConfirmed ? 'Yes' : 'No' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Security</h4>
+          <div class="detail-row">
+            <span class="detail-label">Lockout Enabled</span>
+            <span class="detail-value">{{ u.lockoutEnabled ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="u.lockoutEnd">
+            <span class="detail-label">Lockout End</span>
+            <span class="detail-value">{{ u.lockoutEnd | date:'medium' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Banned</span>
+            <span class="detail-value" [style.color]="u.isBanned ? 'var(--ion-color-danger)' : 'inherit'">{{ u.isBanned ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="u.isBanned && u.bannedAt">
+            <span class="detail-label">Banned At</span>
+            <span class="detail-value">{{ u.bannedAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="u.isBanned && u.banReason">
+            <span class="detail-label">Ban Reason</span>
+            <span class="detail-value">{{ u.banReason }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Metadata</h4>
+          <div class="detail-row">
+            <span class="detail-label">User ID</span>
+            <span class="detail-value mono">{{ u.id }}</span>
+          </div>
+        </div>
+
+        <!-- KPI Section -->
+        <div class="detail-section kpi-section">
+          <h4>KPI Performance</h4>
+          <div class="kpi-product-select">
+            <ion-select placeholder="Select a product" interface="popover"
+              [value]="selectedProductId"
+              (ionChange)="onProductChange($event.detail.value)">
+              <ion-select-option *ngFor="let p of products" [value]="p.id">
+                {{ p.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <!-- KPI Loading -->
+          <div *ngIf="kpiLoading" class="kpi-loading">
+            <ion-spinner name="crescent" color="primary"></ion-spinner>
+          </div>
+
+          <!-- KPI Error / Empty -->
+          <div *ngIf="!kpiLoading && kpiError" class="kpi-empty">
+            <ion-icon name="analytics-outline"></ion-icon>
+            <p>{{ kpiError }}</p>
+          </div>
+
+          <!-- KPI Prompt -->
+          <div *ngIf="!kpiLoading && !kpiError && !kpiData && !selectedProductId" class="kpi-empty">
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <p>Select a product to view KPIs.</p>
+          </div>
+
+          <!-- KPI Data -->
+          <div *ngIf="kpiData" class="kpi-data">
+            <div class="kpi-updated">
+              Last updated: {{ kpiData.updatedAt | date:'medium' }}
+            </div>
+
+            <div class="kpi-group">
+              <h5>Core Activity</h5>
+              <div class="kpi-grid">
+                <div class="kpi-metric" *ngFor="let m of coreActivityMetrics">
+                  <span class="kpi-value">{{ m.value }}</span>
+                  <span class="kpi-label">{{ m.label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-group">
+              <h5>Deal Performance</h5>
+              <div class="kpi-grid">
+                <div class="kpi-metric" *ngFor="let m of dealPerformanceMetrics">
+                  <span class="kpi-value">{{ m.value }}</span>
+                  <span class="kpi-label">{{ m.label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-group">
+              <h5>Team</h5>
+              <div class="kpi-grid">
+                <div class="kpi-metric" *ngFor="let m of teamMetrics">
+                  <span class="kpi-value">{{ m.value }}</span>
+                  <span class="kpi-label">{{ m.label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-group">
+              <h5>Business Health</h5>
+              <div class="kpi-grid">
+                <div class="kpi-metric" *ngFor="let m of businessHealthMetrics">
+                  <span class="kpi-value">{{ m.value }}</span>
+                  <span class="kpi-label">{{ m.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <ion-button *ngIf="!u.isBanned" expand="block" color="danger" fill="outline" (click)="banUser(u)">
+            <ion-icon slot="start" name="ban-outline"></ion-icon>
+            Ban User
+          </ion-button>
+          <ion-button *ngIf="u.isBanned" expand="block" color="success" (click)="unbanUser(u)">
+            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+            Unban User
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

@@ -1,0 +1,217 @@
+<ion-content class="products-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Products</h1>
+        <p>Browse digital products available on the platform.</p>
+      </div>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search products..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" (ionInput)="onSearchChange()" class="themed-search"></ion-searchbar>
+      <div class="view-toggle">
+        <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+        </ion-button>
+        <ion-button [fill]="viewMode === 'cards' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'cards'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && filteredProducts.length === 0 && !searchTerm" class="empty-state">
+    <ion-icon name="cube-outline"></ion-icon>
+    <h3>No products found</h3>
+    <p>Products will appear here once added by an administrator.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredProducts.length === 0 && searchTerm" class="empty-state">
+    <ion-icon name="search-outline"></ion-icon>
+    <h3>No results</h3>
+    <p>No products match your search.</p>
+  </div>
+
+  <!-- Product table -->
+  <section *ngIf="!loading && displayedProducts.length > 0 && viewMode === 'table'" class="table-section">
+    <div class="table-wrap">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Negotiable</th>
+            <th>Created</th>
+            <th>Qualification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of displayedProducts" (click)="openDetailModal(product)">
+            <td>
+              <div class="product-name-cell">
+                <div class="table-thumb" [class.placeholder]="!product.profilePictureBase64">
+                  <img *ngIf="product.profilePictureBase64" [src]="'data:image/png;base64,' + product.profilePictureBase64" [alt]="product.name" />
+                  <ion-icon *ngIf="!product.profilePictureBase64" name="cube-outline"></ion-icon>
+                </div>
+                <div>
+                  <span class="product-name">{{ product.name || 'Unnamed Product' }}</span>
+                  <span class="product-desc-short">{{ product.description | slice:0:50 }}{{ (product.description?.length ?? 0) > 50 ? '…' : '' }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="price-cell">{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</td>
+            <td>{{ product.negotiableAmounts || '—' }}</td>
+            <td>{{ product.createdAt | date:'mediumDate' }}</td>
+            <td>
+              <ion-chip *ngIf="isQualified(product)" color="success" outline class="status-chip">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                Qualified
+              </ion-chip>
+              <ion-button *ngIf="!isQualified(product) && !assessmentCheckLoading" size="small" fill="outline" class="assess-btn" (click)="takeAssessment(product, $event)">
+                <ion-icon slot="start" name="school-outline"></ion-icon>
+                Take Assessment
+              </ion-button>
+              <ion-spinner *ngIf="assessmentCheckLoading" name="dots" class="assess-spinner"></ion-spinner>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Product cards -->
+  <section *ngIf="!loading && displayedProducts.length > 0 && viewMode === 'cards'" class="cards-section">
+    <div class="cards-grid">
+      <div class="item-card" *ngFor="let product of displayedProducts" (click)="openDetailModal(product)">
+        <div class="product-thumb-wrap">
+          <img *ngIf="'data:image/png;base64,' + product.profilePictureBase64"
+               [src]="'data:image/png;base64,' + product.profilePictureBase64"
+               [alt]="product.name || 'Product'"
+               class="product-thumb-img" />
+          <div *ngIf="!product.profilePictureBase64" class="product-thumb-placeholder">
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+        </div>
+        <div class="product-body">
+          <span class="product-price">{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</span>
+          <h3>{{ product.name || 'Unnamed Product' }}</h3>
+          <p class="product-desc" *ngIf="product.description">{{ product.description }}</p>
+          <p class="product-desc muted" *ngIf="!product.description">No description provided.</p>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item" *ngIf="product.negotiableAmounts">
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <span>{{ product.negotiableAmounts }}</span>
+          </div>
+          <div class="meta-item" *ngIf="product.url">
+            <ion-icon name="link-outline"></ion-icon>
+            <a [href]="product.url" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">
+              {{ product.url | slice:0:35 }}{{ (product.url!.length) > 35 ? '…' : '' }}
+            </a>
+          </div>
+          <div class="meta-item" *ngIf="product.createdAt">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ product.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+        <div class="card-assess">
+          <ion-chip *ngIf="isQualified(product)" color="success" outline class="status-chip">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Qualified
+          </ion-chip>
+          <ion-button *ngIf="!isQualified(product) && !assessmentCheckLoading" size="small" expand="block" fill="outline" class="assess-btn" (click)="takeAssessment(product, $event)">
+            <ion-icon slot="start" name="school-outline"></ion-icon>
+            Take Assessment
+          </ion-button>
+          <ion-spinner *ngIf="assessmentCheckLoading" name="dots" class="assess-spinner"></ion-spinner>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <div class="pagination-controls" *ngIf="filteredProducts.length > pageSize">
+    <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngFor="let p of pageNumbers" [fill]="p === currentPage ? 'solid' : 'clear'" size="small"
+      (click)="goToPage(p)" class="page-btn">
+      {{ p }}
+    </ion-button>
+    <ion-button fill="clear" size="small" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+    <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+  </div>
+
+  <!-- Detail Modal -->
+  <ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ detailProduct?.name || 'Product' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content" *ngIf="detailProduct as product">
+        <div class="detail-header">
+          <div class="detail-thumb" [class.placeholder]="!product.profilePictureBase64">
+            <img *ngIf="'data:image/png;base64,' + product.profilePictureBase64" [src]="'data:image/png;base64,' + product.profilePictureBase64" [alt]="product.name" />
+            <ion-icon *ngIf="'data:image/png;base64,' + !product.profilePictureBase64" name="cube-outline"></ion-icon>
+          </div>
+          <span class="detail-price">{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</span>
+          <h2>{{ product.name || 'Unnamed Product' }}</h2>
+        </div>
+
+        <div class="detail-section">
+          <h4>Description</h4>
+          <p class="description-text">{{ product.description || 'No description provided.' }}</p>
+        </div>
+
+        <div class="detail-section" *ngIf="product.negotiableAmounts">
+          <h4>Pricing Tiers</h4>
+          <div class="detail-row">
+            <span class="detail-label">Negotiable Amounts</span>
+            <span class="detail-value">{{ product.negotiableAmounts }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="product.url">
+          <h4>Product Link</h4>
+          <div class="detail-row">
+            <a [href]="product.url" target="_blank" rel="noopener noreferrer" class="detail-link">
+              <ion-icon name="open-outline"></ion-icon>
+              {{ product.url }}
+            </a>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Metadata</h4>
+          <div class="detail-row" *ngIf="product.createdAt">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ product.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="product.updatedAt">
+            <span class="detail-label">Updated</span>
+            <span class="detail-value">{{ product.updatedAt | date:'medium' }}</span>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

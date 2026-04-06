@@ -1,0 +1,178 @@
+<ion-content [fullscreen]="true" class="dashboard-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <section class="dashboard-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">KPI Intelligence Report</p>
+      <h1>Professional operating metrics for your current product line.</h1>
+      <p class="hero-text">
+        Review the latest performance snapshot, spot conversion gaps, and monitor business health without leaving the home screen.
+      </p>
+    </div>
+
+    <div class="hero-panel">
+      <div class="hero-panel-top">
+        <span class="hero-label">Report Scope</span>
+        <span class="hero-date">{{ reportDate | date:'mediumDate' }}</span>
+      </div>
+
+      <ion-item lines="none" class="product-selector">
+        <ion-label position="stacked">Product</ion-label>
+        <ion-select
+          [(ngModel)]="selectedProductId"
+          interface="popover"
+          placeholder="Choose product"
+          (ionChange)="onProductChange()">
+          <ion-select-option *ngFor="let product of products" [value]="product.id">
+            {{ product.name || product.description || ('Product #' + product.id) }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <div class="hero-product-meta" *ngIf="selectedProduct as product">
+        <span>{{ product.description || 'Live KPI reporting enabled' }}</span>
+        <strong>{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="dashboard-state" *ngIf="loadingProducts || loadingKpi">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading KPI report...</p>
+  </div>
+
+  <ion-card class="dashboard-message error" *ngIf="!loadingProducts && !loadingKpi && errorMessage">
+    <ion-card-content>{{ errorMessage }}</ion-card-content>
+  </ion-card>
+
+  <ion-card class="dashboard-message empty" *ngIf="!loadingProducts && !products.length">
+    <ion-card-content>
+      Create at least one product to unlock the KPI report on this home screen.
+    </ion-card-content>
+  </ion-card>
+
+  <ng-container *ngIf="!loadingProducts && !loadingKpi && hasKpi && latestKpi as kpi">
+    <section class="hero-metrics-grid">
+      <article class="metric-card" *ngFor="let metric of heroMetrics" [ngClass]="metric.tone">
+        <p class="metric-label">{{ metric.label }}</p>
+        <h2>{{ metric.value }}</h2>
+        <p class="metric-detail">{{ metric.detail }}</p>
+      </article>
+    </section>
+
+    <section class="report-grid">
+      <article class="panel panel-wide panel-dark">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Conversion Funnel</p>
+            <h3>From outreach to closed deals</h3>
+          </div>
+          <span class="panel-badge">Latest snapshot</span>
+        </div>
+
+        <div class="funnel-list">
+          <div class="funnel-row" *ngFor="let item of funnelMetrics">
+            <div class="funnel-copy">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+            </div>
+            <div class="funnel-track">
+              <div class="funnel-fill" [style.width.%]="item.percent" [style.background]="item.accent"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel panel-accent">
+        <div class="panel-header compact">
+          <div>
+            <p class="eyebrow">Snapshot</p>
+            <h3>Operational facts</h3>
+          </div>
+        </div>
+
+        <div class="snapshot-list">
+          <div>
+            <span>Product ID</span>
+            <strong>{{ kpi.productId }}</strong>
+          </div>
+          <div>
+            <span>Team Close Rate</span>
+            <strong>{{ kpi.teamCloseRate | percent:'1.0-0' }}</strong>
+          </div>
+          <div>
+            <span>Leader Activity</span>
+            <strong>{{ kpi.leaderActivityLevel | percent:'1.0-0' }}</strong>
+          </div>
+          <div>
+            <span>Updated</span>
+            <strong>{{ kpi.updatedAt | date:'medium' }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Revenue Lens</p>
+            <h3>Revenue mix across current KPI dimensions</h3>
+          </div>
+        </div>
+
+        <div class="revenue-chart">
+          <div class="revenue-bar" *ngFor="let item of revenueMetrics">
+            <div class="revenue-topline">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
+            </div>
+            <div class="revenue-track">
+              <div class="revenue-fill" [style.height.%]="item.percent"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Business Health</p>
+            <h3>Health scores for retention, team, brand, and leadership</h3>
+          </div>
+        </div>
+
+        <div class="health-grid">
+          <div class="health-card" *ngFor="let item of healthMetrics">
+            <div class="health-ring" [style.background]="item.ring">
+              <div class="health-ring-core">
+                <strong>{{ item.value }}%</strong>
+              </div>
+            </div>
+            <h4>{{ item.label }}</h4>
+            <p>{{ item.descriptor }}</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel panel-wide panel-soft">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Operating Metrics</p>
+            <h3>Supporting performance indicators</h3>
+          </div>
+        </div>
+
+        <div class="metrics-table">
+          <div class="metrics-row" *ngFor="let item of operatingMetrics">
+            <div>
+              <span>{{ item.label }}</span>
+              <p>{{ item.note }}</p>
+            </div>
+            <strong>{{ item.value }}</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+  </ng-container>
+</ion-content>

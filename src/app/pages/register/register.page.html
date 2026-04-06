@@ -1,0 +1,39 @@
+﻿<ion-content class="auth-page">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="brand">Process Zero</h1>
+        <p class="subtitle">Create your account</p>
+      </div>
+
+      <div class="auth-form">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" placeholder="Choose a username"
+                 [(ngModel)]="registerData.userName" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="you@example.com"
+                 [(ngModel)]="registerData.email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="Create a password"
+                 [(ngModel)]="registerData.password" />
+        </div>
+
+        <button class="btn-primary" (click)="register()" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          {{ loading ? 'Creating account...' : 'Create Account' }}
+        </button>
+
+        <div class="auth-links">
+          <a routerLink="/login" class="link-accent">Already have an account? Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,321 @@
+<ion-content class="admin-invoices-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Invoice Management</h1>
+        <p>Create, track, and manage invoices across the platform.</p>
+      </div>
+      <ion-button shape="round" class="add-btn" (click)="openAddModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        New Invoice
+      </ion-button>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search invoices..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" (ionInput)="onSearchChange()" class="invoice-search"></ion-searchbar>
+      <div class="view-toggle">
+        <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+        </ion-button>
+        <ion-button [fill]="viewMode === 'cards' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'cards'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && filteredInvoices.length === 0 && !searchTerm" class="empty-state">
+    <ion-icon name="receipt-outline"></ion-icon>
+    <p>No invoices found.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredInvoices.length === 0 && searchTerm" class="empty-state">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No invoices match your search.</p>
+  </div>
+
+  <!-- Invoice table -->
+  <section *ngIf="!loading && displayedInvoices.length > 0 && viewMode === 'table'" class="table-section">
+    <div class="table-wrap">
+      <table class="invoices-table">
+        <thead>
+          <tr>
+            <th>Invoice</th>
+            <th>Client</th>
+            <th>Product</th>
+            <th>Amount</th>
+            <th>Issued</th>
+            <th>Status</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of displayedInvoices" (click)="openDetailModal(inv)">
+            <td>
+              <div class="invoice-code-cell">
+                <span class="table-icon" [class.paid]="inv.isPaid">
+                  <ion-icon [name]="inv.isPaid ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+                </span>
+                <span class="code-text">{{ inv.invoiceCode }}</span>
+              </div>
+            </td>
+            <td>{{ getClientName(inv.clientId) }}</td>
+            <td>{{ getProductName(inv.productId) }}</td>
+            <td class="amount-cell">{{ formatCurrency(inv.amount) }}</td>
+            <td>{{ inv.issuedAt | date:'mediumDate' }}</td>
+            <td>
+              <ion-chip [color]="inv.isPaid ? 'success' : 'warning'" outline class="status-chip">
+                {{ inv.isPaid ? 'Paid' : 'Unpaid' }}
+              </ion-chip>
+            </td>
+            <td class="actions-col">
+              <ion-button size="small" fill="clear" (click)="openEditModal(inv); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button size="small" fill="clear" color="danger" (click)="deleteInvoice(inv); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Invoice cards -->
+  <section *ngIf="!loading && displayedInvoices.length > 0 && viewMode === 'cards'" class="invoices-section">
+    <div class="invoices-grid">
+      <div class="invoice-card" *ngFor="let inv of displayedInvoices" (click)="openDetailModal(inv)">
+        <div class="card-top">
+          <div class="invoice-icon-wrap" [class.paid]="inv.isPaid">
+            <ion-icon [name]="inv.isPaid ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+          </div>
+          <div class="invoice-info">
+            <h3>{{ inv.invoiceCode }}</h3>
+            <p class="invoice-client">{{ getClientName(inv.clientId) }}</p>
+          </div>
+          <div class="invoice-amount">{{ formatCurrency(inv.amount) }}</div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item">
+            <ion-icon name="pricetag-outline"></ion-icon>
+            <span>{{ getProductName(inv.productId) }}</span>
+          </div>
+          <div class="meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ inv.issuedAt | date:'mediumDate' }}</span>
+          </div>
+          <ion-chip [color]="inv.isPaid ? 'success' : 'warning'" outline class="status-chip">
+            {{ inv.isPaid ? 'Paid' : 'Unpaid' }}
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <div class="pagination-controls" *ngIf="filteredInvoices.length > pageSize">
+    <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngFor="let p of pageNumbers" [fill]="p === currentPage ? 'solid' : 'clear'" size="small"
+      (click)="goToPage(p)" class="page-btn">
+      {{ p }}
+    </ion-button>
+    <ion-button fill="clear" size="small" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+    <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+  </div>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openAddModal()" class="admin-fab">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Detail Modal -->
+  <ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Invoice Details</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content" *ngIf="detailInvoice">
+        <div class="detail-header">
+          <div class="detail-icon" [class.paid]="detailInvoice.isPaid">
+            <ion-icon [name]="detailInvoice.isPaid ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+          </div>
+          <h2>{{ detailInvoice.invoiceCode }}</h2>
+          <div class="detail-amount">{{ formatCurrency(detailInvoice.amount) }}</div>
+          <ion-chip [color]="detailInvoice.isPaid ? 'success' : 'warning'" outline>
+            {{ detailInvoice.isPaid ? 'Paid' : 'Unpaid' }}
+          </ion-chip>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-row">
+            <span class="detail-label">Product</span>
+            <span class="detail-value">{{ getProductName(detailInvoice.productId) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Client</span>
+            <span class="detail-value">{{ getClientName(detailInvoice.clientId) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Customer Code</span>
+            <span class="detail-value mono">{{ detailInvoice.customerCode }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-row">
+            <span class="detail-label">Issued</span>
+            <span class="detail-value">{{ detailInvoice.issuedAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInvoice.paidAt">
+            <span class="detail-label">Paid</span>
+            <span class="detail-value">{{ detailInvoice.paidAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInvoice.externalInvoiceId">
+            <span class="detail-label">External ID</span>
+            <span class="detail-value mono">{{ detailInvoice.externalInvoiceId }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-row" *ngIf="detailInvoice.userId">
+            <span class="detail-label">Owner ID</span>
+            <span class="detail-value mono">{{ detailInvoice.userId }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInvoice.createdAt">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ detailInvoice.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInvoice.updatedAt">
+            <span class="detail-label">Updated</span>
+            <span class="detail-value">{{ detailInvoice.updatedAt | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <ion-button expand="block" (click)="openEditModal(detailInvoice); closeDetailModal()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            Edit Invoice
+          </ion-button>
+          <ion-button expand="block" color="danger" fill="outline" (click)="deleteInvoice(detailInvoice)">
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Delete Invoice
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Form Modal (Add / Edit) -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeFormModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingInvoiceId ? 'Edit' : 'New' }} Invoice</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeFormModal()">Cancel</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <form [formGroup]="invoiceForm" (ngSubmit)="saveInvoice()">
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label position="stacked">Product *</ion-label>
+              <ion-select formControlName="productId" interface="popover" placeholder="Select product">
+                <ion-select-option *ngFor="let p of products" [value]="p.id">{{ p.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('productId')">Product is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Client *</ion-label>
+              <ion-select formControlName="clientId" interface="popover" placeholder="Select client">
+                <ion-select-option *ngFor="let c of clients" [value]="c.id">{{ c.firstName }} {{ c.lastName }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('clientId')">Client is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Invoice Code *</ion-label>
+              <ion-input formControlName="invoiceCode" placeholder="INV-001"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('invoiceCode')">Invoice code is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Customer Code *</ion-label>
+              <ion-input formControlName="customerCode" placeholder="CUST-001"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('customerCode')">Customer code is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Amount *</ion-label>
+              <ion-input formControlName="amount" type="number" placeholder="0.00"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('amount')">Valid amount is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Issued At *</ion-label>
+              <ion-datetime-button datetime="issuedAt"></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime id="issuedAt" formControlName="issuedAt" presentation="date"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('issuedAt')">Issue date is required.</p>
+
+            <ion-item>
+              <ion-label>Paid</ion-label>
+              <ion-toggle formControlName="isPaid" slot="end"></ion-toggle>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Paid At</ion-label>
+              <ion-datetime-button datetime="paidAt"></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime id="paidAt" formControlName="paidAt" presentation="date"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">External Invoice ID</ion-label>
+              <ion-input formControlName="externalInvoiceId" placeholder="Stripe / PayPal ID"></ion-input>
+            </ion-item>
+          </ion-list>
+
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+              {{ editingInvoiceId ? 'Update' : 'Create' }} Invoice
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

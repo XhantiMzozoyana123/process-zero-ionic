@@ -1,0 +1,155 @@
+<ion-content [fullscreen]="true" class="legal-page">
+
+  <!-- Topbar -->
+  <div class="legal-topbar">
+    <ion-button fill="clear" class="back-btn" (click)="navigateTo('/home')">
+      <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+      Back to Home
+    </ion-button>
+    <ion-button *ngIf="!isLoggedIn" fill="solid" class="auth-btn" (click)="navigateTo('/login')">Sign In</ion-button>
+    <ion-button *ngIf="isLoggedIn" fill="solid" class="auth-btn" (click)="navigateTo('/account/dashboard')">Dashboard</ion-button>
+  </div>
+
+  <article class="legal-content">
+    <header class="legal-header">
+      <h1>Privacy Policy</h1>
+      <p class="legal-updated">Last updated: {{ lastUpdated }}</p>
+    </header>
+
+    <section class="legal-section">
+      <h2>1. Introduction</h2>
+      <p>
+        Process Zero ("we", "us", "our") is committed to protecting your personal information.
+        This Privacy Policy explains what data we collect, how we use it, and the choices you have regarding your information
+        when you use the Process Zero platform ("the Platform").
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>2. Information We Collect</h2>
+      <p>We collect the following categories of information:</p>
+      <ul>
+        <li><strong>Account Information</strong> — your name, email address, and password when you register.</li>
+        <li><strong>Banking Details</strong> — account holder name, account number, bank name, and bank code for commission payouts. Account numbers are stored encrypted.</li>
+        <li><strong>Contact Data</strong> — information about prospects and clients you add to the Platform, including names, emails, phone numbers, companies, job titles, locations, and industries.</li>
+        <li><strong>Meeting Data</strong> — scheduled meeting details including dates, times, linked contacts, products, and notes.</li>
+        <li><strong>Performance Data</strong> — KPI metrics you submit through the KPI Form, including outreach counts, calls, deals, revenue figures, and calculated performance indicators.</li>
+        <li><strong>Usage Data</strong> — general information about how you interact with the Platform, including pages visited and features used.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>3. How We Use Your Information</h2>
+      <p>Your information is used for the following purposes:</p>
+      <ul>
+        <li>To operate, maintain, and provide the features of the Platform.</li>
+        <li>To calculate and process your commission payouts.</li>
+        <li>To generate performance dashboards and KPI reports.</li>
+        <li>To send transactional emails such as payout notifications and password resets.</li>
+        <li>To enforce KPI Policies and manage account status.</li>
+        <li>To improve the Platform and develop new features.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>4. Data Storage and Security</h2>
+      <p>
+        We take reasonable measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction.
+        Sensitive data such as bank account numbers are encrypted at rest.
+        Passwords are hashed and never stored in plain text.
+        Access to the Platform is secured with JWT-based authentication, and two-factor authentication (2FA) is available for additional security.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>5. Data Sharing</h2>
+      <p>
+        We do not sell, rent, or trade your personal information to third parties.
+        Your data may be shared in the following limited circumstances:
+      </p>
+      <ul>
+        <li><strong>Administrators</strong> — platform administrators can view user performance data, manage accounts, and generate payroll reports as necessary to operate the Platform.</li>
+        <li><strong>Legal Compliance</strong> — we may disclose information if required by law, regulation, or legal process.</li>
+        <li><strong>Business Transfers</strong> — in the event of a merger, acquisition, or sale of assets, your data may be transferred as part of the transaction.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section">
+      <h2>6. Lead Lake Data</h2>
+      <p>
+        The Lead Lake database contains publicly available or pre-sourced prospect information.
+        When you promote a lead to your personal Contacts, that data is associated with your account.
+        You are responsible for using contact information in compliance with applicable data protection laws, including obtaining consent where required before outreach.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>7. Cookies and Local Storage</h2>
+      <p>
+        The Platform uses browser local storage to maintain your authentication session (JWT token).
+        We do not use third-party tracking cookies.
+        Session data is cleared when you log out.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>8. Your Rights</h2>
+      <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+      <ul>
+        <li><strong>Access</strong> — request a copy of the personal data we hold about you.</li>
+        <li><strong>Correction</strong> — request correction of inaccurate or incomplete data.</li>
+        <li><strong>Deletion</strong> — request deletion of your personal data, subject to legal retention requirements.</li>
+        <li><strong>Portability</strong> — request your data in a structured, machine-readable format.</li>
+        <li><strong>Objection</strong> — object to specific processing of your data.</li>
+      </ul>
+      <p>
+        To exercise any of these rights, contact your administrator or reach out through the Help &amp; Guide page.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>9. Data Retention</h2>
+      <p>
+        We retain your account and performance data for as long as your account is active or as needed to provide our services.
+        If your account is banned or deleted, we may retain certain data as required by law or for legitimate business purposes.
+        Banking details are removed upon account deletion.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>10. Children's Privacy</h2>
+      <p>
+        The Platform is not intended for use by anyone under the age of 18.
+        We do not knowingly collect personal information from minors.
+        If we learn that we have collected data from a child under 18, we will take steps to delete it promptly.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>11. Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time.
+        Any changes will be reflected by updating the "Last updated" date at the top of this page.
+        Continued use of the Platform after changes constitutes acceptance of the updated policy.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>12. Contact</h2>
+      <p>
+        If you have questions or concerns about this Privacy Policy, please reach out through the Help &amp; Guide page or contact your administrator directly.
+      </p>
+    </section>
+  </article>
+
+  <!-- Footer -->
+  <footer class="legal-footer">
+    <div class="footer-links">
+      <a (click)="navigateTo('/terms')">Terms of Use</a>
+      <span class="dot">&middot;</span>
+      <a (click)="navigateTo('/help')">Help &amp; Guide</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>
