@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/entities/contact.model';
 import { environment } from 'src/environments/environment';
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +17,11 @@ export class AdminClientService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Contact[]> {
-    return this.http.get<Contact[]>(this.apiUrl);
+  getAll(page: number = 1, pageSize: number = 50): Observable<PagedResult<Contact>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<Contact>>(this.apiUrl, { params });
   }
 
   getById(id: number): Observable<Contact> {

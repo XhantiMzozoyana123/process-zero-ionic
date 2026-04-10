@@ -70,6 +70,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'inboxes',
+        loadChildren: () => import('../admin-inboxes/admin-inboxes.module')
+          .then(m => m.AdminInboxesPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

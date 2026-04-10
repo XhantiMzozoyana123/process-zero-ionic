@@ -4,42 +4,44 @@ import { Observable } from 'rxjs';
 import { MeetingDto } from '../models/dtos/meeting-dto.model';
 import { environment } from 'src/environments/environment';
 
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class MeetingService {
-  private apiUrl = `${environment.apiUrl}/meeting`; // Update with your API URL
+  private apiUrl = `${environment.apiUrl}/meeting`;
 
   constructor(private http: HttpClient) {}
 
-  // GET all meetings
-  getAllMeetings(): Observable<MeetingDto[]> {
-    return this.http.get<MeetingDto[]>(`${this.apiUrl}`);
+  getAllMeetings(page: number = 1, pageSize: number = 50): Observable<PagedResult<MeetingDto>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<MeetingDto>>(this.apiUrl, { params });
   }
 
-  // GET meetings for current user
   getUserMeetings(): Observable<MeetingDto[]> {
     return this.http.get<MeetingDto[]>(`${this.apiUrl}/user`);
   }
 
-  // GET single meeting by id
   getMeetingById(id: number): Observable<MeetingDto> {
     return this.http.get<MeetingDto>(`${this.apiUrl}/${id}`);
   }
 
-  // POST create a new meeting
   createMeeting(meetingDto: MeetingDto, notes?: string): Observable<void> {
     const params = notes ? new HttpParams().set('notes', notes) : undefined;
-    return this.http.post<void>(`${this.apiUrl}`, meetingDto, { params });
+    return this.http.post<void>(this.apiUrl, meetingDto, { params });
   }
 
-  // PUT update a meeting
   updateMeeting(id: number, meetingDto: MeetingDto, notes?: string): Observable<void> {
     const params = notes ? new HttpParams().set('notes', notes) : undefined;
     return this.http.put<void>(`${this.apiUrl}/${id}`, meetingDto, { params });
   }
 
-  // DELETE a meeting
   deleteMeeting(id: number, notes?: string): Observable<void> {
     const params = notes ? new HttpParams().set('notes', notes) : undefined;
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { params });

@@ -114,7 +114,7 @@
   </section>
 
   <!-- Pagination -->
-    <div class="pagination-controls" *ngIf="filteredMeetings.length > pageSize">
+    <div class="pagination-controls" *ngIf="totalCount > pageSize">
       <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
         <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
       </ion-button>

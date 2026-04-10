@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Invoice } from '../models/entities/invoice.model';
 import { environment } from 'src/environments/environment';
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +17,11 @@ export class AdminInvoiceService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Invoice[]> {
-    return this.http.get<Invoice[]>(this.apiUrl);
+  getAll(page: number = 1, pageSize: number = 50): Observable<PagedResult<Invoice>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<PagedResult<Invoice>>(this.apiUrl, { params });
   }
 
   getById(id: number): Observable<Invoice> {

@@ -20,6 +20,7 @@ export class AdminMeetingsPage implements OnInit {
   products: Product[] = [];
   loading = false;
   searchTerm = '';
+  totalCount = 0;
 
   currentPage = 1;
   pageSize = 3;
@@ -69,12 +70,11 @@ export class AdminMeetingsPage implements OnInit {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredMeetings.length / this.pageSize) || 1;
+    return Math.ceil(this.totalCount / this.pageSize) || 1;
   }
 
   get displayedMeetings(): MeetingDto[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredMeetings.slice(start, start + this.pageSize);
+    return this.filteredMeetings;
   }
 
   get pageNumbers(): number[] {
@@ -82,13 +82,13 @@ export class AdminMeetingsPage implements OnInit {
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
+      this.loadData();
     }
   }
 
   onSearchChange(): void {
-    this.currentPage = 1;
   }
 
   loadData(event?: any): void {
@@ -99,13 +99,13 @@ export class AdminMeetingsPage implements OnInit {
       error: () => {}
     });
 
-    this.clientService.getAll().subscribe({
-      next: contacts => { this.contacts = contacts; },
+    this.clientService.getAll(1, 500).subscribe({
+      next: res => { this.contacts = res.items; },
       error: () => {}
     });
 
-    this.meetingService.getAllMeetings().subscribe({
-      next: res => { this.meetings = res; this.loading = false; if (event) event.target.complete(); },
+    this.meetingService.getAllMeetings(this.currentPage, this.pageSize).subscribe({
+      next: res => { this.meetings = res.items; this.totalCount = res.totalCount; this.loading = false; if (event) event.target.complete(); },
       error: () => { this.showToast('Could not load meetings.', 'danger'); this.loading = false; if (event) event.target.complete(); }
     });
   }
@@ -220,7 +220,7 @@ export class AdminMeetingsPage implements OnInit {
         {
           text: 'Delete', role: 'destructive', handler: () => {
             this.meetingService.deleteMeeting(dto.meeting.id!).subscribe({
-              next: () => { this.meetings = this.meetings.filter(m => m.meeting.id !== dto.meeting.id); this.showToast('Meeting deleted.', 'success'); this.closeDetailModal(); },
+              next: () => { this.showToast('Meeting deleted.', 'success'); this.closeDetailModal(); this.loadData(); },
               error: () => { this.showToast('Could not delete meeting.', 'danger'); }
             });
           }

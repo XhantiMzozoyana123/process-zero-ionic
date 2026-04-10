@@ -1,0 +1,307 @@
+<ion-content class="admin-inboxes-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Inbox Management</h1>
+        <p>Configure email accounts for sending and receiving messages.</p>
+      </div>
+      <ion-button shape="round" class="add-btn" (click)="openAddModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        New Inbox
+      </ion-button>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search inboxes..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" class="inbox-search"></ion-searchbar>
+      <div class="view-toggle">
+        <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+        </ion-button>
+        <ion-button [fill]="viewMode === 'cards' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'cards'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && filteredInboxes.length === 0 && !searchTerm" class="empty-state">
+    <ion-icon name="mail-outline"></ion-icon>
+    <p>No inboxes configured.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredInboxes.length === 0 && searchTerm" class="empty-state">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No inboxes match your search.</p>
+  </div>
+
+  <!-- Inbox table -->
+  <section *ngIf="!loading && filteredInboxes.length > 0 && viewMode === 'table'" class="table-section">
+    <div class="table-wrap">
+      <table class="inboxes-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>SMTP Host</th>
+            <th>SMTP Port</th>
+            <th>IMAP Host</th>
+            <th>IMAP Port</th>
+            <th>Primary</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inbox of filteredInboxes" (click)="openDetailModal(inbox)">
+            <td>
+              <div class="inbox-email-cell">
+                <span class="table-icon" [class.primary]="inbox.isPrimary">
+                  <ion-icon [name]="inbox.isPrimary ? 'star' : 'mail-outline'"></ion-icon>
+                </span>
+                <span class="email-text">{{ inbox.username }}</span>
+              </div>
+            </td>
+            <td>{{ inbox.smtpHost }}</td>
+            <td>{{ inbox.smtpPort }}</td>
+            <td>{{ inbox.imapHost }}</td>
+            <td>{{ inbox.imapPort }}</td>
+            <td>
+              <ion-chip [color]="inbox.isPrimary ? 'primary' : 'medium'" outline class="status-chip">
+                {{ inbox.isPrimary ? 'Primary' : 'Secondary' }}
+              </ion-chip>
+            </td>
+            <td class="actions-col">
+              <ion-button size="small" fill="clear" (click)="openEditModal(inbox); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button size="small" fill="clear" color="danger" (click)="deleteInbox(inbox); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Inbox cards -->
+  <section *ngIf="!loading && filteredInboxes.length > 0 && viewMode === 'cards'" class="inboxes-section">
+    <div class="inboxes-grid">
+      <div class="inbox-card" *ngFor="let inbox of filteredInboxes" (click)="openDetailModal(inbox)">
+        <div class="card-top">
+          <div class="inbox-icon-wrap" [class.primary]="inbox.isPrimary">
+            <ion-icon [name]="inbox.isPrimary ? 'star' : 'mail-outline'"></ion-icon>
+          </div>
+          <div class="inbox-info">
+            <h3>{{ inbox.username }}</h3>
+            <p class="inbox-host">{{ inbox.smtpHost }}</p>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item">
+            <ion-icon name="send-outline"></ion-icon>
+            <span>SMTP {{ inbox.smtpPort }} {{ inbox.smtpUseSsl ? '(SSL)' : '' }}</span>
+          </div>
+          <div class="meta-item">
+            <ion-icon name="download-outline"></ion-icon>
+            <span>IMAP {{ inbox.imapPort }} {{ inbox.imapUseSsl ? '(SSL)' : '' }}</span>
+          </div>
+          <ion-chip [color]="inbox.isPrimary ? 'primary' : 'medium'" outline class="status-chip">
+            {{ inbox.isPrimary ? 'Primary' : 'Secondary' }}
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openAddModal()" class="admin-fab">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Detail Modal -->
+  <ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Inbox Details</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content" *ngIf="detailInbox">
+        <div class="detail-header">
+          <div class="detail-icon" [class.primary]="detailInbox.isPrimary">
+            <ion-icon [name]="detailInbox.isPrimary ? 'star' : 'mail-outline'"></ion-icon>
+          </div>
+          <h2>{{ detailInbox.username }}</h2>
+          <ion-chip [color]="detailInbox.isPrimary ? 'primary' : 'medium'" outline>
+            {{ detailInbox.isPrimary ? 'Primary' : 'Secondary' }}
+          </ion-chip>
+        </div>
+
+        <div class="detail-section">
+          <h3>SMTP (Outgoing)</h3>
+          <div class="detail-row">
+            <span class="detail-label">Host</span>
+            <span class="detail-value mono">{{ detailInbox.smtpHost }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Port</span>
+            <span class="detail-value">{{ detailInbox.smtpPort }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">SSL/TLS</span>
+            <span class="detail-value">{{ detailInbox.smtpUseSsl ? 'Enabled' : 'Disabled' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>IMAP (Incoming)</h3>
+          <div class="detail-row">
+            <span class="detail-label">Host</span>
+            <span class="detail-value mono">{{ detailInbox.imapHost }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Port</span>
+            <span class="detail-value">{{ detailInbox.imapPort }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">SSL/TLS</span>
+            <span class="detail-value">{{ detailInbox.imapUseSsl ? 'Enabled' : 'Disabled' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-row" *ngIf="detailInbox.userId">
+            <span class="detail-label">Owner ID</span>
+            <span class="detail-value mono">{{ detailInbox.userId }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInbox.createdAt">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ detailInbox.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailInbox.updatedAt">
+            <span class="detail-label">Updated</span>
+            <span class="detail-value">{{ detailInbox.updatedAt | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <ion-button expand="block" (click)="openEditModal(detailInbox); closeDetailModal()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            Edit Inbox
+          </ion-button>
+          <ion-button expand="block" color="danger" fill="outline" (click)="deleteInbox(detailInbox)">
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Delete Inbox
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Form Modal (Add / Edit) -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeFormModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingInboxId ? 'Edit' : 'New' }} Inbox</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeFormModal()">Cancel</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <form [formGroup]="inboxForm" (ngSubmit)="saveInbox()">
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label position="stacked">Email Address *</ion-label>
+              <ion-input formControlName="username" type="email" placeholder="user@example.com"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('username')">Valid email is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Password *</ion-label>
+              <ion-input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="App password or account password"></ion-input>
+              <ion-button slot="end" fill="clear" size="small" (click)="togglePasswordVisibility()">
+                <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('password')">Password is required.</p>
+
+            <ion-item-divider>
+              <ion-label>SMTP (Outgoing Mail)</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+              <ion-label position="stacked">SMTP Host *</ion-label>
+              <ion-input formControlName="smtpHost" placeholder="smtp.example.com"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('smtpHost')">SMTP host is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">SMTP Port *</ion-label>
+              <ion-input formControlName="smtpPort" type="number" placeholder="587"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('smtpPort')">Valid port (1–65535) is required.</p>
+
+            <ion-item>
+              <ion-label>Use SSL/TLS</ion-label>
+              <ion-toggle formControlName="smtpUseSsl" slot="end"></ion-toggle>
+            </ion-item>
+
+            <ion-item-divider>
+              <ion-label>IMAP (Incoming Mail)</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+              <ion-label position="stacked">IMAP Host *</ion-label>
+              <ion-input formControlName="imapHost" placeholder="imap.example.com"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('imapHost')">IMAP host is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">IMAP Port *</ion-label>
+              <ion-input formControlName="imapPort" type="number" placeholder="993"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('imapPort')">Valid port (1–65535) is required.</p>
+
+            <ion-item>
+              <ion-label>Use SSL/TLS</ion-label>
+              <ion-toggle formControlName="imapUseSsl" slot="end"></ion-toggle>
+            </ion-item>
+
+            <ion-item-divider>
+              <ion-label>Options</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+              <ion-label>Primary Inbox</ion-label>
+              <ion-toggle formControlName="isPrimary" slot="end"></ion-toggle>
+            </ion-item>
+          </ion-list>
+
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+              {{ editingInboxId ? 'Update' : 'Create' }} Inbox
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

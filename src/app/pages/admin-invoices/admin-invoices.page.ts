@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
-import { AdminInvoiceService } from 'src/app/services/admin-invoice-service';
+import { AdminInvoiceService, PagedResult } from 'src/app/services/admin-invoice-service';
 import { ProductService } from 'src/app/services/product-service';
 import { AdminClientService } from 'src/app/services/admin-client-service';
 import { Invoice } from 'src/app/models/entities/invoice.model';
@@ -21,6 +21,7 @@ export class AdminInvoicesPage implements OnInit {
   clients: Contact[] = [];
   loading = false;
   searchTerm = '';
+  totalCount = 0;
 
   viewMode: 'table' | 'cards' = 'table';
   currentPage = 1;
@@ -75,12 +76,11 @@ export class AdminInvoicesPage implements OnInit {
   }
 
   get displayedInvoices(): Invoice[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredInvoices.slice(start, start + this.pageSize);
+    return this.filteredInvoices;
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredInvoices.length / this.pageSize) || 1;
+    return Math.ceil(this.totalCount / this.pageSize) || 1;
   }
 
   get pageNumbers(): number[] {
@@ -88,26 +88,27 @@ export class AdminInvoicesPage implements OnInit {
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
+      this.loadData();
     }
   }
 
   onSearchChange(): void {
-    this.currentPage = 1;
   }
 
   loadData(): void {
     this.loading = true;
     forkJoin({
-      invoices: this.invoiceService.getAll(),
+      invoices: this.invoiceService.getAll(this.currentPage, this.pageSize),
       products: this.productService.getAll(),
-      clients: this.clientService.getAll()
+      clients: this.clientService.getAll(1, 500)
     }).subscribe({
       next: res => {
-        this.invoices = res.invoices;
+        this.invoices = res.invoices.items;
+        this.totalCount = res.invoices.totalCount;
         this.products = res.products;
-        this.clients = res.clients;
+        this.clients = res.clients.items;
         this.loading = false;
       },
       error: () => {
@@ -119,14 +120,15 @@ export class AdminInvoicesPage implements OnInit {
 
   refresh(event: any): void {
     forkJoin({
-      invoices: this.invoiceService.getAll(),
+      invoices: this.invoiceService.getAll(this.currentPage, this.pageSize),
       products: this.productService.getAll(),
-      clients: this.clientService.getAll()
+      clients: this.clientService.getAll(1, 500)
     }).subscribe({
       next: res => {
-        this.invoices = res.invoices;
+        this.invoices = res.invoices.items;
+        this.totalCount = res.invoices.totalCount;
         this.products = res.products;
-        this.clients = res.clients;
+        this.clients = res.clients.items;
         event.target.complete();
       },
       error: () => {
@@ -232,9 +234,9 @@ export class AdminInvoicesPage implements OnInit {
           text: 'Delete', role: 'destructive', handler: () => {
             this.invoiceService.delete(invoice.id!).subscribe({
               next: () => {
-                this.invoices = this.invoices.filter(i => i.id !== invoice.id);
                 this.showToast('Invoice deleted.', 'success');
                 this.closeDetailModal();
+                this.loadData();
               },
               error: () => { this.showToast('Could not delete invoice.', 'danger'); }
             });

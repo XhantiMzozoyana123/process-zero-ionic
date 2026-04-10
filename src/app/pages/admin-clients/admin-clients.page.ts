@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
-import { AdminClientService } from 'src/app/services/admin-client-service';
+import { AdminClientService, PagedResult } from 'src/app/services/admin-client-service';
 import { Contact, ContactStatus, ContactStatusLabels } from 'src/app/models/entities/contact.model';
 
 @Component({
@@ -14,6 +14,7 @@ export class AdminClientsPage implements OnInit {
   clients: Contact[] = [];
   loading = false;
   searchTerm = '';
+  totalCount = 0;
   viewMode: 'table' | 'cards' = 'table';
   currentPage = 1;
   pageSize = 3;
@@ -66,12 +67,11 @@ export class AdminClientsPage implements OnInit {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredClients.length / this.pageSize) || 1;
+    return Math.ceil(this.totalCount / this.pageSize) || 1;
   }
 
   get displayedClients(): Contact[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredClients.slice(start, start + this.pageSize);
+    return this.filteredClients;
   }
 
   get pageNumbers(): number[] {
@@ -79,26 +79,26 @@ export class AdminClientsPage implements OnInit {
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
+      this.loadClients();
     }
   }
 
   onSearchChange(): void {
-    this.currentPage = 1;
   }
 
   loadClients(): void {
     this.loading = true;
-    this.clientService.getAll().subscribe({
-      next: res => { this.clients = res; this.loading = false; },
+    this.clientService.getAll(this.currentPage, this.pageSize).subscribe({
+      next: res => { this.clients = res.items; this.totalCount = res.totalCount; this.loading = false; },
       error: () => { this.showToast('Could not load clients.', 'danger'); this.loading = false; }
     });
   }
 
   refresh(event: any): void {
-    this.clientService.getAll().subscribe({
-      next: res => { this.clients = res; event.target.complete(); },
+    this.clientService.getAll(this.currentPage, this.pageSize).subscribe({
+      next: res => { this.clients = res.items; this.totalCount = res.totalCount; event.target.complete(); },
       error: () => { this.showToast('Could not refresh clients.', 'danger'); event.target.complete(); }
     });
   }
@@ -188,7 +188,7 @@ export class AdminClientsPage implements OnInit {
         {
           text: 'Delete', role: 'destructive', handler: () => {
             this.clientService.delete(client.id!).subscribe({
-              next: () => { this.clients = this.clients.filter(c => c.id !== client.id); this.showToast('Client deleted.', 'success'); this.closeDetailModal(); },
+              next: () => { this.showToast('Client deleted.', 'success'); this.closeDetailModal(); this.loadClients(); },
               error: () => { this.showToast('Could not delete client.', 'danger'); }
             });
           }
