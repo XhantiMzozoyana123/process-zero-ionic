@@ -26,13 +26,14 @@
           placeholder="Choose product"
           (ionChange)="onProductChange()">
           <ion-select-option *ngFor="let product of products" [value]="product.id">
-            {{ product.name || product.description || ('Product #' + product.id) }}
+            {{ product.name || ('Product #' + product.id) }}
           </ion-select-option>
         </ion-select>
       </ion-item>
 
       <div class="hero-product-meta" *ngIf="selectedProduct as product">
-        <span>{{ product.description || 'Live KPI reporting enabled' }}</span>
+        <span *ngIf="!product.description">Live KPI reporting enabled</span>
+        <span *ngIf="product.description" [innerHTML]="product.description"></span>
         <strong>{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
       </div>
     </div>
