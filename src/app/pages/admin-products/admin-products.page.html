@@ -48,7 +48,7 @@
             <p class="product-amount">{{ formatCurrency(product.actualAmount) }}</p>
           </div>
         </div>
-        <p class="product-desc" *ngIf="product.description">{{ product.description }}</p>
+        <div class="product-desc" *ngIf="product.description" [innerHTML]="product.description"></div>
         <div class="card-meta">
           <div class="meta-item" *ngIf="product.url">
             <ion-icon name="link-outline"></ion-icon>
@@ -99,7 +99,7 @@
 
         <div class="detail-section" *ngIf="detailProduct.description">
           <h4>Description</h4>
-          <p class="description-text">{{ detailProduct.description }}</p>
+          <div class="description-html" [innerHTML]="detailProduct.description"></div>
         </div>
 
         <div class="detail-section">
@@ -169,9 +169,19 @@
             <p class="field-error" *ngIf="isInvalid('name')">Product name is required.</p>
 
             <ion-item>
-              <ion-label position="stacked">Description</ion-label>
-              <ion-textarea formControlName="description" placeholder="Product description" rows="3"></ion-textarea>
+              <ion-label position="stacked">Description (HTML)</ion-label>
+              <ion-textarea formControlName="description" placeholder="Enter HTML content, e.g. <h2>Title</h2><p>Details...</p>" rows="6" class="html-textarea"></ion-textarea>
             </ion-item>
+            <div class="html-preview-toggle">
+              <ion-button size="small" fill="clear" (click)="showDescPreview = !showDescPreview">
+                <ion-icon slot="start" [name]="showDescPreview ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                {{ showDescPreview ? 'Hide' : 'Show' }} Preview
+              </ion-button>
+            </div>
+            <div class="html-preview" *ngIf="showDescPreview && productForm.get('description')?.value">
+              <div class="preview-label">Preview</div>
+              <div class="preview-body" [innerHTML]="productForm.get('description')?.value"></div>
+            </div>
 
             <ion-item>
               <ion-label position="stacked">Price (Actual Amount) *</ion-label>

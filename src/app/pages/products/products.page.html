@@ -66,7 +66,7 @@
                 </div>
                 <div>
                   <span class="product-name">{{ product.name || 'Unnamed Product' }}</span>
-                  <span class="product-desc-short">{{ product.description | slice:0:50 }}{{ (product.description?.length ?? 0) > 50 ? '…' : '' }}</span>
+                  <span class="product-desc-short" [innerHTML]="product.description | slice:0:80"></span>
                 </div>
               </div>
             </td>
@@ -106,7 +106,7 @@
         <div class="product-body">
           <span class="product-price">{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</span>
           <h3>{{ product.name || 'Unnamed Product' }}</h3>
-          <p class="product-desc" *ngIf="product.description">{{ product.description }}</p>
+          <div class="product-desc" *ngIf="product.description" [innerHTML]="product.description"></div>
           <p class="product-desc muted" *ngIf="!product.description">No description provided.</p>
         </div>
         <div class="card-meta">
@@ -179,7 +179,8 @@
 
         <div class="detail-section">
           <h4>Description</h4>
-          <p class="description-text">{{ product.description || 'No description provided.' }}</p>
+          <div class="description-html" *ngIf="product.description" [innerHTML]="product.description"></div>
+          <p class="description-text" *ngIf="!product.description">No description provided.</p>
         </div>
 
         <div class="detail-section" *ngIf="product.negotiableAmounts">

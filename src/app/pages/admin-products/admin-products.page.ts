@@ -22,6 +22,7 @@ export class AdminProductsPage implements OnInit {
   editingProductId?: number;
   productForm: FormGroup;
   submitting = false;
+  showDescPreview = false;
 
   constructor(
     private productService: ProductService,
