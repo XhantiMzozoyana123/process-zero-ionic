@@ -1,0 +1,444 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.admin-inboxes-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+}
+
+// ── Header ──────────────────────────────────
+.page-header {
+  padding: 32px 18px 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.add-btn {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+  --border-radius: 50px;
+  --color: #fff;
+  font-weight: 600;
+}
+
+.search-row {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inbox-search {
+  flex: 1;
+  --background: rgba($paper, 0.92);
+  --border-radius: 14px;
+  --box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.toggle-btn {
+  --border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --background: transparent;
+  --color: #{$muted};
+  --border-color: #{$muted};
+  min-width: 36px;
+
+  &[fill='solid'] {
+    --background: linear-gradient(135deg, #{$coral}, #{$gold});
+    --color: #fff;
+    --border-color: transparent;
+  }
+}
+
+// ── Loading / Empty ─────────────────────────
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+
+  ion-icon {
+    font-size: 48px;
+    color: rgba($muted, 0.4);
+  }
+
+  p {
+    color: $muted;
+    margin: 12px 0 0;
+  }
+}
+
+// ── Table ───────────────────────────────────
+.table-section {
+  padding: 24px 18px 100px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.table-wrap {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  overflow-x: auto;
+}
+
+.inboxes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+
+  thead {
+    background: rgba($ink, 0.03);
+
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: $muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border-bottom: 2px solid rgba($ink, 0.08);
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba($ink, 0.05);
+    transition: background 0.15s ease;
+    cursor: pointer;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: rgba($gold, 0.06); }
+  }
+
+  td {
+    padding: 12px 16px;
+    color: $ink;
+    vertical-align: middle;
+  }
+}
+
+.inbox-email-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.table-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba($gold, 0.2), rgba($coral, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 16px;
+    color: $coral;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, rgba($teal, 0.15), rgba($teal, 0.08));
+    ion-icon { color: $teal; }
+  }
+}
+
+.email-text {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.status-chip {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 24px;
+}
+
+.actions-col {
+  text-align: right;
+  white-space: nowrap;
+}
+
+// ── Grid ────────────────────────────────────
+.inboxes-section {
+  padding: 24px 18px 100px;
+}
+
+.inboxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// ── Card ────────────────────────────────────
+.inbox-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+  }
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inbox-icon-wrap {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba($gold, 0.2), rgba($coral, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 22px;
+    color: $coral;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, rgba($teal, 0.15), rgba($teal, 0.08));
+
+    ion-icon {
+      color: $teal;
+    }
+  }
+}
+
+.inbox-info {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.inbox-host {
+  font-size: 0.82rem;
+  color: $muted;
+  margin: 2px 0 0;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba($ink, 0.06);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: $muted;
+
+  ion-icon {
+    font-size: 14px;
+    color: $coral;
+  }
+}
+
+// ── FAB ─────────────────────────────────────
+.admin-fab {
+  --background: linear-gradient(135deg, #{$coral}, #{$gold});
+}
+
+// ── Detail modal ────────────────────────────
+.modal-content {
+  --background: linear-gradient(180deg, #f8f3eb, #f1ece4);
+}
+
+.detail-header {
+  text-align: center;
+  padding: 32px 24px 16px;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 12px 0 6px;
+  }
+}
+
+.detail-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba($gold, 0.2), rgba($coral, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 32px;
+    color: $coral;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, rgba($teal, 0.15), rgba($teal, 0.08));
+
+    ion-icon {
+      color: $teal;
+    }
+  }
+}
+
+.detail-section {
+  margin: 0 18px 18px;
+  background: rgba($paper, 0.92);
+  border-radius: 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $coral;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 8px;
+  }
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+  & + .detail-row {
+    border-top: 1px solid rgba($ink, 0.06);
+  }
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: $ink;
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+
+  &.mono {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: $muted;
+  }
+}
+
+.detail-actions {
+  padding: 8px 18px 32px;
+
+  ion-button {
+    margin-bottom: 8px;
+  }
+}
+
+// ── Form modal ──────────────────────────────
+.field-error {
+  color: var(--ion-color-danger);
+  font-size: 0.78rem;
+  margin: 2px 0 8px 16px;
+}
+
+.form-actions {
+  padding: 16px;
+}
+
+// ── Responsive ──────────────────────────────
+@media (max-width: 600px) {
+  .header-row {
+    flex-direction: column;
+  }
+
+  .inboxes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inboxes-table {
+    font-size: 0.82rem;
+
+    th, td { padding: 10px 12px; }
+  }
+}
