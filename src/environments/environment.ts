@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://www.processzero-api-3.somee.com/api"
+  apiUrl: "https://processzero-api-3.somee.com/api"
 };
 
 /*

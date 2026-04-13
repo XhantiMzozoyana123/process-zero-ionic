@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://www.processzero-api-3.somee.com/api'
+  apiUrl: 'https://processzero-api-3.somee.com/api'
 };
