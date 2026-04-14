@@ -9,6 +9,7 @@ import { KPI } from 'src/app/models/entities/kpi.model';
 import { ProductService } from 'src/app/services/product-service';
 import { Product } from 'src/app/models/entities/product.model';
 
+
 @Component({
   selector: 'app-kpi-form',
   standalone: true,
@@ -65,7 +66,7 @@ export class KpiFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private kpiService: KpiService,
-    private productService: ProductService
+    private productService: ProductService,
   ) {}
 
   ngOnInit(): void {
@@ -77,7 +78,7 @@ export class KpiFormComponent implements OnInit {
     this.kpiForm = this.fb.group({
       // Core activity
       outreachAttempts:  [0, [Validators.min(0)]],
-      callsBooked:       [{ value: 0, disabled: true }],   // server-increments; display only
+      callsBooked:       [0, [Validators.min(0)]],
       callsAttended:     [0, [Validators.min(0)]],
       dealsInfluenced:   [0, [Validators.min(0)]],
       revenueGenerated:  [0, [Validators.min(0)]],

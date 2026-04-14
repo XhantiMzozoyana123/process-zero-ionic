@@ -136,6 +136,23 @@ $pz-muted: #607078;
   background: rgba($pz-teal, 0.2);
 }
 
+/* ─── Ionic z-index fixes for intro.js ─── */
+.introjs-overlay,
+.introjs-helperLayer,
+.introjs-tooltipReferenceLayer,
+.introjs-disableInteraction {
+  z-index: 99999 !important;
+}
+
+.introjs-tooltip {
+  z-index: 100000 !important;
+}
+
+.introjs-showElement {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
 .tour-section ion-button {
   margin-top: 16px;
   --border-radius: 10px;

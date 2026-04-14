@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>KPI Metrics</ion-title>
+
   </ion-toolbar>
 </ion-header>
 
@@ -35,8 +36,8 @@
 
           <div class="kpi-row">
             <ion-label class="kpi-label">Calls Booked</ion-label>
-            <span class="kpi-value">{{ kpiForm.get('callsBooked')?.value }}</span>
-            <ion-button type="button" size="small" fill="outline" (click)="submitField('callsBooked')">+1</ion-button>
+            <ion-input class="kpi-input" type="number" formControlName="callsBooked"></ion-input>
+            <ion-button type="button" size="small" fill="outline" (click)="submitField('callsBooked')">Save</ion-button>
           </div>
 
           <div class="kpi-row">

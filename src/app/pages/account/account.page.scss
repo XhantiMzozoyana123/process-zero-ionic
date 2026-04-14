@@ -109,9 +109,23 @@ $coral: #c06c52;
   margin-right: 10px;
   margin-bottom: 10px;
   z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .kpi-fab-btn {
   --background: linear-gradient(135deg, #{$teal}, #{$blue});
   --color: #fff;
+}
+
+.kpi-fab-label {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: $ink;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(#fff, 0.7);
 }
