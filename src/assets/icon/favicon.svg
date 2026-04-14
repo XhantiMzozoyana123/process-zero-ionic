@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#ffffff"/>
+  <g stroke="#000000" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Pulse/heartbeat line: flat - zigzag(W) - flat - circle -->
+    <polyline points="2,35 14,35 20,12 26,52 32,12 38,35 48,35" stroke-width="4.5"/>
+    <!-- Connecting line to circle -->
+    <line x1="48" y1="35" x2="53" y2="35" stroke-width="4.5"/>
+    <!-- Circle at the end -->
+    <circle cx="57" cy="35" r="5" stroke-width="3.5"/>
+  </g>
+</svg>
