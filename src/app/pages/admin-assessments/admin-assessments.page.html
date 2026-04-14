@@ -67,10 +67,6 @@
     <div class="form-card" formArrayName="mcqs">
       <div class="card-heading-row">
         <h3 class="card-heading">Multiple Choice Questions ({{ mcqs.length }})</h3>
-        <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addMcq()">
-          <ion-icon slot="start" name="add-outline"></ion-icon>
-          Add MCQ
-        </ion-button>
       </div>
 
       <div *ngIf="mcqs.length === 0" class="empty-inline">
@@ -121,16 +117,17 @@
           </ion-select>
         </div>
       </div>
+
+      <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addMcq()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Add MCQ
+      </ion-button>
     </div>
 
     <!-- Open Questions -->
     <div class="form-card" formArrayName="openQuestions">
       <div class="card-heading-row">
         <h3 class="card-heading">Open-Ended Questions ({{ openQuestions.length }})</h3>
-        <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addOpenQuestion()">
-          <ion-icon slot="start" name="add-outline"></ion-icon>
-          Add Question
-        </ion-button>
       </div>
 
       <div *ngIf="openQuestions.length === 0" class="empty-inline">
@@ -154,6 +151,11 @@
           <ion-input formControlName="weight" type="number" placeholder="1" class="form-input small"></ion-input>
         </div>
       </div>
+
+      <ion-button fill="outline" size="small" shape="round" class="add-btn" (click)="addOpenQuestion()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Add Question
+      </ion-button>
     </div>
 
     <!-- Submit -->

@@ -1,0 +1,10 @@
+node_modules
+www
+.angular
+.ionic
+platforms
+plugins
+coverage
+.sourcemaps
+dist
+.nx
