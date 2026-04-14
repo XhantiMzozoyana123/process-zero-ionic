@@ -8,6 +8,22 @@
         <span>Process Zero</span>
       </a>
       <div class="nav-links">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
         <a class="nav-link" (click)="navigateTo('/help')">
           <ion-icon name="book-outline"></ion-icon>
           Help &amp; Guide

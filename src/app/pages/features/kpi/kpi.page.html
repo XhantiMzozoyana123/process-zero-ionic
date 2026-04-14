@@ -1,0 +1,184 @@
+<ion-content [fullscreen]="true" class="feature-page">
+
+  <!-- Nav -->
+  <nav class="feature-nav">
+    <div class="feature-nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT: Stats hero banner + dual panels + metric tiles -->
+  <section class="feature-hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">
+      <ion-icon name="stats-chart-outline"></ion-icon>
+      KPI Form & Policies
+    </div>
+    <h1>Track performance.<br/><span class="highlight">Hit your targets.</span></h1>
+    <p class="subtitle">
+      Submit your key performance indicators per product, track against admin-set policies,
+      and watch your dashboard light up with revenue, close rates, and business health metrics.
+    </p>
+    <div class="hero-cta">
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+        Start Tracking KPIs
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="navigateTo('/home')" size="large" shape="round" fill="outline" class="cta-outline">
+        Back to Home
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Stats Counter Banner -->
+  <section class="stats-banner">
+    <div class="stats-banner-inner">
+      <div class="stat-counter">
+        <span class="stat-value stat-value--teal">R 48,500</span>
+        <span class="stat-label">Revenue Generated</span>
+        <span class="chip chip-teal">Above Target</span>
+      </div>
+      <div class="stat-counter">
+        <span class="stat-value stat-value--teal">124</span>
+        <span class="stat-label">Outreach Attempts</span>
+        <span class="chip chip-teal">Above Target</span>
+      </div>
+      <div class="stat-counter">
+        <span class="stat-value stat-value--coral">18</span>
+        <span class="stat-label">Calls Booked</span>
+        <span class="chip chip-coral">Below Target</span>
+      </div>
+      <div class="stat-counter">
+        <span class="stat-value stat-value--teal">42%</span>
+        <span class="stat-label">Deal Close Rate</span>
+        <span class="chip chip-teal">Above Target</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dual Panels: KPI Form vs Policies -->
+  <section class="dual-panels-section">
+    <div class="steps-header">
+      <p class="eyebrow">Two Sides, One System</p>
+      <h2>KPI Form meets Policy Targets</h2>
+    </div>
+    <div class="dual-panels">
+      <div class="dual-panel dual-panel--form">
+        <div class="dual-panel-header">
+          <ion-icon name="create-outline"></ion-icon>
+          <h3>KPI Form</h3>
+        </div>
+        <ul class="dual-panel-list">
+          <li><span class="dual-num">1</span> Select a product you're reporting for</li>
+          <li><span class="dual-num">2</span> Enter your outreach, calls, deals, and revenue</li>
+          <li><span class="dual-num">3</span> Tap "Sync" to pull latest team health values</li>
+          <li><span class="dual-num">4</span> Dashboard updates automatically after save</li>
+        </ul>
+      </div>
+      <div class="dual-panel dual-panel--policy">
+        <div class="dual-panel-header">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <h3>KPI Policies</h3>
+        </div>
+        <ul class="dual-panel-list">
+          <li><span class="dual-num">1</span> Admin sets minimum targets per product</li>
+          <li><span class="dual-num">2</span> Effective date ranges control when targets apply</li>
+          <li><span class="dual-num">3</span> Active policies affect your performance scores</li>
+          <li><span class="dual-num">4</span> Dashboard compares actuals vs targets live</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Metric Tiles -->
+  <section class="metric-tiles-section">
+    <div class="steps-header">
+      <p class="eyebrow">What You Track</p>
+      <h2>Every metric that matters</h2>
+    </div>
+    <div class="metric-tiles-grid">
+      <div class="metric-tile metric-tile--teal">
+        <ion-icon name="trending-up-outline"></ion-icon>
+        <h4>Core Activity</h4>
+        <p>Outreach attempts, calls booked, calls attended, deals influenced, revenue generated.</p>
+      </div>
+      <div class="metric-tile metric-tile--gold">
+        <ion-icon name="trophy-outline"></ion-icon>
+        <h4>Deal Performance</h4>
+        <p>Close rate, average deal size, revenue influenced, client retention, activity consistency.</p>
+      </div>
+      <div class="metric-tile metric-tile--blue">
+        <ion-icon name="people-outline"></ion-icon>
+        <h4>Team Metrics</h4>
+        <p>Team size, team revenue, close rate, churn rate, and leader activity level.</p>
+      </div>
+      <div class="metric-tile metric-tile--coral">
+        <ion-icon name="heart-outline"></ion-icon>
+        <h4>Business Health</h4>
+        <p>MRR, growth rate, leadership stability, brand compliance, innovation, and more.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="feature-cta">
+    <div class="cta-card">
+      <h2>Ready to track your performance?</h2>
+      <p>Submit KPIs, measure against targets, and maximise your commissions.</p>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        Create Free Account
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/kpi-policies')" size="large" shape="round" class="cta-light">
+        Open KPI Policies
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="feature-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">Home</a>
+      <a class="footer-link" (click)="navigateTo('/help')">Help & Guide</a>
+      <a class="footer-link" (click)="navigateTo('/terms')">Terms</a>
+      <a class="footer-link" (click)="navigateTo('/privacy')">Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>

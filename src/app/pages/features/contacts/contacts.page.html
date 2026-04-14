@@ -1,0 +1,198 @@
+<ion-content [fullscreen]="true" class="feature-page">
+
+  <!-- Nav -->
+  <nav class="feature-nav">
+    <div class="feature-nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT: Centered hero + floating contact cards + zigzag sections -->
+  <section class="feature-hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">
+      <ion-icon name="people-outline"></ion-icon>
+      My Contacts
+    </div>
+    <h1>Your personal<br/><span class="highlight">sales pipeline.</span></h1>
+    <p class="subtitle">
+      Manage everyone you're selling to in one place. Add contacts manually, promote
+      them from Lead Lake, track their status, and stay on top of every relationship.
+    </p>
+    <div class="hero-cta">
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+        Start Managing Contacts
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="navigateTo('/home')" size="large" shape="round" fill="outline" class="cta-outline">
+        Back to Home
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Floating Contact Cards instead of table -->
+  <section class="floating-cards-section">
+    <div class="floating-cards-row">
+      <div class="floating-card floating-card--teal">
+        <div class="floating-card-avatar">JW</div>
+        <div class="floating-card-info">
+          <strong>James Williams</strong>
+          <span>CloudNova</span>
+          <span class="chip chip-teal">Active</span>
+        </div>
+      </div>
+      <div class="floating-card floating-card--gold floating-card--raised">
+        <div class="floating-card-avatar">PN</div>
+        <div class="floating-card-info">
+          <strong>Priya Naidoo</strong>
+          <span>DataBridge</span>
+          <span class="chip chip-gold">Follow Up</span>
+        </div>
+      </div>
+      <div class="floating-card floating-card--coral">
+        <div class="floating-card-avatar">DO</div>
+        <div class="floating-card-info">
+          <strong>David Okoye</strong>
+          <span>SafeNet Financial</span>
+          <span class="chip chip-coral">Reached</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zigzag Feature Sections -->
+  <section class="zigzag-section">
+    <div class="zigzag-row">
+      <div class="zigzag-visual">
+        <div class="zigzag-icon-box">
+          <ion-icon name="person-add-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="zigzag-text">
+        <p class="eyebrow">Step 1</p>
+        <h3>Add Contacts Your Way</h3>
+        <p>Create contacts manually with full details, or promote leads from Lead Lake in a single tap — both populate your pipeline instantly.</p>
+      </div>
+    </div>
+    <div class="zigzag-row zigzag-row--reverse">
+      <div class="zigzag-visual">
+        <div class="zigzag-icon-box zigzag-icon-box--gold">
+          <ion-icon name="pricetag-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="zigzag-text">
+        <p class="eyebrow">Step 2</p>
+        <h3>Track Every Status</h3>
+        <p>Each contact carries a colour-coded status — Active, Reached, Follow Up, or Converted — so you know where every deal stands at a glance.</p>
+      </div>
+    </div>
+    <div class="zigzag-row">
+      <div class="zigzag-visual">
+        <div class="zigzag-icon-box zigzag-icon-box--blue">
+          <ion-icon name="search-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="zigzag-text">
+        <p class="eyebrow">Step 3</p>
+        <h3>Search &amp; Switch Views</h3>
+        <p>Find any contact instantly by name, email, or company. Toggle between a detailed table view and visual card grid — whatever fits your workflow.</p>
+      </div>
+    </div>
+    <div class="zigzag-row zigzag-row--reverse">
+      <div class="zigzag-visual">
+        <div class="zigzag-icon-box zigzag-icon-box--coral">
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="zigzag-text">
+        <p class="eyebrow">Step 4</p>
+        <h3>Edit &amp; Manage</h3>
+        <p>Update details, change status, or remove contacts with inline actions. Everything is editable, nothing is locked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefit Strip -->
+  <section class="benefit-strip">
+    <div class="benefit-strip-inner">
+      <div class="benefit-strip-item">
+        <ion-icon name="swap-horizontal-outline"></ion-icon>
+        <span>Two View Modes</span>
+      </div>
+      <div class="benefit-strip-item">
+        <ion-icon name="flash-outline"></ion-icon>
+        <span>Instant Search</span>
+      </div>
+      <div class="benefit-strip-item">
+        <ion-icon name="link-outline"></ion-icon>
+        <span>Lead Lake Sync</span>
+      </div>
+      <div class="benefit-strip-item">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        <span>Pipeline Tags</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="feature-cta">
+    <div class="cta-card">
+      <h2>Ready to organise your sales pipeline?</h2>
+      <p>Sign up and start managing contacts — from first touch to closed deal.</p>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        Create Free Account
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/contacts')" size="large" shape="round" class="cta-light">
+        Open My Contacts
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="feature-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">Home</a>
+      <a class="footer-link" (click)="navigateTo('/help')">Help & Guide</a>
+      <a class="footer-link" (click)="navigateTo('/terms')">Terms</a>
+      <a class="footer-link" (click)="navigateTo('/privacy')">Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>

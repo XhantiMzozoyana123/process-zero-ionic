@@ -1,0 +1,202 @@
+<ion-content [fullscreen]="true" class="feature-page">
+
+  <!-- Nav -->
+  <nav class="feature-nav">
+    <div class="feature-nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT: Dark gradient hero + vertical timeline + card row -->
+  <section class="dark-hero">
+    <div class="dark-hero-inner">
+      <div class="hero-badge hero-badge--light">
+        <ion-icon name="calendar-outline"></ion-icon>
+        Meetings
+      </div>
+      <h1>Schedule calls.<br/><span class="highlight-light">Close deals faster.</span></h1>
+      <p>
+        Book meetings with your contacts, link them to products, track upcoming vs past calls,
+        and keep your calendar organised — all from one screen.
+      </p>
+      <div class="hero-cta">
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+          Start Scheduling
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="navigateTo('/home')" size="large" shape="round" fill="outline" class="cta-outline-light">
+          Back to Home
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Meeting Cards Preview -->
+  <section class="meeting-cards-preview">
+    <div class="meeting-cards-row">
+      <div class="meeting-card-mini">
+        <div class="meeting-card-date">
+          <span class="meeting-card-day">14</span>
+          <span class="meeting-card-month">APR</span>
+        </div>
+        <div class="meeting-card-detail">
+          <strong>Sarah Johnson</strong>
+          <span>CloudSync Pro · 10:00 AM</span>
+          <span class="chip chip-teal">Upcoming</span>
+        </div>
+      </div>
+      <div class="meeting-card-mini">
+        <div class="meeting-card-date">
+          <span class="meeting-card-day">15</span>
+          <span class="meeting-card-month">APR</span>
+        </div>
+        <div class="meeting-card-detail">
+          <strong>Michael Chen</strong>
+          <span>DataVault · 2:30 PM</span>
+          <span class="chip chip-teal">Upcoming</span>
+        </div>
+      </div>
+      <div class="meeting-card-mini meeting-card-mini--past">
+        <div class="meeting-card-date">
+          <span class="meeting-card-day">11</span>
+          <span class="meeting-card-month">APR</span>
+        </div>
+        <div class="meeting-card-detail">
+          <strong>Aisha Patel</strong>
+          <span>SecureID Suite · 9:00 AM</span>
+          <span class="chip chip-blue">Past</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vertical Timeline -->
+  <section class="v-timeline-section">
+    <div class="steps-header">
+      <p class="eyebrow">How It Works</p>
+      <h2>From booking to closing</h2>
+    </div>
+    <div class="v-timeline">
+      <div class="v-timeline-item">
+        <div class="v-timeline-marker">1</div>
+        <div class="v-timeline-content">
+          <h3>Pick a Contact</h3>
+          <p>Select who you want to meet from your personal Contacts list.</p>
+        </div>
+      </div>
+      <div class="v-timeline-item">
+        <div class="v-timeline-marker">2</div>
+        <div class="v-timeline-content">
+          <h3>Choose a Product</h3>
+          <p>Link the meeting to a specific product you're qualified to sell.</p>
+        </div>
+      </div>
+      <div class="v-timeline-item">
+        <div class="v-timeline-marker">3</div>
+        <div class="v-timeline-content">
+          <h3>Set Date &amp; Time</h3>
+          <p>Pick a weekday, choose a time slot, and optionally add agenda notes.</p>
+        </div>
+      </div>
+      <div class="v-timeline-item">
+        <div class="v-timeline-marker">4</div>
+        <div class="v-timeline-content">
+          <h3>Track &amp; Follow Up</h3>
+          <p>Upcoming meetings show green. Past meetings turn grey — reschedule or review anytime.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefit Cards Row -->
+  <section class="benefit-row-section">
+    <div class="steps-header">
+      <p class="eyebrow">Why Meetings</p>
+      <h2>Stay on top of every call</h2>
+    </div>
+    <div class="benefit-scroll-row">
+      <div class="benefit-scroll-card">
+        <ion-icon name="time-outline"></ion-icon>
+        <h4>Upcoming vs Past</h4>
+        <p>Automatically tagged based on date so you never miss a call.</p>
+      </div>
+      <div class="benefit-scroll-card">
+        <ion-icon name="cube-outline"></ion-icon>
+        <h4>Product-Linked</h4>
+        <p>Every meeting ties to a product — KPIs track automatically.</p>
+      </div>
+      <div class="benefit-scroll-card">
+        <ion-icon name="create-outline"></ion-icon>
+        <h4>Edit & Reschedule</h4>
+        <p>Update date, time, or notes instantly with inline editing.</p>
+      </div>
+      <div class="benefit-scroll-card">
+        <ion-icon name="grid-outline"></ion-icon>
+        <h4>Table & Card Views</h4>
+        <p>Switch layouts to scan your schedule your way.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="feature-cta">
+    <div class="cta-card">
+      <h2>Ready to book your first meeting?</h2>
+      <p>Every meeting gets you closer to a commission. Start scheduling today.</p>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        Create Free Account
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/meetings')" size="large" shape="round" class="cta-light">
+        Open Meetings
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="feature-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">Home</a>
+      <a class="footer-link" (click)="navigateTo('/help')">Help & Guide</a>
+      <a class="footer-link" (click)="navigateTo('/terms')">Terms</a>
+      <a class="footer-link" (click)="navigateTo('/privacy')">Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>

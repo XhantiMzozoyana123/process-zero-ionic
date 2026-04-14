@@ -1,0 +1,196 @@
+<ion-content [fullscreen]="true" class="feature-page">
+
+  <!-- Nav -->
+  <nav class="feature-nav">
+    <div class="feature-nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT: Split-screen hero with inline mockup -->
+  <section class="split-hero">
+    <div class="split-hero-inner">
+      <div class="split-text">
+        <div class="hero-badge">
+          <ion-icon name="globe-outline"></ion-icon>
+          Lead Lake
+        </div>
+        <h1>Thousands of prospects.<br/><span class="highlight">One powerful search.</span></h1>
+        <p>
+          Lead Lake is your prospect intelligence hub — a searchable database of leads
+          filtered by industry, role, and location. Find high-quality prospects and promote
+          them to your Contacts with a single tap.
+        </p>
+        <div class="hero-cta hero-cta-left">
+          <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+            Start Prospecting
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="navigateTo('/home')" size="large" shape="round" fill="outline" class="cta-outline">
+            Back to Home
+          </ion-button>
+        </div>
+      </div>
+      <div class="split-visual">
+        <div class="preview-frame">
+          <div class="preview-topbar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <div class="preview-body">
+            <div class="mini-search-bar">
+              <ion-icon name="search-outline"></ion-icon>
+              <span>Search leads by name, company…</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip chip-teal">Technology</span>
+              <span class="chip chip-blue">Finance</span>
+              <span class="chip chip-coral">Healthcare</span>
+              <span class="chip chip-gold">Retail</span>
+            </div>
+            <table class="preview-table">
+              <thead>
+                <tr><th>Name</th><th>Company</th><th>Industry</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sarah Johnson</td><td>TechFlow Inc.</td>
+                  <td><span class="chip chip-teal">Tech</span></td>
+                  <td><span class="chip chip-gold">+ Add</span></td>
+                </tr>
+                <tr>
+                  <td>Michael Chen</td><td>FinEdge Capital</td>
+                  <td><span class="chip chip-blue">Finance</span></td>
+                  <td><span class="chip chip-gold">+ Add</span></td>
+                </tr>
+                <tr>
+                  <td>Aisha Patel</td><td>HealthPulse</td>
+                  <td><span class="chip chip-coral">Health</span></td>
+                  <td><span class="chip chip-gold">+ Add</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Timeline -->
+  <section class="h-timeline-section">
+    <div class="steps-header">
+      <p class="eyebrow">How It Works</p>
+      <h2>Find leads in three simple steps</h2>
+    </div>
+    <div class="h-timeline">
+      <div class="h-timeline-item">
+        <div class="h-timeline-dot">1</div>
+        <div class="h-timeline-line"></div>
+        <h3>Search &amp; Filter</h3>
+        <p>Type a name, company, or keyword. Use industry chips to narrow results instantly.</p>
+      </div>
+      <div class="h-timeline-item">
+        <div class="h-timeline-dot">2</div>
+        <div class="h-timeline-line"></div>
+        <h3>Browse Leads</h3>
+        <p>Scroll through paginated results — name, email, company, role, and industry.</p>
+      </div>
+      <div class="h-timeline-item">
+        <div class="h-timeline-dot">3</div>
+        <h3>Promote to Contacts</h3>
+        <p>Tap "Add" to push any lead into your personal Contacts and start selling.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Icon Blocks Grid -->
+  <section class="icon-blocks-section">
+    <div class="steps-header">
+      <p class="eyebrow">Why Lead Lake</p>
+      <h2>Built for prospecting at scale</h2>
+    </div>
+    <div class="icon-blocks-grid">
+      <div class="icon-block">
+        <div class="icon-block-circle"><ion-icon name="search-outline"></ion-icon></div>
+        <h3>Real-Time Search</h3>
+        <p>Results filter as you type — no waiting, no page reloads. Instant feedback on every keystroke.</p>
+      </div>
+      <div class="icon-block">
+        <div class="icon-block-circle"><ion-icon name="funnel-outline"></ion-icon></div>
+        <h3>Industry Filters</h3>
+        <p>One-tap chips for Technology, Finance, Healthcare, and more. Combine with search for precision.</p>
+      </div>
+      <div class="icon-block">
+        <div class="icon-block-circle"><ion-icon name="person-add-outline"></ion-icon></div>
+        <h3>One-Tap Promote</h3>
+        <p>Move any lead straight into your Contacts pipeline with a single click — no forms, no friction.</p>
+      </div>
+      <div class="icon-block">
+        <div class="icon-block-circle"><ion-icon name="layers-outline"></ion-icon></div>
+        <h3>Paginated Results</h3>
+        <p>Browse thousands of leads without lag. Fast pagination keeps everything snappy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="feature-cta">
+    <div class="cta-card">
+      <h2>Ready to fill your pipeline?</h2>
+      <p>Sign up and start exploring Lead Lake — thousands of prospects waiting to be discovered.</p>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        Create Free Account
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/leadlake')" size="large" shape="round" class="cta-light">
+        Open Lead Lake
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="feature-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">Home</a>
+      <a class="footer-link" (click)="navigateTo('/help')">Help & Guide</a>
+      <a class="footer-link" (click)="navigateTo('/terms')">Terms</a>
+      <a class="footer-link" (click)="navigateTo('/privacy')">Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>

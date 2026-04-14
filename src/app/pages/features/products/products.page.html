@@ -1,0 +1,210 @@
+<ion-content [fullscreen]="true" class="feature-page">
+
+  <!-- Nav -->
+  <nav class="feature-nav">
+    <div class="feature-nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LAYOUT: Hero with floating product cards + numbered feature blocks -->
+  <section class="feature-hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">
+      <ion-icon name="cube-outline"></ion-icon>
+      Products
+    </div>
+    <h1>Proven digital products.<br/><span class="highlight">Ready to sell.</span></h1>
+    <p class="subtitle">
+      Browse the product catalogue, qualify yourself through quick assessments,
+      and start earning 20% commission on every sale — with recurring payouts.
+    </p>
+    <div class="hero-cta">
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+        Browse Products
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="navigateTo('/home')" size="large" shape="round" fill="outline" class="cta-outline">
+        Back to Home
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Product Showcase Cards -->
+  <section class="product-showcase">
+    <div class="product-showcase-grid">
+      <div class="product-showcase-card">
+        <div class="product-showcase-header product-showcase-header--teal">
+          <ion-icon name="cloud-outline"></ion-icon>
+        </div>
+        <div class="product-showcase-body">
+          <h3>CloudSync Pro</h3>
+          <p class="product-price">R 4,999 <span>/licence</span></p>
+          <div class="product-commission">
+            <span>Your commission</span>
+            <strong>R 999 / sale</strong>
+          </div>
+          <span class="chip chip-teal">Qualified</span>
+        </div>
+      </div>
+      <div class="product-showcase-card product-showcase-card--featured">
+        <div class="product-showcase-header product-showcase-header--gold">
+          <ion-icon name="server-outline"></ion-icon>
+        </div>
+        <div class="product-showcase-body">
+          <h3>DataVault Enterprise</h3>
+          <p class="product-price">R 12,500 <span>/licence</span></p>
+          <div class="product-commission">
+            <span>Your commission</span>
+            <strong>R 2,500 / sale</strong>
+          </div>
+          <span class="chip chip-gold">Take Assessment</span>
+        </div>
+      </div>
+      <div class="product-showcase-card">
+        <div class="product-showcase-header product-showcase-header--blue">
+          <ion-icon name="shield-outline"></ion-icon>
+        </div>
+        <div class="product-showcase-body">
+          <h3>SecureID Suite</h3>
+          <p class="product-price">R 7,800 <span>/licence</span></p>
+          <div class="product-commission">
+            <span>Your commission</span>
+            <strong>R 1,560 / sale</strong>
+          </div>
+          <span class="chip chip-teal">Qualified</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Numbered Feature Blocks -->
+  <section class="numbered-features">
+    <div class="steps-header">
+      <p class="eyebrow">How It Works</p>
+      <h2>From catalogue to commission</h2>
+    </div>
+    <div class="numbered-features-list">
+      <div class="numbered-feature">
+        <div class="numbered-feature-num">01</div>
+        <div class="numbered-feature-body">
+          <h3>Browse Catalogue</h3>
+          <p>Explore all available digital products with prices, descriptions, and negotiable terms. Everything is transparent from the start.</p>
+        </div>
+      </div>
+      <div class="numbered-feature">
+        <div class="numbered-feature-num">02</div>
+        <div class="numbered-feature-body">
+          <h3>Take Assessment</h3>
+          <p>Prove you understand the product by passing a quick qualification assessment. Short quizzes ensure you're pitch-ready.</p>
+        </div>
+      </div>
+      <div class="numbered-feature">
+        <div class="numbered-feature-num">03</div>
+        <div class="numbered-feature-body">
+          <h3>Get Qualified</h3>
+          <p>Once qualified, you're authorised to sell that product, schedule meetings, and earn commission on every deal.</p>
+        </div>
+      </div>
+      <div class="numbered-feature">
+        <div class="numbered-feature-num">04</div>
+        <div class="numbered-feature-body">
+          <h3>Earn 20% Recurring</h3>
+          <p>Close a deal and earn 20% commission — plus recurring payouts every month the customer stays active.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights Strip -->
+  <section class="highlights-section">
+    <div class="steps-header">
+      <p class="eyebrow">Why Products</p>
+      <h2>Sell without building</h2>
+    </div>
+    <div class="highlights-grid">
+      <div class="highlight-tile">
+        <ion-icon name="diamond-outline"></ion-icon>
+        <h4>Curated Catalogue</h4>
+        <p>Every product is vetted and proven — no guesswork.</p>
+      </div>
+      <div class="highlight-tile">
+        <ion-icon name="school-outline"></ion-icon>
+        <h4>Quick Assessments</h4>
+        <p>Short quizzes ensure you understand before pitching.</p>
+      </div>
+      <div class="highlight-tile">
+        <ion-icon name="repeat-outline"></ion-icon>
+        <h4>Recurring Revenue</h4>
+        <p>Commission keeps paying while the subscription lives.</p>
+      </div>
+      <div class="highlight-tile">
+        <ion-icon name="cash-outline"></ion-icon>
+        <h4>Transparent Pricing</h4>
+        <p>Price, commission, and negotiable amounts up front.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="feature-cta">
+    <div class="cta-card">
+      <h2>Ready to start selling?</h2>
+      <p>Browse the catalogue, get qualified, and earn 20% on every deal you close.</p>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        Create Free Account
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/products')" size="large" shape="round" class="cta-light">
+        Open Products
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="feature-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">Home</a>
+      <a class="footer-link" (click)="navigateTo('/help')">Help & Guide</a>
+      <a class="footer-link" (click)="navigateTo('/terms')">Terms</a>
+      <a class="footer-link" (click)="navigateTo('/privacy')">Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>
