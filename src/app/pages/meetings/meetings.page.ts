@@ -8,6 +8,7 @@ import { AssessmentService } from 'src/app/services/assessment-service';
 import { MeetingDto } from 'src/app/models/dtos/meeting-dto.model';
 import { Contact } from 'src/app/models/entities/contact.model';
 import { Product } from 'src/app/models/entities/product.model';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-meetings',
@@ -38,7 +39,8 @@ export class MeetingsPage implements OnInit {
     private assessmentService: AssessmentService,
     private fb: FormBuilder,
     private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private introService: IntroService
   ) {
     this.meetingForm = this.fb.group({
       contactId: ['', Validators.required],
@@ -50,6 +52,10 @@ export class MeetingsPage implements OnInit {
 
   ngOnInit() {
     this.loadAll();
+  }
+
+  startTour(): void {
+    this.introService.startMeetingsTour();
   }
 
   get filteredMeetings(): MeetingDto[] {

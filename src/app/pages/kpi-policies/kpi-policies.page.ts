@@ -4,6 +4,7 @@ import { KpiPolicy } from 'src/app/models/entities/kpi-policy.model';
 import { Product } from 'src/app/models/entities/product.model';
 import { KpiPolicyService } from 'src/app/services/kpi-policy-service';
 import { ProductService } from 'src/app/services/product-service';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-kpi-policies',
@@ -29,11 +30,16 @@ export class KpiPoliciesPage implements OnInit {
   constructor(
     private kpiPolicyService: KpiPolicyService,
     private productService: ProductService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private introService: IntroService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  startTour(): void {
+    this.introService.startKpiPoliciesTour();
   }
 
   get filteredPolicies(): KpiPolicy[] {

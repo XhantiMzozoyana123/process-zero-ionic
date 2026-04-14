@@ -5,8 +5,16 @@
 
   <section class="dashboard-hero">
     <div class="hero-copy">
-      <p class="eyebrow">KPI Intelligence Report</p>
-      <h1>Professional operating metrics for your current product line.</h1>
+      <div class="hero-copy-header">
+        <div>
+          <p class="eyebrow">KPI Intelligence Report</p>
+          <h1>Professional operating metrics for your current product line.</h1>
+        </div>
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+      </div>
       <p class="hero-text">
         Review the latest performance snapshot, spot conversion gaps, and monitor business health without leaving the home screen.
       </p>
@@ -32,8 +40,6 @@
       </ion-item>
 
       <div class="hero-product-meta" *ngIf="selectedProduct as product">
-        <span *ngIf="!product.description">Live KPI reporting enabled</span>
-        <span *ngIf="product.description" [innerHTML]="product.description"></span>
         <strong>{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
       </div>
     </div>

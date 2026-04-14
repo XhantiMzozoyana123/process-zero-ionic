@@ -8,8 +8,7 @@ $blue: #335c67;
 $coral: #c06c52;
 
 .meetings-page {
-  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
-    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
 }
 
 // ── Header ──────────────────────────────────
@@ -28,6 +27,36 @@ $coral: #c06c52;
 
   h1 { font-size: 1.6rem; font-weight: 800; color: $ink; margin: 0 0 4px; }
   p  { font-size: 0.92rem; color: $muted; margin: 0; }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px solid $teal;
+  border-radius: 10px;
+  background: rgba(29, 120, 116, 0.08);
+  color: $teal;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, box-shadow 0.2s;
+
+  ion-icon { font-size: 18px; }
+
+  &:hover {
+    background: rgba(29, 120, 116, 0.16);
+    box-shadow: 0 2px 8px rgba(29, 120, 116, 0.15);
+  }
 }
 
 .add-btn {

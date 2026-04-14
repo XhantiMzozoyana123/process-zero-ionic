@@ -10,6 +10,10 @@
         <h1>Products</h1>
         <p>Browse digital products available on the platform.</p>
       </div>
+      <button class="tour-btn" (click)="startTour()">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <span>Instructions</span>
+      </button>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search products..." [(ngModel)]="searchTerm"

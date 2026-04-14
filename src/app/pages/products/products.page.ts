@@ -4,6 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { Product } from 'src/app/models/entities/product.model';
 import { ProductService } from 'src/app/services/product-service';
 import { AssessmentService } from 'src/app/services/assessment-service';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-products',
@@ -33,11 +34,16 @@ export class ProductsPage implements OnInit {
     private productService: ProductService,
     private assessmentService: AssessmentService,
     private router: Router,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private introService: IntroService
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
+  }
+
+  startTour(): void {
+    this.introService.startProductsTour();
   }
 
   get filteredProducts(): Product[] {

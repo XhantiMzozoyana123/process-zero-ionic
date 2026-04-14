@@ -3,6 +3,7 @@ import { LeadLake, LeadLakeIndustry } from 'src/app/models/entities/leadlake.mod
 import { LeadlakeService } from 'src/app/services/leadlake-service';
 import { ContactService } from 'src/app/services/contact-service';
 import { ToastController } from '@ionic/angular';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-leadlake',
@@ -34,11 +35,16 @@ export class LeadlakePage implements OnInit {
   constructor(
     private leadService: LeadlakeService,
     private contactService: ContactService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private introService: IntroService
   ) {}
 
   ngOnInit() {
     this.loadLeads();
+  }
+
+  startTour(): void {
+    this.introService.startLeadLakeTour();
   }
 
   get totalPages(): number {

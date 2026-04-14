@@ -10,10 +10,16 @@
         <h1>My Contacts</h1>
         <p>Manage your contacts and track their status.</p>
       </div>
-      <ion-button shape="round" class="add-btn" (click)="openAddContactModal()">
-        <ion-icon slot="start" name="add-outline"></ion-icon>
-        Add Contact
-      </ion-button>
+      <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+        <ion-button shape="round" class="add-btn" (click)="openAddContactModal()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Add Contact
+        </ion-button>
+      </div>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search contacts..." [(ngModel)]="searchTerm"

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth-service';
+import { IntroService } from 'src/app/services/intro-service';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-account',
@@ -14,11 +16,27 @@ export class AccountPage implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private introService: IntroService
   ) { }
 
   ngOnInit() {
     this.isAdmin = this.authService.isAdmin();
+
+    if (!this.introService.hasSeenIntro()) {
+      // Wait for the dashboard route to finish loading before starting tour
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        take(1)
+      ).subscribe(() => {
+        setTimeout(() => this.introService.startTour(), 800);
+      });
+    }
+  }
+
+  startTour(): void {
+    this.introService.resetIntro();
+    this.introService.startTour();
   }
 
   openKpiModal(): void {

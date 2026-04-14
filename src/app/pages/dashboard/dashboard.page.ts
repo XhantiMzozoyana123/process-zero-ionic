@@ -3,6 +3,7 @@ import { Product } from 'src/app/models/entities/product.model';
 import { KPI } from 'src/app/models/entities/kpi.model';
 import { ProductService } from 'src/app/services/product-service';
 import { KpiService } from 'src/app/services/kpi-service';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,11 +24,16 @@ export class DashboardPage implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private kpiService: KpiService
+    private kpiService: KpiService,
+    private introService: IntroService
   ) { }
 
   ngOnInit() {
     this.loadProducts();
+  }
+
+  startTour(): void {
+    this.introService.startDashboardTour();
   }
 
   get selectedProduct(): Product | undefined {

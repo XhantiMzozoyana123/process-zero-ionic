@@ -10,10 +10,16 @@
         <h1>Meetings</h1>
         <p>Schedule and manage your upcoming meetings.</p>
       </div>
-      <ion-button shape="round" class="add-btn" (click)="openAddMeetingModal()">
-        <ion-icon slot="start" name="add-outline"></ion-icon>
-        New Meeting
-      </ion-button>
+      <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+        <ion-button shape="round" class="add-btn" (click)="openAddMeetingModal()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          New Meeting
+        </ion-button>
+      </div>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search meetings..." [(ngModel)]="searchTerm"

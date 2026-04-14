@@ -6,6 +6,10 @@
         <h1>Lead Intelligence</h1>
         <p>Discover and promote leads from the LeadLake database.</p>
       </div>
+      <button class="tour-btn" (click)="startTour()">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <span>Instructions</span>
+      </button>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search leads..." [(ngModel)]="searchTerm"

@@ -1,10 +1,10 @@
-// src/app/pages/contacts/contacts.page.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from 'src/app/services/contact-service';
 import { Contact, ContactStatus, ContactStatusLabels } from 'src/app/models/entities/contact.model';
 import { LeadLake, LeadLakeIndustry } from 'src/app/models/entities/leadlake.model';
 import { AlertController } from '@ionic/angular';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-contacts',
@@ -31,7 +31,8 @@ export class ContactsPage implements OnInit {
   constructor(
     private contactService: ContactService,
     private fb: FormBuilder,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private introService: IntroService
   ) {
     // Initialize reactive form
     this.contactForm = this.fb.group({
@@ -48,6 +49,10 @@ export class ContactsPage implements OnInit {
 
   ngOnInit() {
     this.loadContacts();
+  }
+
+  startTour(): void {
+    this.introService.startContactsTour();
   }
 
   get filteredContacts(): Contact[] {

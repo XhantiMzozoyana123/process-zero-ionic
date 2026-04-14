@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BankAccountService } from 'src/app/services/bankaccount-service';
 import { BankAccount } from 'src/app/models/entities/bank-account.model';
 import { ToastController } from '@ionic/angular';
+import { IntroService } from 'src/app/services/intro-service';
 
 @Component({
   selector: 'app-bank-account',
@@ -23,7 +24,8 @@ export class BankAccountPage implements OnInit {
   constructor(
     private fb: FormBuilder,
     private bankAccountService: BankAccountService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private introService: IntroService
   ) {}
 
   ngOnInit() {
@@ -35,6 +37,10 @@ export class BankAccountPage implements OnInit {
     });
 
     this.loadMyAccount();
+  }
+
+  startTour(): void {
+    this.introService.startBankAccountTour();
   }
 
   isInvalid(controlName: string): boolean {

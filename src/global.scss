@@ -35,3 +35,110 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 /* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+/* ─── Intro.js Tour Overrides ─── */
+$pz-ink:   #172121;
+$pz-teal:  #1d7874;
+$pz-gold:  #d7a449;
+$pz-blue:  #335c67;
+$pz-sand:  #f6f1e8;
+$pz-paper: #fffdf9;
+$pz-coral: #c06c52;
+$pz-muted: #607078;
+
+.pz-intro-tooltip {
+  border-radius: 16px;
+  font-family: inherit;
+  max-width: 380px;
+  background: $pz-paper;
+  border: 1px solid rgba($pz-gold, 0.25);
+  box-shadow: 0 18px 45px rgba(19, 31, 31, 0.14);
+}
+
+.introjs-tooltip-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $pz-ink;
+}
+
+.introjs-tooltiptext {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: $pz-muted;
+}
+
+.introjs-button {
+  border-radius: 10px;
+  font-weight: 600;
+  text-shadow: none;
+  padding: 7px 18px;
+  border: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.introjs-button:focus {
+  box-shadow: 0 0 0 2px rgba($pz-teal, 0.4);
+}
+
+.introjs-nextbutton,
+.introjs-donebutton {
+  background: linear-gradient(135deg, $pz-teal, $pz-blue);
+  color: #fff;
+}
+
+.introjs-nextbutton:hover,
+.introjs-donebutton:hover {
+  background: linear-gradient(135deg, darken($pz-teal, 6%), darken($pz-blue, 6%));
+  color: #fff;
+  box-shadow: 0 2px 10px rgba($pz-teal, 0.3);
+}
+
+.introjs-prevbutton {
+  background: $pz-sand;
+  color: $pz-ink;
+}
+
+.introjs-prevbutton:hover {
+  background: darken($pz-sand, 5%);
+  color: $pz-ink;
+}
+
+.introjs-progressbar {
+  background: linear-gradient(90deg, $pz-teal, $pz-gold);
+}
+
+.introjs-helperLayer {
+  border-radius: 12px;
+  box-shadow: 0 0 0 4000px rgba($pz-ink, 0.65);
+}
+
+.introjs-arrow.top {
+  border-bottom-color: $pz-paper;
+}
+
+.introjs-arrow.bottom {
+  border-top-color: $pz-paper;
+}
+
+.introjs-arrow.left {
+  border-right-color: $pz-paper;
+}
+
+.introjs-arrow.right {
+  border-left-color: $pz-paper;
+}
+
+.introjs-bullets ul li a.active {
+  background: $pz-teal;
+}
+
+.introjs-bullets ul li a {
+  background: rgba($pz-teal, 0.2);
+}
+
+.tour-section ion-button {
+  margin-top: 16px;
+  --border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}

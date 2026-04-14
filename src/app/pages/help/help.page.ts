@@ -1,5 +1,7 @@
 ﻿import { Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
+import { IntroService } from 'src/app/services/intro-service';
 
 interface DocStep {
   text: string;
@@ -30,6 +32,20 @@ export class HelpPage {
   @ViewChild(IonContent) ionContent!: IonContent;
   activeSection = 'getting-started';
   sidebarOpen = false;
+
+  constructor(
+    private introService: IntroService,
+    private router: Router
+  ) { }
+
+  replayTour(): void {
+    this.router.navigate(['/account/dashboard']).then(() => {
+      setTimeout(() => {
+        this.introService.resetIntro();
+        this.introService.startTour();
+      }, 600);
+    });
+  }
 
   sections: DocSection[] = [
     {

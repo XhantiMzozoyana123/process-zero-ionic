@@ -6,10 +6,16 @@
         <h1>Bank Account</h1>
         <p>Manage your payout banking details.</p>
       </div>
-      <button class="add-btn" (click)="openFormModal()">
-        <ion-icon name="create-outline"></ion-icon>
-        {{ myAccount ? 'Edit' : 'Add' }}
-      </button>
+      <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+        <button class="add-btn" (click)="openFormModal()">
+          <ion-icon name="create-outline"></ion-icon>
+          {{ myAccount ? 'Edit' : 'Add' }}
+        </button>
+      </div>
     </div>
   </section>
 
