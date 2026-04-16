@@ -14,10 +14,11 @@
           <div>
             <p class="eyebrow">Get Started</p>
             <p class="milestones-subtitle">Complete these steps to set up your account and start earning.</p>
-            <p class="milestones-count">{{ completedMilestones }} of {{ milestones.length }} completed</p>
           </div>
         </div>
       </div>
+
+      <p class="milestones-count">{{ completedMilestones }} of {{ milestones.length }} completed</p>
 
       <div class="milestones-video">
         <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius: 14px; overflow: hidden;">
@@ -26,10 +27,6 @@
       </div>
 
       <div class="milestones-progress">
-        <div class="milestones-progress-info">
-          <span>{{ completedMilestones }} of {{ milestones.length }} completed</span>
-          <span class="milestones-percent">{{ milestoneProgress }}%</span>
-        </div>
         <div class="milestones-progress-track">
           <div class="milestones-progress-fill" [style.width.%]="milestoneProgress"></div>
         </div>
