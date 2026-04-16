@@ -58,7 +58,19 @@ export class DashboardPage implements OnInit {
 
   goToMilestone(milestone: Milestone): void {
     if (!milestone.completed) {
-      this.router.navigateByUrl(milestone.route);
+      this.router.navigateByUrl(milestone.route).then(() => {
+        const tourDelay = 800;
+        const tourMap: Record<string, () => void> = {
+          'product-assessment': () => this.introService.startProductsTour(),
+          'browse-leads':       () => this.introService.startLeadLakeTour(),
+          'add-contact':        () => this.introService.startContactsTour(),
+          'book-meeting':       () => this.introService.startMeetingsTour(),
+        };
+        const tourFn = tourMap[milestone.id];
+        if (tourFn) {
+          setTimeout(tourFn, tourDelay);
+        }
+      });
     }
   }
 
