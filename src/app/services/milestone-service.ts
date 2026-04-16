@@ -73,8 +73,8 @@ export class MilestoneService {
       {
         id: 'assessment',
         step: 1,
-        title: 'Pass the Product Assessment',
-        description: 'Take and pass the assessment to prove your product knowledge and unlock the platform.',
+        title: 'Pass the Mandatory Assessment',
+        description: 'Complete the mandatory platform assessment to unlock access to the platform.',
         icon: 'school-outline',
         route: '/account/assessments',
         completed: assessmentPassed,
