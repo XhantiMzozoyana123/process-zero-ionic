@@ -81,8 +81,18 @@ export class MilestoneService {
         loading: false
       },
       {
-        id: 'browse-leads',
+        id: 'product-assessment',
         step: 2,
+        title: 'Take a Product Assessment',
+        description: 'Complete a product assessment to qualify for selling that product to your contacts.',
+        icon: 'clipboard-outline',
+        route: '/account/products',
+        completed: assessmentPassed,
+        loading: false
+      },
+      {
+        id: 'browse-leads',
+        step: 3,
         title: 'Browse the Lead Lake',
         description: 'Explore the Lead Lake to discover prospects you can reach out to.',
         icon: 'globe-outline',
@@ -92,7 +102,7 @@ export class MilestoneService {
       },
       {
         id: 'add-contact',
-        step: 3,
+        step: 4,
         title: 'Add a Lead to My Contacts',
         description: 'Promote a lead from the Lead Lake into your personal contact list.',
         icon: 'person-add-outline',
@@ -102,7 +112,7 @@ export class MilestoneService {
       },
       {
         id: 'book-meeting',
-        step: 4,
+        step: 5,
         title: 'Book a Meeting',
         description: 'Schedule a meeting with one of your contacts when they agree to talk.',
         icon: 'calendar-outline',
