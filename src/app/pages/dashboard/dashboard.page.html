@@ -4,7 +4,73 @@
   </ion-refresher>
 
   <section class="dashboard-hero">
-    <div class="hero-copy">
+    <!-- Milestones Hero (shown when milestones are incomplete) -->
+    <div class="hero-copy milestones-hero" *ngIf="showMilestones">
+      <div class="milestones-header">
+        <div class="milestones-header-left">
+          <div class="milestones-icon-wrap">
+            <ion-icon name="rocket-outline"></ion-icon>
+          </div>
+          <div>
+            <p class="eyebrow">Get Started</p>
+            <h1>Complete these steps to set up your account and start earning.</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="milestones-progress">
+        <div class="milestones-progress-info">
+          <span>{{ completedMilestones }} of {{ milestones.length }} completed</span>
+          <span class="milestones-percent">{{ milestoneProgress }}%</span>
+        </div>
+        <div class="milestones-progress-track">
+          <div class="milestones-progress-fill" [style.width.%]="milestoneProgress"></div>
+        </div>
+      </div>
+
+      <div class="milestones-list">
+        <div class="milestone-item"
+             *ngFor="let m of milestones; let i = index; let last = last"
+             [class.completed]="m.completed"
+             [class.active]="!m.completed && (i === 0 || milestones[i - 1].completed)"
+             (click)="goToMilestone(m)">
+          <div class="milestone-connector" *ngIf="!last">
+            <div class="connector-line" [class.filled]="m.completed"></div>
+          </div>
+          <div class="milestone-marker" [class.completed]="m.completed">
+            <ion-icon *ngIf="m.completed" name="checkmark"></ion-icon>
+            <span *ngIf="!m.completed">{{ m.step }}</span>
+          </div>
+          <div class="milestone-content">
+            <div class="milestone-title-row">
+              <h4>{{ m.title }}</h4>
+              <span class="milestone-badge" *ngIf="m.completed">Done</span>
+              <ion-icon name="arrow-forward-outline" class="milestone-arrow"
+                        *ngIf="!m.completed && (i === 0 || milestones[i - 1].completed)"></ion-icon>
+            </div>
+            <p>{{ m.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Milestones Complete Celebration (replaces milestones once done) -->
+    <div class="hero-copy milestones-complete-hero" *ngIf="!showMilestones && !milestonesDismissed && allMilestonesComplete && milestones.length">
+      <div class="milestones-complete-content">
+        <ion-icon name="trophy-outline" class="trophy-icon"></ion-icon>
+        <div>
+          <p class="eyebrow">All Steps Complete</p>
+          <h1>You're ready to start closing deals and earning commissions.</h1>
+        </div>
+      </div>
+      <button class="milestones-dismiss-btn" (click)="dismissMilestones()" aria-label="Dismiss">
+        <ion-icon name="close-outline"></ion-icon>
+        <span>Dismiss</span>
+      </button>
+    </div>
+
+    <!-- Default KPI Hero (shown when milestones are dismissed or complete+dismissed) -->
+    <div class="hero-copy" *ngIf="!showMilestones && (milestonesDismissed || !milestones.length)">
       <div class="hero-copy-header">
         <div>
           <p class="eyebrow">KPI Intelligence Report</p>

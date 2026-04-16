@@ -455,6 +455,399 @@ $coral: #c06c52;
 	margin: 4px 0 0;
 }
 
+// ── Milestones Widget ───────────────────────
+.milestones-section {
+	padding: 0 18px 12px;
+}
+
+.milestones-card {
+	background: rgba(255, 253, 249, 0.95);
+	backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.7);
+	border-radius: 24px;
+	box-shadow: var(--dashboard-shadow);
+	padding: 24px;
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		content: '';
+		position: absolute;
+		width: 200px;
+		height: 200px;
+		top: -80px;
+		right: -60px;
+		background: radial-gradient(circle, rgba($gold, 0.15), transparent 66%);
+		pointer-events: none;
+	}
+}
+
+.milestones-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 18px;
+}
+
+.milestones-header-left {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+
+	h3 {
+		font-size: 1.15rem;
+		font-weight: 800;
+		color: $ink;
+		margin: 0 0 4px;
+	}
+
+	p {
+		font-size: 0.85rem;
+		color: $muted;
+		margin: 0;
+		line-height: 1.45;
+	}
+}
+
+.milestones-icon-wrap {
+	width: 44px;
+	height: 44px;
+	min-width: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 14px;
+	background: linear-gradient(135deg, rgba($teal, 0.12), rgba($blue, 0.08));
+
+	ion-icon {
+		font-size: 22px;
+		color: $teal;
+	}
+}
+
+.milestones-dismiss {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	color: $muted;
+	font-size: 1.2rem;
+	border-radius: 8px;
+	transition: background 0.15s, color 0.15s;
+
+	&:hover {
+		background: rgba($ink, 0.06);
+		color: $ink;
+	}
+}
+
+// Progress bar
+.milestones-progress {
+	margin-bottom: 20px;
+}
+
+.milestones-progress-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+
+	span {
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: $muted;
+	}
+}
+
+.milestones-percent {
+	color: $teal !important;
+	font-weight: 700 !important;
+}
+
+.milestones-progress-track {
+	height: 6px;
+	background: rgba($ink, 0.06);
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.milestones-progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, $teal, $blue);
+	border-radius: 3px;
+	transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+// Milestone items
+.milestones-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.milestone-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 14px 12px;
+	border-radius: 14px;
+	position: relative;
+	cursor: default;
+	transition: background 0.2s;
+
+	&.active {
+		cursor: pointer;
+		background: rgba($teal, 0.04);
+
+		&:hover {
+			background: rgba($teal, 0.08);
+		}
+
+		.milestone-title-row h4 {
+			color: $teal;
+		}
+	}
+
+	&.completed {
+		opacity: 0.65;
+
+		.milestone-title-row h4 {
+			text-decoration: line-through;
+			color: $muted;
+		}
+	}
+}
+
+.milestone-connector {
+	position: absolute;
+	top: 42px;
+	left: 30px;
+	width: 2px;
+	height: calc(100% - 14px);
+	pointer-events: none;
+}
+
+.connector-line {
+	width: 100%;
+	height: 100%;
+	background: rgba($ink, 0.08);
+	border-radius: 1px;
+
+	&.filled {
+		background: $teal;
+	}
+}
+
+.milestone-marker {
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.82rem;
+	font-weight: 800;
+	border: 2px solid rgba($ink, 0.12);
+	color: $muted;
+	background: $paper;
+	transition: all 0.3s;
+	position: relative;
+	z-index: 1;
+
+	&.completed {
+		background: linear-gradient(135deg, $teal, $blue);
+		border-color: transparent;
+		color: #fff;
+
+		ion-icon {
+			font-size: 1rem;
+		}
+	}
+}
+
+.milestone-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.milestone-title-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 2px;
+
+	h4 {
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: $ink;
+		margin: 0;
+	}
+}
+
+.milestone-badge {
+	display: inline-block;
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	padding: 2px 8px;
+	border-radius: 20px;
+	background: rgba($teal, 0.1);
+	color: $teal;
+}
+
+.milestone-arrow {
+	font-size: 1rem;
+	color: $teal;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.milestone-content p {
+	font-size: 0.82rem;
+	color: $muted;
+	line-height: 1.45;
+	margin: 0;
+}
+
+// ── Milestones inside hero-copy (lighter background for readability) ──
+.milestones-hero {
+	background: linear-gradient(140deg, rgba(51, 92, 103, 0.18), rgba(29, 120, 116, 0.12)) !important;
+	color: $ink !important;
+
+	.milestones-header-left {
+		h3, p { color: rgba($ink, 0.75); }
+		p { color: rgba($ink, 0.55); }
+	}
+
+	.milestones-icon-wrap {
+		background: rgba($teal, 0.12);
+		ion-icon { color: $teal; }
+	}
+
+	.milestones-progress-info span { color: rgba($ink, 0.6); }
+	.milestones-percent { color: $teal !important; }
+
+	.milestones-progress-track {
+		background: rgba($ink, 0.08);
+	}
+
+	.milestones-progress-fill {
+		background: linear-gradient(90deg, $teal, $blue);
+	}
+
+	.milestone-item {
+		&.active {
+			background: rgba($teal, 0.06);
+			&:hover { background: rgba($teal, 0.1); }
+			.milestone-title-row h4 { color: $teal; }
+		}
+
+		&.completed {
+			.milestone-title-row h4 { color: rgba($ink, 0.4); }
+		}
+	}
+
+	.milestone-marker {
+		border-color: rgba($ink, 0.15);
+		color: rgba($ink, 0.6);
+		background: rgba(255, 255, 255, 0.7);
+	}
+
+	.milestone-title-row h4 { color: $ink; }
+	.milestone-badge { background: rgba($teal, 0.12); color: $teal; }
+	.milestone-arrow { color: $teal; }
+	.milestone-content p { color: rgba($ink, 0.55); }
+
+	.connector-line {
+		background: rgba($ink, 0.1);
+		&.filled { background: $teal; }
+	}
+
+	.eyebrow { color: rgba($ink, 0.6); }
+	h1 { color: $ink; }
+}
+
+.milestones-complete-hero {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+
+	.milestones-dismiss-btn {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		background: rgba($ink, 0.06);
+		border: 1px solid rgba($ink, 0.1);
+		color: rgba($ink, 0.6);
+		font-size: 0.82rem;
+		font-weight: 600;
+		padding: 8px 14px;
+		border-radius: 10px;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: all 0.2s;
+
+		ion-icon { font-size: 1rem; }
+
+		&:hover {
+			background: rgba($ink, 0.1);
+			color: $ink;
+		}
+	}
+}
+
+// All complete celebration
+.milestones-complete {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: linear-gradient(140deg, rgba($ink, 0.97), rgba($blue, 0.92));
+	color: $sand;
+
+	&::before {
+		background: radial-gradient(circle, rgba($gold, 0.35), transparent 66%);
+	}
+}
+
+.milestones-complete-content {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	position: relative;
+
+	h3 {
+		font-size: 1.1rem;
+		font-weight: 800;
+		color: $sand;
+		margin: 0 0 4px;
+	}
+
+	p {
+		font-size: 0.85rem;
+		color: rgba($sand, 0.72);
+		margin: 0;
+		line-height: 1.45;
+	}
+}
+
+.trophy-icon {
+	font-size: 2.2rem;
+	color: $gold;
+	flex-shrink: 0;
+}
+
+.milestones-complete .milestones-dismiss {
+	color: rgba($sand, 0.6);
+
+	&:hover {
+		color: $sand;
+		background: rgba(255, 255, 255, 0.1);
+	}
+}
+
 @media (max-width: 1024px) {
 	.dashboard-hero,
 	.hero-metrics-grid,

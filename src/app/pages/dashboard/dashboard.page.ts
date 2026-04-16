@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Product } from 'src/app/models/entities/product.model';
 import { KPI } from 'src/app/models/entities/kpi.model';
+import { Milestone } from 'src/app/models/milestone.model';
 import { ProductService } from 'src/app/services/product-service';
 import { KpiService } from 'src/app/services/kpi-service';
 import { IntroService } from 'src/app/services/intro-service';
+import { MilestoneService } from 'src/app/services/milestone-service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,16 +23,73 @@ export class DashboardPage implements OnInit {
   loadingKpi = false;
   errorMessage = '';
 
+  milestones: Milestone[] = [];
+  loadingMilestones = false;
+  allMilestonesComplete = false;
+  milestonesDismissed = localStorage.getItem('milestones_dismissed') === 'true';
+
   readonly reportDate = new Date();
 
   constructor(
     private productService: ProductService,
     private kpiService: KpiService,
-    private introService: IntroService
+    private introService: IntroService,
+    private milestoneService: MilestoneService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.loadProducts();
+    this.loadMilestones();
+  }
+
+  get completedMilestones(): number {
+    return this.milestones.filter(m => m.completed).length;
+  }
+
+  get milestoneProgress(): number {
+    if (!this.milestones.length) return 0;
+    return Math.round((this.completedMilestones / this.milestones.length) * 100);
+  }
+
+  get showMilestones(): boolean {
+    return !this.milestonesDismissed && this.milestones.length > 0 && !this.allMilestonesComplete;
+  }
+
+  goToMilestone(milestone: Milestone): void {
+    if (!milestone.completed) {
+      this.router.navigateByUrl(milestone.route);
+    }
+  }
+
+  dismissMilestones(): void {
+    this.milestonesDismissed = true;
+    localStorage.setItem('milestones_dismissed', 'true');
+  }
+
+  private loadMilestones(): void {
+    // Show cached milestones instantly
+    const cached = this.milestoneService.getCached();
+    if (cached) {
+      this.milestones = cached;
+      this.allMilestonesComplete = cached.every(m => m.completed);
+      this.loadingMilestones = false;
+    } else {
+      this.loadingMilestones = true;
+    }
+
+    // Always refresh from APIs in the background
+    this.milestoneService.getMilestones().subscribe({
+      next: (milestones) => {
+        this.milestones = milestones;
+        this.allMilestonesComplete = milestones.every(m => m.completed);
+        this.loadingMilestones = false;
+      },
+      error: () => {
+        if (!cached) this.milestones = [];
+        this.loadingMilestones = false;
+      }
+    });
   }
 
   startTour(): void {
