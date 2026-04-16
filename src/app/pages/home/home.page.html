@@ -44,7 +44,16 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-bg-glow"></div>
-    <div class="hero-content">
+    <div class="hero-bg-glow hero-glow-2"></div>
+    <div class="hero-particles">
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+    </div>
+    <div class="hero-content hero-animate">
       <p class="eyebrow">Process Zero</p>
       <h1 class="hero-title">
         Turn sales into<br />
@@ -55,23 +64,45 @@
         on every sale — plus recurring payouts for as long as the customer stays active.
       </p>
       <div class="hero-actions">
-        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary">
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary pulse-btn">
           Start Earning
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
         <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/login')" size="large" shape="round" fill="outline" class="cta-secondary">
           Sign In
         </ion-button>
-        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-primary">
+        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-primary pulse-btn">
           Go to Dashboard
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
+      </div>
+      <!-- Trusted By Badge -->
+      <div class="trusted-badge">
+        <div class="avatar-stack">
+          <span class="mini-avatar">TM</span>
+          <span class="mini-avatar">LK</span>
+          <span class="mini-avatar">JO</span>
+          <span class="mini-avatar">NS</span>
+          <span class="mini-avatar more">+</span>
+        </div>
+        <span class="trusted-text">Trusted by <strong>500+</strong> sales reps</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Activity Ticker -->
+  <section class="ticker-section reveal-on-scroll">
+    <div class="ticker-track">
+      <div class="ticker-item" *ngFor="let item of activityFeed">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span class="ticker-text">{{ item.text }}</span>
+        <span class="ticker-time">{{ item.time }}</span>
       </div>
     </div>
   </section>
 
   <!-- Video Section -->
-  <section class="video-section">
+  <section class="video-section reveal-on-scroll">
     <div class="video-wrapper">
       <div class="video-container">
         <iframe
@@ -84,26 +115,26 @@
     </div>
   </section>
 
-  <!-- Stats Bar -->
-  <section class="stats-bar">
+  <!-- Stats Bar (Animated Counters) -->
+  <section class="stats-bar reveal-on-scroll">
     <div class="stat-item">
-      <span class="stat-number">20%</span>
+      <span class="stat-number">{{ animatedCommission }}%</span>
       <span class="stat-label">Commission Per Sale</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-      <span class="stat-number">Recurring</span>
-      <span class="stat-label">Ongoing Payouts</span>
+      <span class="stat-number">{{ animatedReps }}+</span>
+      <span class="stat-label">Active Sales Reps</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-      <span class="stat-number">$0</span>
-      <span class="stat-label">Product Dev Cost</span>
+      <span class="stat-number">{{ animatedProducts }}+</span>
+      <span class="stat-label">Digital Products</span>
     </div>
   </section>
 
   <!-- Value Proposition -->
-  <section class="value-section">
+  <section class="value-section reveal-on-scroll">
     <div class="value-content">
       <h2 class="section-title">Sell proven digital products.<br />Build compounding income.</h2>
       <p class="value-description">
@@ -130,7 +161,7 @@
   </section>
 
   <!-- Features Section -->
-  <section class="features-section">
+  <section class="features-section reveal-on-scroll">
     <div class="section-header">
       <p class="section-eyebrow">Why Process Zero</p>
       <h2 class="section-title">Everything you need to earn more</h2>
@@ -141,7 +172,7 @@
     </div>
 
     <div class="features-grid">
-      <div class="feature-card" *ngFor="let feature of features">
+      <div class="feature-card" *ngFor="let feature of features; let i = index" [style.--delay]="i * 0.08 + 's'">
         <div class="feature-icon-wrap">
           <ion-icon [name]="feature.icon"></ion-icon>
         </div>
@@ -151,14 +182,39 @@
     </div>
   </section>
 
+  <!-- Testimonials Section -->
+  <section class="testimonials-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">What Reps Are Saying</p>
+      <h2 class="section-title">Real results, real people</h2>
+    </div>
+    <div class="testimonial-widget">
+      <div class="testimonial-card" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial">
+        <ion-icon name="chatbubble-ellipses-outline" class="quote-icon"></ion-icon>
+        <p class="testimonial-quote">{{ t.quote }}</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar">{{ t.avatar }}</span>
+          <div>
+            <strong>{{ t.name }}</strong>
+            <span class="testimonial-role">{{ t.role }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-dots">
+        <span class="dot" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial" (click)="selectTestimonial(i)"></span>
+      </div>
+    </div>
+  </section>
+
   <!-- How It Works -->
-  <section class="how-it-works-section">
+  <section class="how-it-works-section reveal-on-scroll">
     <div class="section-header">
       <p class="section-eyebrow">How It Works</p>
       <h2 class="section-title">Four steps to recurring income</h2>
     </div>
     <div class="steps-grid">
-      <div class="step-card" *ngFor="let step of howItWorks">
+      <div class="step-card" *ngFor="let step of howItWorks; let i = index" [style.--delay]="i * 0.1 + 's'">
+        <div class="step-connector" *ngIf="i < howItWorks.length - 1"></div>
         <div class="step-number">{{ step.step }}</div>
         <h3>{{ step.title }}</h3>
         <p>{{ step.description }}</p>
@@ -167,16 +223,17 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="cta-section">
+  <section class="cta-section reveal-on-scroll">
     <div class="cta-card">
+      <div class="cta-glow"></div>
       <h2>Ready to turn your sales skills into recurring income?</h2>
       <p>Join Process Zero — where your effort compounds over time.</p>
       <div class="cta-actions">
-        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light">
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light pulse-btn">
           Create Account
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-light">
+        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-light pulse-btn">
           Open Dashboard
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>

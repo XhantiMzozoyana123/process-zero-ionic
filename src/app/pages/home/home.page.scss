@@ -8,6 +8,66 @@ $teal: #1d7874;
 $blue: #335c67;
 $coral: #c06c52;
 
+// ── Keyframe Animations ─────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heroSlideIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba($teal, 0.4); }
+  50%      { box-shadow: 0 0 0 12px rgba($teal, 0); }
+}
+
+@keyframes particleDrift {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  20%  { opacity: 0.6; }
+  100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.1); }
+}
+
+// ── Scroll Reveal ───────────────────────────────────────
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // ── Page background ─────────────────────────────────────
 .landing-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
@@ -207,6 +267,43 @@ $coral: #c06c52;
   right: -120px;
   background: radial-gradient(circle, rgba($gold, 0.3), transparent 65%);
   pointer-events: none;
+  animation: glowPulse 6s ease-in-out infinite;
+}
+
+.hero-glow-2 {
+  top: auto;
+  bottom: -200px;
+  right: auto;
+  left: -150px;
+  background: radial-gradient(circle, rgba($teal, 0.2), transparent 65%);
+  animation-delay: 3s;
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba($gold, 0.5);
+    animation: particleDrift 6s ease-in-out infinite;
+
+    &:nth-child(1) { left: 15%; bottom: 10%; animation-duration: 5s; animation-delay: 0s; }
+    &:nth-child(2) { left: 35%; bottom: 5%; animation-duration: 7s; animation-delay: 1s; background: rgba($teal, 0.4); }
+    &:nth-child(3) { left: 55%; bottom: 15%; animation-duration: 6s; animation-delay: 2s; }
+    &:nth-child(4) { left: 75%; bottom: 8%; animation-duration: 8s; animation-delay: 0.5s; background: rgba($teal, 0.4); }
+    &:nth-child(5) { left: 25%; bottom: 20%; animation-duration: 5.5s; animation-delay: 3s; width: 4px; height: 4px; }
+    &:nth-child(6) { left: 65%; bottom: 12%; animation-duration: 7.5s; animation-delay: 1.5s; width: 4px; height: 4px; background: rgba($teal, 0.3); }
+  }
+}
+
+.hero-animate {
+  animation: heroSlideIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-content {
@@ -234,9 +331,11 @@ $coral: #c06c52;
 
 .highlight {
   background: linear-gradient(135deg, $teal, $blue);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: shimmer 4s linear infinite;
 }
 
 .hero-subtitle {
@@ -256,6 +355,10 @@ $coral: #c06c52;
   flex-wrap: wrap;
 }
 
+.pulse-btn {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
 .cta-primary {
   --background: linear-gradient(135deg, #{$teal}, #{$blue});
   --border-radius: 50px;
@@ -263,6 +366,11 @@ $coral: #c06c52;
   --color: #fff;
   font-weight: 600;
   letter-spacing: 0.02em;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.04);
+  }
 }
 
 .cta-secondary {
@@ -270,6 +378,54 @@ $coral: #c06c52;
   --color: #{$teal};
   --border-radius: 50px;
   font-weight: 600;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.04);
+  }
+}
+
+// ── Trusted Badge ───────────────────────────────────────
+.trusted-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+  animation: fadeInUp 1s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.avatar-stack {
+  display: flex;
+
+  .mini-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $teal, $blue);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid $paper;
+    margin-left: -8px;
+
+    &:first-child { margin-left: 0; }
+    &.more { background: rgba($ink, 0.12); color: $ink; }
+  }
+}
+
+.trusted-text {
+  font-size: 0.85rem;
+  color: $muted;
+  font-weight: 500;
+
+  strong {
+    color: $ink;
+    font-weight: 700;
+  }
 }
 
 // ── Video section ───────────────────────────────────────
@@ -295,6 +451,46 @@ $coral: #c06c52;
   padding-bottom: 56.25%;
   border-radius: 14px;
   overflow: hidden;
+}
+
+// ── Live Activity Ticker ────────────────────────────────
+.ticker-section {
+  padding: 0 18px 24px;
+  max-width: 860px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 32px;
+  animation: tickerScroll 30s linear infinite;
+  width: max-content;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 1rem;
+    color: $teal;
+  }
+}
+
+.ticker-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.ticker-time {
+  font-size: 0.72rem;
+  color: $muted;
+  margin-left: 4px;
 }
 
 // ── Stats bar ───────────────────────────────────────────
@@ -387,11 +583,20 @@ $coral: #c06c52;
   border-radius: 20px;
   box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
   padding: 28px 24px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+
+  .revealed & {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0s);
+  }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 18px 44px rgba(19, 31, 31, 0.14);
+
+    .feature-icon-wrap {
+      transform: scale(1.1);
+    }
   }
 
   h3 {
@@ -417,6 +622,7 @@ $coral: #c06c52;
   justify-content: center;
   border-radius: 14px;
   background: linear-gradient(135deg, rgba($teal, 0.12), rgba($blue, 0.08));
+  transition: transform 0.3s ease;
 
   ion-icon {
     font-size: 24px;
@@ -468,6 +674,12 @@ $coral: #c06c52;
   font-weight: 600;
   color: $ink;
   box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 22px rgba(19, 31, 31, 0.1);
+  }
 
   ion-icon {
     font-size: 20px;
@@ -495,6 +707,12 @@ $coral: #c06c52;
   box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
   padding: 28px 22px;
   text-align: center;
+  position: relative;
+
+  .revealed & {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0s);
+  }
 
   h3 {
     font-size: 1rem;
@@ -511,6 +729,21 @@ $coral: #c06c52;
   }
 }
 
+.step-connector {
+  display: none;
+
+  @media (min-width: 601px) {
+    display: block;
+    position: absolute;
+    top: 40px;
+    right: -10px;
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba($teal, 0.3), rgba($teal, 0.08));
+    z-index: 1;
+  }
+}
+
 .step-number {
   width: 40px;
   height: 40px;
@@ -523,6 +756,115 @@ $coral: #c06c52;
   color: #fff;
   font-size: 1.1rem;
   font-weight: 800;
+  animation: float 4s ease-in-out infinite;
+}
+
+// ── Testimonials Widget ─────────────────────────────────
+.testimonials-section {
+  padding: 48px 18px 40px;
+}
+
+.testimonial-widget {
+  max-width: 580px;
+  margin: 0 auto;
+  position: relative;
+  min-height: 200px;
+}
+
+.testimonial-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba($paper, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(19, 31, 31, 0.08);
+  padding: 32px 28px 28px;
+  opacity: 0;
+  transform: translateX(40px) scale(0.96);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+    position: relative;
+  }
+}
+
+.quote-icon {
+  font-size: 1.6rem;
+  color: rgba($gold, 0.5);
+  margin-bottom: 8px;
+}
+
+.testimonial-quote {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: $ink;
+  font-weight: 500;
+  margin: 0 0 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  strong {
+    display: block;
+    font-size: 0.92rem;
+    color: $ink;
+  }
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $teal, $blue);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.testimonial-role {
+  font-size: 0.78rem;
+  color: $muted;
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba($ink, 0.15);
+    cursor: pointer;
+    transition: background 0.25s, transform 0.25s;
+
+    &.active {
+      background: $teal;
+      transform: scale(1.3);
+    }
+
+    &:hover:not(.active) {
+      background: rgba($teal, 0.4);
+    }
+  }
 }
 
 // ── CTA section ─────────────────────────────────────────
@@ -568,6 +910,17 @@ $coral: #c06c52;
   }
 }
 
+.cta-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  left: -60px;
+  bottom: -80px;
+  background: radial-gradient(circle, rgba($teal, 0.3), transparent 66%);
+  pointer-events: none;
+  animation: glowPulse 5s ease-in-out infinite;
+}
+
 .cta-actions {
   position: relative;
 }
@@ -581,6 +934,11 @@ $coral: #c06c52;
   font-weight: 600;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.04);
+  }
 }
 
 // ── Footer ──────────────────────────────────────────────
