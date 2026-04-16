@@ -93,26 +93,16 @@ export class MilestoneService {
       {
         id: 'browse-leads',
         step: 3,
-        title: 'Browse the Lead Lake',
-        description: 'Explore the Lead Lake to discover prospects you can reach out to.',
+        title: 'Browse & Add a Lead',
+        description: 'Explore the Lead Lake to find prospects and add one to your personal contact list.',
         icon: 'globe-outline',
         route: '/account/leadlake',
-        completed: assessmentPassed && hasContacts,
-        loading: false
-      },
-      {
-        id: 'add-contact',
-        step: 4,
-        title: 'Add a Lead to My Contacts',
-        description: 'Promote a lead from the Lead Lake into your personal contact list.',
-        icon: 'person-add-outline',
-        route: '/account/contacts',
         completed: hasContacts,
         loading: false
       },
       {
         id: 'book-meeting',
-        step: 5,
+        step: 4,
         title: 'Book a Meeting',
         description: 'Schedule a meeting with one of your contacts when they agree to talk.',
         icon: 'calendar-outline',
@@ -122,7 +112,7 @@ export class MilestoneService {
       },
       {
         id: 'update-kpi',
-        step: 6,
+        step: 5,
         title: 'Update KPI Metrics',
         description: 'Submit your latest KPI metrics to track your performance and progress.',
         icon: 'stats-chart-outline',

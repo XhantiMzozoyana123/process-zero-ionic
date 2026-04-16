@@ -441,4 +441,15 @@ export class IntroService {
       }
     ]);
   }
+
+  startKpiFabTour(onComplete?: () => void): void {
+    this.launchTour([
+      {
+        element: '.kpi-fab',
+        title: 'Add KPI Metrics',
+        intro: 'Tap this button to open the KPI reporting form and submit your latest performance metrics.',
+        position: 'left'
+      }
+    ], onComplete);
+  }
 }

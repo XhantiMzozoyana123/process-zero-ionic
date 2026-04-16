@@ -58,6 +58,15 @@ export class DashboardPage implements OnInit {
 
   goToMilestone(milestone: Milestone): void {
     if (!milestone.completed) {
+      if (milestone.id === 'update-kpi') {
+        // Already on the dashboard — highlight the KPI FAB, then open its modal
+        this.introService.startKpiFabTour(() => {
+          const fabBtn = document.querySelector<HTMLElement>('.kpi-fab-btn');
+          if (fabBtn) fabBtn.click();
+        });
+        return;
+      }
+
       this.router.navigateByUrl(milestone.route).then(() => {
         const tourDelay = 800;
         const tourMap: Record<string, () => void> = {
@@ -65,7 +74,6 @@ export class DashboardPage implements OnInit {
           'browse-leads':       () => this.introService.startLeadLakeTour(),
           'add-contact':        () => this.introService.startContactsTour(),
           'book-meeting':       () => this.introService.startMeetingsTour(),
-          'update-kpi':         () => this.introService.startDashboardTour(),
         };
         const tourFn = tourMap[milestone.id];
         if (tourFn) {
