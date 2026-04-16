@@ -489,6 +489,25 @@ $coral: #c06c52;
 	margin-bottom: 18px;
 }
 
+.milestones-subtitle {
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.35;
+	margin: 0 0 4px;
+	color: $ink;
+}
+
+.milestones-count {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: $muted;
+	margin: 0;
+}
+
+.milestones-video {
+	margin-bottom: 18px;
+}
+
 .milestones-header-left {
 	display: flex;
 	gap: 14px;
@@ -767,6 +786,8 @@ $coral: #c06c52;
 
 	.eyebrow { color: rgba($ink, 0.6); }
 	h1 { color: $ink; }
+	.milestones-subtitle { color: $ink; }
+	.milestones-count { color: rgba($ink, 0.55); }
 }
 
 .milestones-complete-hero {
