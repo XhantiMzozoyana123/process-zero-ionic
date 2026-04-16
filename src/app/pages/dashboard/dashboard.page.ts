@@ -65,6 +65,7 @@ export class DashboardPage implements OnInit {
           'browse-leads':       () => this.introService.startLeadLakeTour(),
           'add-contact':        () => this.introService.startContactsTour(),
           'book-meeting':       () => this.introService.startMeetingsTour(),
+          'update-kpi':         () => this.introService.startDashboardTour(),
         };
         const tourFn = tourMap[milestone.id];
         if (tourFn) {

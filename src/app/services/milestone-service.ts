@@ -119,6 +119,16 @@ export class MilestoneService {
         route: '/account/meetings',
         completed: hasMeetings,
         loading: false
+      },
+      {
+        id: 'update-kpi',
+        step: 6,
+        title: 'Update KPI Metrics',
+        description: 'Submit your latest KPI metrics to track your performance and progress.',
+        icon: 'stats-chart-outline',
+        route: '/account/dashboard',
+        completed: false,
+        loading: false
       }
     ];
   }
