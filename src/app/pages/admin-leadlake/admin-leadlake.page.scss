@@ -363,6 +363,30 @@ $muted: #607078;
   }
 }
 
+// ── Download template button ────────────────────────────
+.download-template-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: 1px solid rgba($teal, 0.25);
+  border-radius: 10px;
+  background: rgba($teal, 0.08);
+  color: $teal;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  ion-icon { font-size: 16px; }
+
+  &:hover {
+    background: rgba($teal, 0.15);
+    border-color: rgba($teal, 0.4);
+  }
+}
+
 // ── File picker ─────────────────────────────────────────
 .file-picker {
   margin-bottom: 16px;

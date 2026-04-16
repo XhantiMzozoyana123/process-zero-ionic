@@ -147,6 +147,19 @@ export class AdminLeadlakePage implements OnInit {
   }
 
   // ── CSV Upload ────────────────────────────────────────
+  downloadTemplate() {
+    const header = 'email,firstName,lastName,phone,company,job,location,industry';
+    const example = 'jane@example.com,Jane,Doe,+27821234567,Acme Corp,Sales Manager,Cape Town,Technology';
+    const csv = header + '\n' + example + '\n';
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'template.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   openUploadModal() {
     this.csvFile = null;
     this.csvFileName = '';
