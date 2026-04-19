@@ -16,7 +16,7 @@ $coral: #c06c52;
 }
 
 // ── Navigation Bar ─────────────────────────────────────
-.feature-nav {
+.landing-nav {
   position: sticky;
   top: 0;
   z-index: 100;
@@ -27,7 +27,7 @@ $coral: #c06c52;
   padding: 0 20px;
 }
 
-.feature-nav-inner {
+.nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,7 +51,7 @@ $coral: #c06c52;
   }
 }
 
-.nav-actions {
+.nav-links {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -551,6 +551,12 @@ $coral: #c06c52;
 
 // ── Responsive ─────────────────────────────────────────
 @media (max-width: 600px) {
+  .nav-brand span { display: none; }
+  .nav-link {
+    font-size: 0;
+    padding: 8px;
+    ion-icon { font-size: 1.2rem; }
+  }
   .feature-hero h1 { font-size: 1.7rem; }
   .feature-hero { padding: 48px 18px 40px; }
   .steps-grid { grid-template-columns: 1fr; }
