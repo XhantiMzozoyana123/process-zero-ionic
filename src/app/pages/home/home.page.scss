@@ -130,10 +130,9 @@ $danger: #d94f4f;
   text-decoration: none;
   color: $ink;
 
-  .nav-logo {
-    height: 30px;
-    width: 30px;
-    border-radius: 6px;
+  ion-icon {
+    font-size: 1.3rem;
+    color: $teal;
   }
 
   span {

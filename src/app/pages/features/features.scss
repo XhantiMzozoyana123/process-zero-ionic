@@ -44,6 +44,11 @@ $coral: #c06c52;
   text-decoration: none;
   color: $ink;
 
+  ion-icon {
+    font-size: 1.3rem;
+    color: $teal;
+  }
+
   span {
     font-size: 1.05rem;
     font-weight: 800;

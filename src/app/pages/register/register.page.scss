@@ -47,11 +47,20 @@ $muted: #607078;
   }
 
   .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     font-size: 1.75rem;
     font-weight: 700;
     color: $ink;
     margin: 0 0 6px;
     letter-spacing: -0.5px;
+
+    ion-icon {
+      font-size: 1.6rem;
+      color: $teal;
+    }
   }
 
   .subtitle {
