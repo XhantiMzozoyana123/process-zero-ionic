@@ -24,6 +24,10 @@
             </a>
           </div>
         </div>
+        <a class="nav-link" (click)="navigateTo('/agency')">
+          <ion-icon name="business-outline"></ion-icon>
+          For Agencies
+        </a>
         <a class="nav-link" (click)="navigateTo('/help')">
           <ion-icon name="book-outline"></ion-icon>
           Help &amp; Guide
@@ -52,8 +56,15 @@
       <span class="particle"></span>
       <span class="particle"></span>
       <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
     </div>
     <div class="hero-content hero-animate">
+      <!-- Earnings Badge -->
+      <div class="hero-badge">
+        <ion-icon name="trending-up-outline"></ion-icon>
+        Reps earned R2.4M+ in commissions
+      </div>
       <p class="eyebrow">Process Zero</p>
       <h1 class="hero-title">
         Turn sales into<br />
@@ -65,7 +76,7 @@
       </p>
       <div class="hero-actions">
         <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary pulse-btn">
-          Start Earning
+          Start Earning Now
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
         <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/login')" size="large" shape="round" fill="outline" class="cta-secondary">
@@ -85,7 +96,7 @@
           <span class="mini-avatar">NS</span>
           <span class="mini-avatar more">+</span>
         </div>
-        <span class="trusted-text">Trusted by <strong>500+</strong> sales reps</span>
+        <span class="trusted-text">Trusted by <strong>500+</strong> sales reps across South Africa</span>
       </div>
     </div>
   </section>
@@ -93,6 +104,12 @@
   <!-- Live Activity Ticker -->
   <section class="ticker-section reveal-on-scroll">
     <div class="ticker-track">
+      <div class="ticker-item" *ngFor="let item of activityFeed">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span class="ticker-text">{{ item.text }}</span>
+        <span class="ticker-time">{{ item.time }}</span>
+      </div>
+      <!-- Duplicate for infinite scroll -->
       <div class="ticker-item" *ngFor="let item of activityFeed">
         <ion-icon [name]="item.icon"></ion-icon>
         <span class="ticker-text">{{ item.text }}</span>
@@ -123,6 +140,11 @@
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
+      <span class="stat-number">R{{ animatedAvgEarnings | number }}</span>
+      <span class="stat-label">Avg Monthly Earnings</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
       <span class="stat-number">{{ animatedReps }}+</span>
       <span class="stat-label">Active Sales Reps</span>
     </div>
@@ -130,6 +152,79 @@
     <div class="stat-item">
       <span class="stat-number">{{ animatedProducts }}+</span>
       <span class="stat-label">Digital Products</span>
+    </div>
+  </section>
+
+  <!-- Earnings Calculator -->
+  <section class="calculator-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">See Your Potential</p>
+      <h2 class="section-title">How much could you earn?</h2>
+      <p class="section-subtitle">Move the slider to see your projected monthly income at 20% commission.</p>
+    </div>
+    <div class="calculator-card">
+      <div class="calc-input-group">
+        <label class="calc-label">Sales per month</label>
+        <div class="calc-slider-row">
+          <input type="range" min="1" max="50" [value]="calcSales" (input)="onCalcChange($event)" class="calc-slider" />
+          <span class="calc-value-badge">{{ calcSales }}</span>
+        </div>
+      </div>
+      <div class="calc-results">
+        <div class="calc-result-card">
+          <ion-icon name="cash-outline"></ion-icon>
+          <span class="calc-result-number">R{{ calcMonthly | number }}</span>
+          <span class="calc-result-label">Per Month</span>
+        </div>
+        <div class="calc-result-card highlight-result">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <span class="calc-result-number">R{{ calcYearly | number }}</span>
+          <span class="calc-result-label">Per Year</span>
+        </div>
+        <div class="calc-result-card compound-result">
+          <ion-icon name="rocket-outline"></ion-icon>
+          <span class="calc-result-number">R{{ calcRecurring | number }}</span>
+          <span class="calc-result-label">Recurring (12 months)</span>
+        </div>
+      </div>
+      <p class="calc-note">* Based on average product value of R2,000 with 20% commission. Recurring assumes 85% customer retention.</p>
+    </div>
+  </section>
+
+  <!-- Income Comparison -->
+  <section class="comparison-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Difference</p>
+      <h2 class="section-title">Traditional sales vs. Process Zero</h2>
+    </div>
+    <div class="comparison-inner">
+      <div class="comparison-card comparison-old">
+        <div class="comparison-icon-wrap bad">
+          <ion-icon name="remove-circle-outline"></ion-icon>
+        </div>
+        <h3>Traditional Sales Jobs</h3>
+        <ul class="comparison-list">
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Fixed salary, capped potential</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Someone else's product</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Office hours, rigid schedule</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> No recurring income</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Limited growth path</li>
+        </ul>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="comparison-card comparison-new">
+        <div class="comparison-icon-wrap good">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <h3>Process Zero Rep</h3>
+        <ul class="comparison-list">
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> 20% commission, unlimited ceiling</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Proven digital products ready to sell</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Work from anywhere, your schedule</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Recurring income that compounds</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Full dashboard, leads & analytics</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -155,6 +250,14 @@
         <div class="value-chip">
           <ion-icon name="checkmark-circle" color="success"></ion-icon>
           <span>Your effort compounds over time</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Real-time performance tracking</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Transparent, on-time payouts</span>
         </div>
       </div>
     </div>
@@ -182,6 +285,58 @@
     </div>
   </section>
 
+  <!-- Earnings Milestones -->
+  <section class="milestones-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Your Earning Journey</p>
+      <h2 class="section-title">Where will you be in 6 months?</h2>
+      <p class="section-subtitle">Top reps hit these milestones faster than you think.</p>
+    </div>
+    <div class="milestones-track">
+      <div class="milestone-line"></div>
+      <div class="milestone-card" *ngFor="let m of milestones; let i = index" [style.--delay]="i * 0.12 + 's'">
+        <div class="milestone-dot" [class.gold]="m.highlight">
+          <ion-icon [name]="m.icon"></ion-icon>
+        </div>
+        <div class="milestone-info">
+          <span class="milestone-amount">{{ m.amount }}</span>
+          <span class="milestone-label">{{ m.label }}</span>
+          <span class="milestone-time">{{ m.timeframe }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leaderboard Preview -->
+  <section class="leaderboard-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Top Performers</p>
+      <h2 class="section-title">This month's top earners</h2>
+      <p class="section-subtitle">Real reps, real results. Will you be next?</p>
+    </div>
+    <div class="leaderboard-card">
+      <div class="leaderboard-row" *ngFor="let rep of leaderboard; let i = index" [class.top-3]="i < 3">
+        <span class="leaderboard-rank" [class.gold]="i === 0" [class.silver]="i === 1" [class.bronze]="i === 2">
+          <ion-icon *ngIf="i < 3" name="trophy"></ion-icon>
+          <span *ngIf="i >= 3">{{ i + 1 }}</span>
+        </span>
+        <span class="leaderboard-avatar">{{ rep.avatar }}</span>
+        <div class="leaderboard-info">
+          <span class="leaderboard-name">{{ rep.name }}</span>
+          <span class="leaderboard-location">{{ rep.location }}</span>
+        </div>
+        <div class="leaderboard-stats">
+          <span class="leaderboard-earnings">{{ rep.earnings }}</span>
+          <span class="leaderboard-deals">{{ rep.deals }} deals</span>
+        </div>
+      </div>
+      <div class="leaderboard-cta">
+        <ion-icon name="flash-outline"></ion-icon>
+        <span>Your name could be here next month</span>
+      </div>
+    </div>
+  </section>
+
   <!-- Testimonials Section -->
   <section class="testimonials-section reveal-on-scroll">
     <div class="section-header">
@@ -190,6 +345,9 @@
     </div>
     <div class="testimonial-widget">
       <div class="testimonial-card" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial">
+        <div class="testimonial-earnings-tag" *ngIf="t.earnings">
+          <ion-icon name="cash-outline"></ion-icon> Earned {{ t.earnings }}
+        </div>
         <ion-icon name="chatbubble-ellipses-outline" class="quote-icon"></ion-icon>
         <p class="testimonial-quote">{{ t.quote }}</p>
         <div class="testimonial-author">
@@ -222,10 +380,53 @@
     </div>
   </section>
 
+  <!-- Urgency Banner -->
+  <section class="urgency-banner reveal-on-scroll">
+    <div class="urgency-inner">
+      <div class="urgency-icon">
+        <ion-icon name="flame-outline"></ion-icon>
+      </div>
+      <div class="urgency-text">
+        <h3><strong>{{ animatedJoinedThisWeek }}</strong> reps joined this week</h3>
+        <p>R<strong>{{ animatedPaidOut | number }}</strong> in commissions paid out this month. Don't get left behind.</p>
+      </div>
+      <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" fill="solid" class="urgency-btn">
+        Claim Your Spot
+      </ion-button>
+      <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" fill="solid" class="urgency-btn">
+        Go to Dashboard
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Got Questions?</p>
+      <h2 class="section-title">Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs" [class.open]="faq.open" (click)="faq.open = !faq.open">
+        <div class="faq-question">
+          <span>{{ faq.question }}</span>
+          <ion-icon [name]="faq.open ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </div>
+        <div class="faq-answer" *ngIf="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="cta-section reveal-on-scroll">
     <div class="cta-card">
       <div class="cta-glow"></div>
+      <div class="cta-glow cta-glow-2"></div>
+      <div class="cta-badge">
+        <ion-icon name="diamond-outline"></ion-icon>
+        Free to Join — No Risk
+      </div>
       <h2>Ready to turn your sales skills into recurring income?</h2>
       <p>Join Process Zero — where your effort compounds over time.</p>
       <div class="cta-actions">
@@ -237,6 +438,11 @@
           Open Dashboard
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
+      </div>
+      <div class="cta-reassurance">
+        <span><ion-icon name="shield-checkmark-outline"></ion-icon> No upfront costs</span>
+        <span><ion-icon name="time-outline"></ion-icon> Set up in 5 minutes</span>
+        <span><ion-icon name="card-outline"></ion-icon> No credit card required</span>
       </div>
     </div>
   </section>

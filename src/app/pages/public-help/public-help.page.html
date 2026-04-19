@@ -1,17 +1,48 @@
 ﻿<ion-content class="public-docs-page" scrollEvents="true">
-  <!-- Header nav -->
-  <section class="docs-topbar">
-    <ion-button fill="clear" class="back-btn" (click)="navigateTo('/home')">
-      <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
-      Back to Home
-    </ion-button>
-    <ion-button *ngIf="!isLoggedIn" fill="solid" class="auth-btn" (click)="navigateTo('/login')">
-      Sign In
-    </ion-button>
-    <ion-button *ngIf="isLoggedIn" fill="solid" class="auth-btn" (click)="navigateTo('/account/dashboard')">
-      Dashboard
-    </ion-button>
-  </section>
+  <!-- Navigation Bar -->
+  <nav class="landing-nav">
+    <div class="nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-links">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/agency')">
+          <ion-icon name="business-outline"></ion-icon>
+          For Agencies
+        </a>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
 
   <!-- Mobile TOC toggle -->
   <button class="toc-toggle" (click)="toggleSidebar()" [class.active]="sidebarOpen">

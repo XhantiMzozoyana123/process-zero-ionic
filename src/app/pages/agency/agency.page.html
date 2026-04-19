@@ -1,0 +1,429 @@
+<ion-content [fullscreen]="true" class="agency-page">
+
+  <!-- Navigation Bar -->
+  <nav class="landing-nav">
+    <div class="nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-links">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/agency')">
+          <ion-icon name="business-outline"></ion-icon>
+          For Agencies
+        </a>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">
+          Sign In
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">
+          Get Started
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">
+          Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-bg-glow hero-glow-2"></div>
+    <div class="hero-particles">
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+    </div>
+    <div class="hero-content hero-animate">
+      <div class="hero-badge">
+        <ion-icon name="flash"></ion-icon>
+        <span>Limited Partner Slots Available</span>
+      </div>
+      <p class="eyebrow">For Agencies</p>
+      <h1 class="hero-title">
+        We book the meetings.<br />
+        <span class="highlight">You close the deals.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Partner with Process Zero to get a steady stream of pre-qualified, booked appointments
+        for your agency — powered by our performance-driven sales network. No cold outreach, no wasted ad spend.
+      </p>
+      <div class="hero-actions">
+        <ion-button (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary pulse-btn">
+          Become a Partner
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="navigateTo('/help')" size="large" shape="round" fill="outline" class="cta-secondary">
+          See How It Works
+        </ion-button>
+      </div>
+      <!-- Trusted By Badge -->
+      <div class="trusted-badge">
+        <div class="avatar-stack">
+          <span class="mini-avatar">SV</span>
+          <span class="mini-avatar">MT</span>
+          <span class="mini-avatar">PK</span>
+          <span class="mini-avatar">DL</span>
+          <span class="mini-avatar more">+</span>
+        </div>
+        <span class="trusted-text">Joined by <strong>120+</strong> agencies this quarter</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Activity Ticker -->
+  <section class="ticker-section reveal-on-scroll">
+    <div class="ticker-track">
+      <div class="ticker-item" *ngFor="let item of liveFeed">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span class="ticker-text">{{ item.text }}</span>
+        <span class="ticker-time">{{ item.time }}</span>
+      </div>
+      <!-- Duplicate for infinite scroll -->
+      <div class="ticker-item" *ngFor="let item of liveFeed">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span class="ticker-text">{{ item.text }}</span>
+        <span class="ticker-time">{{ item.time }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar (Animated Counters) -->
+  <section class="stats-bar reveal-on-scroll">
+    <div class="stat-item">
+      <span class="stat-number">{{ animatedReps }}+</span>
+      <span class="stat-label">Active Sales Reps</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number">{{ animatedDays }}</span>
+      <span class="stat-label">Days to First Appointment</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number">{{ animatedRate }}%</span>
+      <span class="stat-label">Avg. Close Rate</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number">{{ animatedMeetings }}+</span>
+      <span class="stat-label">Meetings Booked</span>
+    </div>
+  </section>
+
+  <!-- Problem → Solution Section -->
+  <section class="problem-section reveal-on-scroll">
+    <div class="problem-inner">
+      <div class="problem-card problem-bad">
+        <div class="problem-icon-wrap bad">
+          <ion-icon name="close-circle"></ion-icon>
+        </div>
+        <h3>Without Process Zero</h3>
+        <ul class="problem-list">
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Burning R15k–R50k/mo on ads with no meetings</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> SDRs costing R20k+ salaries before results</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Months of trial and error to build pipeline</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Unqualified leads wasting your closers' time</li>
+        </ul>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="problem-card problem-good">
+        <div class="problem-icon-wrap good">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        <h3>With Process Zero</h3>
+        <ul class="problem-list">
+          <li><ion-icon name="checkmark-circle-outline" color="success"></ion-icon> Booked meetings from day 5 — R0 upfront</li>
+          <li><ion-icon name="checkmark-circle-outline" color="success"></ion-icon> 500+ trained reps working your pipeline</li>
+          <li><ion-icon name="checkmark-circle-outline" color="success"></ion-icon> Only pay per qualified appointment</li>
+          <li><ion-icon name="checkmark-circle-outline" color="success"></ion-icon> Decision-makers on your calendar weekly</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="features-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Why Partner With Us</p>
+      <h2 class="section-title">Everything your agency needs to grow</h2>
+      <p class="section-subtitle">
+        Stop chasing leads and start closing deals. We handle prospecting, qualification,
+        and appointment setting so your team can focus on revenue.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let b of benefits; let i = index" [style.--delay]="i * 0.08 + 's'">
+        <div class="feature-icon-wrap">
+          <ion-icon [name]="b.icon"></ion-icon>
+        </div>
+        <h3>{{ b.title }}</h3>
+        <p>{{ b.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="comparison-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Difference</p>
+      <h2 class="section-title">Process Zero vs. traditional lead gen</h2>
+    </div>
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="us-col">
+              <div class="col-badge us">
+                <ion-icon name="pulse-outline"></ion-icon>
+                Process Zero
+              </div>
+            </th>
+            <th class="them-col">
+              <div class="col-badge them">
+                Traditional Methods
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of comparisonRows">
+            <td class="feature-name">{{ row.feature }}</td>
+            <td class="us-cell">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              {{ row.us }}
+            </td>
+            <td class="them-cell">
+              <ion-icon name="close-circle" color="danger"></ion-icon>
+              {{ row.them }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">How It Works</p>
+      <h2 class="section-title">Four steps to a full pipeline</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" *ngFor="let step of howItWorks; let i = index" [style.--delay]="i * 0.1 + 's'">
+        <div class="step-connector" *ngIf="i < howItWorks.length - 1"></div>
+        <div class="step-number">{{ step.step }}</div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Calculator Visual -->
+  <section class="roi-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Your Return</p>
+      <h2 class="section-title">What 10 booked meetings could mean</h2>
+    </div>
+    <div class="roi-cards">
+      <div class="roi-card">
+        <div class="roi-icon"><ion-icon name="calendar"></ion-icon></div>
+        <span class="roi-number">10</span>
+        <span class="roi-label">Meetings Booked</span>
+      </div>
+      <div class="roi-arrow"><ion-icon name="arrow-forward"></ion-icon></div>
+      <div class="roi-card">
+        <div class="roi-icon"><ion-icon name="people"></ion-icon></div>
+        <span class="roi-number">6–7</span>
+        <span class="roi-label">Show Up</span>
+      </div>
+      <div class="roi-arrow"><ion-icon name="arrow-forward"></ion-icon></div>
+      <div class="roi-card">
+        <div class="roi-icon"><ion-icon name="briefcase"></ion-icon></div>
+        <span class="roi-number">3–4</span>
+        <span class="roi-label">Proposals Sent</span>
+      </div>
+      <div class="roi-arrow"><ion-icon name="arrow-forward"></ion-icon></div>
+      <div class="roi-card highlight-card">
+        <div class="roi-icon"><ion-icon name="cash"></ion-icon></div>
+        <span class="roi-number">R120k+</span>
+        <span class="roi-label">Closed Revenue</span>
+      </div>
+    </div>
+    <p class="roi-footnote">Based on average agency deal size of R40k and 67% close rate from proposals</p>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Partner Stories</p>
+      <h2 class="section-title">Agencies winning with Process Zero</h2>
+    </div>
+    <div class="testimonial-widget">
+      <div class="testimonial-card" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial">
+        <ion-icon name="chatbubble-ellipses-outline" class="quote-icon"></ion-icon>
+        <p class="testimonial-quote">"{{ t.quote }}"</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar">{{ t.avatar }}</span>
+          <div>
+            <strong>{{ t.name }}</strong>
+            <span class="testimonial-role">{{ t.role }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-dots">
+        <span class="dot" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial" (click)="selectTestimonial(i)"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You Get Section -->
+  <section class="value-section reveal-on-scroll">
+    <div class="value-content">
+      <h2 class="section-title">What your agency gets</h2>
+      <p class="value-description">
+        Process Zero gives your agency access to a dedicated sales force that books qualified meetings
+        on your behalf. Our reps are trained, performance-driven, and focused on delivering
+        <strong>decision-makers who are ready to talk</strong>. No more wasted hours on cold calls or
+        unqualified demos.
+      </p>
+      <div class="value-highlights">
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Booked appointments on your calendar</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Tailored to your ideal client profile</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Pay only for qualified appointments</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Real-time pipeline dashboard</span>
+        </div>
+        <div class="value-chip">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Dedicated partner success manager</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Urgency Banner -->
+  <section class="urgency-banner reveal-on-scroll">
+    <div class="urgency-inner">
+      <div class="urgency-icon">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <div class="urgency-text">
+        <h3>We only onboard <strong>10 new agencies</strong> per month.</h3>
+        <p>To maintain quality, we limit new partnerships. Current availability: <strong>3 slots remaining for this month.</strong></p>
+      </div>
+      <ion-button (click)="navigateTo('/register')" fill="solid" shape="round" class="urgency-btn">
+        Claim Your Spot
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 class="section-title">Common questions from agencies</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.open]="faq.open" (click)="toggleFaq(i)">
+        <div class="faq-question">
+          <span>{{ faq.question }}</span>
+          <ion-icon [name]="faq.open ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </div>
+        <div class="faq-answer" *ngIf="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="cta-section reveal-on-scroll">
+    <div class="cta-card">
+      <div class="cta-glow"></div>
+      <div class="cta-glow cta-glow-2"></div>
+      <div class="cta-badge">
+        <ion-icon name="shield-checkmark"></ion-icon>
+        Zero Risk — Pay Only for Results
+      </div>
+      <h2>Ready to fill your agency's pipeline?</h2>
+      <p>Partner with Process Zero and start receiving booked appointments in days — not months.</p>
+      <div class="cta-actions">
+        <ion-button (click)="navigateTo('/register')" size="large" shape="round" class="cta-light pulse-btn">
+          Start Your Partnership
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="cta-reassurance">
+        <span><ion-icon name="checkmark-circle"></ion-icon> No credit card required</span>
+        <span><ion-icon name="checkmark-circle"></ion-icon> Setup in 24 hours</span>
+        <span><ion-icon name="checkmark-circle"></ion-icon> Cancel anytime</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')">
+        <ion-icon name="home-outline"></ion-icon>
+        Home
+      </a>
+      <span class="footer-dot">&middot;</span>
+      <a class="footer-link" (click)="navigateTo('/help')">
+        <ion-icon name="book-outline"></ion-icon>
+        Help &amp; Guide
+      </a>
+      <span class="footer-dot">&middot;</span>
+      <a class="footer-link" (click)="navigateTo('/terms')">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Terms of Use
+      </a>
+      <span class="footer-dot">&middot;</span>
+      <a class="footer-link" (click)="navigateTo('/privacy')">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        Privacy Policy
+      </a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>
