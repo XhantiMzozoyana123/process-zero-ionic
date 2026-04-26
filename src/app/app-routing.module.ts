@@ -64,6 +64,10 @@ const routes: Routes = [
   {
     path: 'agency',
     loadChildren: () => import('./pages/agency/agency.module').then( m => m.AgencyPageModule)
+  },
+  {
+    path: 'replay-ai',
+    loadChildren: () => import('./pages/replay-ai/replay-ai.module').then( m => m.ReplayAiPageModule)
   }
 ];
 

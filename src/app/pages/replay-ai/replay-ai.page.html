@@ -1,0 +1,470 @@
+<!-- RELAY AI FLAGSHIP PAGE -->
+<ion-content [fullscreen]="true" class="relay-ai-flagship">
+
+  <!-- ═══ Three.js Canvas Background ═══ -->
+  <canvas #threeCanvas class="three-canvas"></canvas>
+
+  <!-- ═══ Navigation ═══ -->
+  <nav class="landing-nav">
+    <div class="nav-inner">
+      <a class="nav-brand" (click)="navigateTo('/home')">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <span>Process Zero</span>
+      </a>
+      <div class="nav-links">
+        <div class="nav-dropdown">
+          <a class="nav-link dropdown-trigger">
+            <ion-icon name="grid-outline"></ion-icon>
+            Features
+            <ion-icon name="chevron-down-outline" class="chevron"></ion-icon>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngFor="let f of featureLinks" (click)="navigateTo(f.route)">
+              <ion-icon [name]="f.icon"></ion-icon>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">{{ f.title }}</span>
+                <span class="dropdown-item-desc">{{ f.desc }}</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link" (click)="navigateTo('/agency')">
+          <ion-icon name="business-outline"></ion-icon>
+          For Agencies
+        </a>
+        <a class="nav-link" (click)="navigateTo('/replay-ai')">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          Replay AI
+        </a>
+        <a class="nav-link" (click)="navigateTo('/help')">
+          <ion-icon name="book-outline"></ion-icon>
+          Help &amp; Guide
+        </a>
+        <ion-button *ngIf="!isLoggedIn" fill="clear" class="nav-btn" (click)="navigateTo('/login')">Sign In</ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/register')">Get Started</ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="nav-btn-primary" (click)="navigateTo('/account/dashboard')">Dashboard</ion-button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ Hero ═══ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-pulse"></span>
+        <ion-icon name="sparkles-outline"></ion-icon>
+        Built for hungry sales reps
+      </div>
+
+      <h1 class="hero-title">
+        More replies.<br>
+        <span class="hero-gradient">More calls. More commission.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Replay AI sends cold outreach for you from your own inbox.
+        No more manual cold calls, cold emails, or cold DMs. You get warm leads in your dashboard, and dedicated Process Zero closers help turn them into closed deals.
+      </p>
+
+      <div class="hero-ctas">
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="btn-hero-primary" (click)="navigateTo('/register')">
+          Connect Your Domain Free
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="!isLoggedIn" fill="outline" class="btn-hero-ghost" (click)="navigateTo('/help')">
+          See How It Works
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="btn-hero-primary" (click)="navigateTo('/account/dashboard')">
+          Go to Dashboard
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="hero-social-proof">
+        <div class="avatar-stack">
+          <span class="mini-av">TM</span>
+          <span class="mini-av">LK</span>
+          <span class="mini-av">JO</span>
+          <span class="mini-av">NS</span>
+          <span class="mini-av more">+96</span>
+        </div>
+        <span class="proof-text">Trusted by <strong>500+ sales reps</strong> across South Africa for done-for-you outreach and closing support</span>
+      </div>
+    </div>
+
+    <!-- Live stats widget floating on right -->
+    <div class="hero-widget">
+      <div class="hw-header">
+        <span class="hw-dot"></span>
+        <span class="hw-title">Replay AI — Live Activity</span>
+        <span class="hw-badge">RUNNING</span>
+      </div>
+      <div class="hw-metrics">
+        <div class="hw-metric">
+          <span class="hw-num">{{ liveEmailCount | number }}</span>
+          <span class="hw-lbl">Emails Sent Today</span>
+        </div>
+        <div class="hw-vdiv"></div>
+        <div class="hw-metric">
+          <span class="hw-num">{{ liveReplyCount }}</span>
+          <span class="hw-lbl">Replies Tracked</span>
+        </div>
+        <div class="hw-vdiv"></div>
+        <div class="hw-metric">
+          <span class="hw-num">{{ liveMeetingCount }}</span>
+          <span class="hw-lbl">Meetings Booked</span>
+        </div>
+      </div>
+      <div class="hw-feed">
+        <div class="hw-feed-item" *ngFor="let log of liveActivityLog" [ngClass]="log.type">
+          <ion-icon [name]="log.type === 'email' ? 'mail-outline' : log.type === 'reply' ? 'chatbubble-outline' : 'calendar-outline'"></ion-icon>
+          <span>{{ log.text }}</span>
+        </div>
+      </div>
+      <div class="hw-footer">
+        <span class="hw-pulse-row">
+          <span class="hw-pulse-dot"></span>
+          System active — sending in background
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-scroll-cue">
+      <ion-icon name="chevron-down-outline"></ion-icon>
+    </div>
+  </section>
+
+  <!-- ═══ Ticker ═══ -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <ng-container *ngFor="let _ of [1,2]">
+        <div class="ticker-item" *ngFor="let item of liveFeed">
+          <ion-icon [name]="item.icon"></ion-icon>
+          <span class="ticker-text">{{ item.text }}</span>
+          <span class="ticker-sep">·</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- ═══ Stats Bar ═══ -->
+  <section class="stats-bar reveal-on-scroll">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-ring">
+          <svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" class="ring-bg"/><circle cx="28" cy="28" r="24" class="ring-fill ring-domains"/></svg>
+          <span class="stat-num">{{ animatedDomains }}<sup>+</sup></span>
+        </div>
+        <span class="stat-lbl">Connected Domains</span>
+      </div>
+      <div class="stat-vdiv"></div>
+      <div class="stat-item">
+        <div class="stat-ring">
+          <svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" class="ring-bg"/><circle cx="28" cy="28" r="24" class="ring-fill ring-emails"/></svg>
+          <span class="stat-num">{{ animatedEmails | number }}<sup>+</sup></span>
+        </div>
+        <span class="stat-lbl">Emails Sent Daily</span>
+      </div>
+      <div class="stat-vdiv"></div>
+      <div class="stat-item">
+        <div class="stat-ring">
+          <svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" class="ring-bg"/><circle cx="28" cy="28" r="24" class="ring-fill ring-reply"/></svg>
+          <span class="stat-num">{{ animatedReplyRate }}<sup>%</sup></span>
+        </div>
+        <span class="stat-lbl">Avg. Reply Rate</span>
+      </div>
+      <div class="stat-vdiv"></div>
+      <div class="stat-item">
+        <div class="stat-ring">
+          <svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" class="ring-bg"/><circle cx="28" cy="28" r="24" class="ring-fill ring-meetings"/></svg>
+          <span class="stat-num">{{ animatedMeetings }}<sup>+</sup></span>
+        </div>
+        <span class="stat-lbl">Leads Routed Monthly</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ How It Works — Horizontal Steps ═══ -->
+  <section class="hiw-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Flow</p>
+      <h2 class="section-title">From setup to signed deals</h2>
+      <p class="section-subtitle">Four simple steps. The system fills your pipeline while you focus on conversations that close.</p>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-step" *ngFor="let step of howItWorks; let i = index" [style.--i]="i">
+        <div class="hiw-connector" *ngIf="i > 0"></div>
+        <div class="hiw-node-wrap">
+          <div class="hiw-node">
+            <ion-icon [name]="step.icon"></ion-icon>
+          </div>
+          <div class="hiw-num">{{ step.step }}</div>
+        </div>
+        <div class="hiw-card">
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Domain Network Widget ═══ -->
+  <section class="network-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Network</p>
+      <h2 class="section-title">Your inbox joins a winning outreach network</h2>
+      <p class="section-subtitle">You get consistent daily outreach and a steady stream of warm opportunities without doing manual prospecting.</p>
+    </div>
+    <div class="network-widget">
+      <div class="nw-center">
+        <div class="nw-hub">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <span>Replay AI</span>
+        </div>
+        <div class="nw-ring nw-ring-1"></div>
+        <div class="nw-ring nw-ring-2"></div>
+        <div class="nw-ring nw-ring-3"></div>
+      </div>
+      <div class="nw-domains">
+        <div class="nw-domain" *ngFor="let d of domainNodes; let i = index" [style.--di]="i" [ngClass]="d.status">
+          <div class="nw-domain-header">
+            <div class="nw-status-dot" [ngClass]="d.status"></div>
+            <span class="nw-name">{{ d.name }}</span>
+          </div>
+          <div class="nw-domain-stats">
+            <div class="nw-health-bar">
+              <div class="nw-health-fill" [style.width.%]="d.health"></div>
+            </div>
+            <div class="nw-domain-meta">
+              <span class="nw-health-val">{{ d.health }}% health</span>
+              <span class="nw-emails-val">{{ d.emails }} emails/day</span>
+            </div>
+          </div>
+        </div>
+        <div class="nw-domain nw-domain-more">
+          <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+          <span>94 more domains active</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Features Bento Grid ═══ -->
+  <section class="features-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Key Components</p>
+      <h2 class="section-title">Everything you need to win more deals</h2>
+      <p class="section-subtitle">Replay AI handles the outreach work. You focus on calls, demos, and closing revenue.</p>
+    </div>
+    <div class="bento-grid">
+      <div class="bento-card" *ngFor="let c of components; let i = index" [style.--bi]="i">
+        <div class="bc-glow"></div>
+        <div class="bc-icon">
+          <ion-icon [name]="c.icon"></ion-icon>
+        </div>
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.description }}</p>
+        <div class="bc-corner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ROI Calculator Widget ═══ -->
+  <section class="calc-section reveal-on-scroll">
+    <div class="calc-inner">
+      <div class="calc-left">
+        <p class="section-eyebrow">Revenue Potential</p>
+        <h2 class="section-title">See what Replay AI can earn you</h2>
+        <p class="section-subtitle">Move the slider to estimate leads, deals, and monthly revenue when outreach runs daily for you.</p>
+        <div class="calc-slider-wrap">
+          <label class="calc-label">
+            Number of connected domains: <strong>{{ calcDomains }}</strong>
+          </label>
+          <input type="range" min="1" max="50" [(ngModel)]="calcDomains" (ngModelChange)="onCalcChange()" class="calc-slider" />
+          <div class="calc-range-labels"><span>1</span><span>50</span></div>
+        </div>
+      </div>
+      <div class="calc-right">
+        <div class="calc-card">
+          <div class="calc-row">
+            <div class="calc-metric">
+              <ion-icon name="mail-outline"></ion-icon>
+              <div>
+                <span class="calc-val">{{ calcDomains * 45 | number }}</span>
+                <span class="calc-key">Emails per day</span>
+              </div>
+            </div>
+            <div class="calc-metric">
+              <ion-icon name="people-outline"></ion-icon>
+              <div>
+                <span class="calc-val">{{ calcLeadsPerWeek }}</span>
+                <span class="calc-key">Leads per week</span>
+              </div>
+            </div>
+          </div>
+          <div class="calc-divider"></div>
+          <div class="calc-row">
+            <div class="calc-metric">
+              <ion-icon name="briefcase-outline"></ion-icon>
+              <div>
+                <span class="calc-val">{{ calcDealsPerMonth }}</span>
+                <span class="calc-key">Deals / month</span>
+              </div>
+            </div>
+            <div class="calc-metric highlight">
+              <ion-icon name="cash-outline"></ion-icon>
+              <div>
+                <span class="calc-val">R{{ calcRevenue | number }}</span>
+                <span class="calc-key">Est. monthly revenue</span>
+              </div>
+            </div>
+          </div>
+          <p class="calc-disclaimer">* Based on 2.5% reply rate, 12% close rate, R3,500 avg deal value</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Problem vs Solution ═══ -->
+  <section class="versus-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Difference</p>
+      <h2 class="section-title">Old-school grind vs Replay AI</h2>
+    </div>
+    <div class="versus-grid">
+      <div class="versus-card versus-bad">
+        <div class="vs-icon-wrap bad">
+          <ion-icon name="close-circle"></ion-icon>
+        </div>
+        <h3>Manual Cold Outreach</h3>
+        <ul class="versus-list">
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Reps spend time on cold calls, cold emails, and cold DMs</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Inconsistent outreach quality and daily volume</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Domain reputation risk when scaling manually</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Replies scattered with weak attribution</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Pipeline stalls when outreach is paused</li>
+          <li><ion-icon name="remove-circle-outline"></ion-icon> Closers waste time sourcing instead of closing</li>
+        </ul>
+      </div>
+      <div class="versus-divider">
+        <span class="vs-label">VS</span>
+      </div>
+      <div class="versus-card versus-good">
+        <div class="vs-icon-wrap good">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        <h3>Replay AI</h3>
+        <ul class="versus-list">
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> AI sends cold emails daily from your connected inbox</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> No manual cold calls, emails, or DMs needed</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Domain rotation protects reputation at scale</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Replies are tracked and attributed to your account</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Qualified opportunities are routed to your dashboard</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Dedicated Process Zero closers help convert and close deals</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Testimonials ═══ -->
+  <section class="testimonials-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Rep Stories</p>
+      <h2 class="section-title">Sales reps winning with Replay AI</h2>
+    </div>
+    <div class="testimonial-track">
+      <div class="testimonial-card" *ngFor="let t of testimonials; let i = index" [class.active]="i === activeTestimonial">
+        <div class="tcard-quote-mark">"</div>
+        <p class="tcard-quote">{{ t.quote }}</p>
+        <div class="tcard-author">
+          <span class="tcard-avatar">{{ t.avatar }}</span>
+          <div class="tcard-info">
+            <strong>{{ t.name }}</strong>
+            <span>{{ t.role }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-dots">
+      <span class="tdot" *ngFor="let t of testimonials; let i = index"
+        [class.active]="i === activeTestimonial" (click)="selectTestimonial(i)"></span>
+    </div>
+    <div class="testimonial-nav">
+      <button class="tnav-btn" (click)="selectTestimonial((activeTestimonial - 1 + testimonials.length) % testimonials.length)">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <button class="tnav-btn" (click)="selectTestimonial((activeTestimonial + 1) % testimonials.length)">
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section class="faq-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 class="section-title">Your questions, answered</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs; let i = index"
+        [class.open]="faq.open" (click)="toggleFaq(i)">
+        <div class="faq-q">
+          <span>{{ faq.question }}</span>
+          <ion-icon [name]="faq.open ? 'remove-outline' : 'add-outline'"></ion-icon>
+        </div>
+        <div class="faq-a" *ngIf="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Final CTA ═══ -->
+  <section class="cta-section reveal-on-scroll">
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+    <div class="cta-inner">
+      <div class="cta-eyebrow">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        Set up in under 5 minutes
+      </div>
+      <h2 class="cta-title">
+        Ready to let AI fill<br>
+        <span class="cta-em">your pipeline automatically?</span>
+      </h2>
+      <p class="cta-sub">Connect your inbox once. Replay AI keeps outreach running in the background while Process Zero closers help you convert more deals.</p>
+      <div class="cta-btns">
+        <ion-button *ngIf="!isLoggedIn" fill="solid" class="btn-cta" (click)="navigateTo('/register')">
+          Get Started Free
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="solid" class="btn-cta" (click)="navigateTo('/account/dashboard')">
+          Go to Dashboard
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="cta-checks">
+        <span><ion-icon name="checkmark-circle-outline"></ion-icon> AI outreach from your own inbox</span>
+        <span><ion-icon name="checkmark-circle-outline"></ion-icon> No manual cold calls, emails, or DMs</span>
+        <span><ion-icon name="checkmark-circle-outline"></ion-icon> Dedicated Process Zero closers for deal conversion</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Footer ═══ -->
+  <footer class="landing-footer">
+    <div class="footer-links">
+      <a class="footer-link" (click)="navigateTo('/home')"><ion-icon name="home-outline"></ion-icon>Home</a>
+      <span class="footer-dot">·</span>
+      <a class="footer-link" (click)="navigateTo('/agency')"><ion-icon name="business-outline"></ion-icon>For Agencies</a>
+      <span class="footer-dot">·</span>
+      <a class="footer-link" (click)="navigateTo('/help')"><ion-icon name="book-outline"></ion-icon>Help &amp; Guide</a>
+      <span class="footer-dot">·</span>
+      <a class="footer-link" (click)="navigateTo('/terms')"><ion-icon name="document-text-outline"></ion-icon>Terms</a>
+      <span class="footer-dot">·</span>
+      <a class="footer-link" (click)="navigateTo('/privacy')"><ion-icon name="lock-closed-outline"></ion-icon>Privacy</a>
+    </div>
+    <p>&copy; 2026 Process Zero. All rights reserved.</p>
+  </footer>
+
+</ion-content>
