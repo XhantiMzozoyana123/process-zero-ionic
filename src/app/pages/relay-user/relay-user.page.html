@@ -1,0 +1,266 @@
+<ion-content class="relay-user-page">
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="hero-shell">
+    <div class="hero-glow"></div>
+    <section class="page-header content-shell">
+      <div class="hero-copy">
+        <div class="hero-badge">
+          <ion-icon name="sparkles"></ion-icon>
+          <span>Process Zero Relay</span>
+        </div>
+        <h1>Relay AI <span class="hero-highlight">Experience</span></h1>
+        <p>
+          Connect your Google inbox through OAuth, then let AI automate cold email outreach.
+          Your only job is to continuously monitor inbox replies from interested potential clients
+          and keep KPI tracking up to date.
+        </p>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel-label">What users can do</div>
+        <ul class="hero-panel-list">
+          <li>Connect one or more Google accounts</li>
+          <li>Monitor inbox replies and prospect intent</li>
+          <li>Keep KPI interest tracking updated</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="segment-container">
+    <div class="content-shell">
+      <ion-segment [(ngModel)]="segmentValue" color="primary">
+        <ion-segment-button value="accounts" layout="icon-bottom">
+          <ion-icon name="mail"></ion-icon>
+          <ion-label>Account Stats</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="overview" layout="icon-bottom">
+          <ion-icon name="analytics"></ion-icon>
+          <ion-label>Overview</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <div class="content-shell page-body">
+    <section *ngIf="segmentValue === 'accounts'" class="section-stack">
+      <ion-card class="oauth-card section-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="logo-google"></ion-icon>
+            Add Google Account
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="oauth-layout">
+            <div>
+              <p class="oauth-description">
+                Users can only connect email accounts using Google OAuth. That keeps the workflow secure,
+                consistent, and aligned with the Process Zero sending setup.
+              </p>
+              <div class="pill-row">
+                <span class="soft-pill">Google only</span>
+                <span class="soft-pill">OAuth secured</span>
+                <span class="soft-pill">No manual SMTP</span>
+              </div>
+            </div>
+
+            <ion-button
+              class="google-btn"
+              [disabled]="oauthConnecting"
+              (click)="connectWithGoogle()">
+              <ion-spinner *ngIf="oauthConnecting" name="crescent" slot="start"></ion-spinner>
+              <ion-icon *ngIf="!oauthConnecting" name="logo-google" slot="start"></ion-icon>
+              {{ oauthConnecting ? 'Connecting Google Account...' : 'Connect Google Account' }}
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="section-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="mail-open"></ion-icon>
+            Your Connected Accounts
+          </ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="account-list" *ngIf="!loading && emailAccounts.length > 0">
+            <div
+              class="account-row"
+              *ngFor="let account of emailAccounts"
+              (click)="selectedAccountId = account.id || null; onAccountSelect()"
+              [class.selected]="selectedAccountId === account.id">
+              <div class="account-main">
+                <div class="account-heading">
+                  <h2>{{ account.emailAddress }}</h2>
+                  <div class="badge-row">
+                    <span class="soft-pill provider-pill" [class.bad-pill]="!account.isActive">
+                      {{ account.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                    <span class="soft-pill" [class.bad-pill]="account.healthStatus !== 0">
+                      {{ getHealthLabel(account.healthStatus) }}
+                    </span>
+                  </div>
+                </div>
+                <p *ngIf="account.displayName">{{ account.displayName }}</p>
+                <div class="account-stats">
+                  <span>Limit: {{ account.dailySendLimit }}/day</span>
+                  <span>Sent today: {{ account.sentToday }}</span>
+                  <span>Remaining: {{ getRemainingCapacity(account) }}</span>
+                  <span>Usage: {{ getCapacityUsage(account) }}%</span>
+                </div>
+              </div>
+
+              <div class="account-actions" (click)="$event.stopPropagation()">
+                <ion-button
+                  *ngIf="account.isActive"
+                  size="small"
+                  fill="outline"
+                  color="warning"
+                  [disabled]="accountActionLoading[account.id]"
+                  (click)="deactivateAccount(account.id, $event)">
+                  <ion-spinner *ngIf="accountActionLoading[account.id]" name="crescent" slot="start"></ion-spinner>
+                  <ion-icon *ngIf="!accountActionLoading[account.id]" name="pause-circle-outline" slot="start"></ion-icon>
+                  Deactivate
+                </ion-button>
+
+                <ion-button
+                  *ngIf="!account.isActive"
+                  size="small"
+                  fill="outline"
+                  color="success"
+                  [disabled]="accountActionLoading[account.id]"
+                  (click)="reactivateAccount(account.id, $event)">
+                  <ion-spinner *ngIf="accountActionLoading[account.id]" name="crescent" slot="start"></ion-spinner>
+                  <ion-icon *ngIf="!accountActionLoading[account.id]" name="play-circle-outline" slot="start"></ion-icon>
+                  Reactivate
+                </ion-button>
+
+                <ion-button
+                  size="small"
+                  fill="outline"
+                  color="danger"
+                  [disabled]="removeAccountLoading[account.id]"
+                  (click)="removeAccount(account.id, $event)">
+                  <ion-spinner *ngIf="removeAccountLoading[account.id]" name="crescent" slot="start"></ion-spinner>
+                  <ion-icon *ngIf="!removeAccountLoading[account.id]" name="trash-outline" slot="start"></ion-icon>
+                  Remove
+                </ion-button>
+
+                <ion-icon name="chevron-forward" class="row-chevron"></ion-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="!loading && emailAccounts.length === 0">
+            <ion-icon name="mail-unread-outline"></ion-icon>
+            <h3>No connected inboxes yet</h3>
+            <p>Connect your Google account above to start tracking delivery and engagement performance.</p>
+          </div>
+
+          <div class="loading-state" *ngIf="loading">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="section-card" *ngIf="selectedAccount as account">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="stats-chart"></ion-icon>
+            Account Statistics
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stats-grid stats-grid-detailed">
+            <div class="stat-item">
+              <span class="stat-label">Sent Today</span>
+              <span class="stat-value">{{ account.sentToday || 0 }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Daily Limit</span>
+              <span class="stat-value">{{ account.dailySendLimit || 0 }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Remaining Capacity</span>
+              <span class="stat-value">{{ getRemainingCapacity(account) }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Health</span>
+              <span class="stat-value">{{ getHealthLabel(account.healthStatus) }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Status</span>
+              <span class="stat-value">{{ account.isActive ? 'Active' : 'Inactive' }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Last Used</span>
+              <span class="stat-value">{{ account.lastUsedAt ? (account.lastUsedAt | date: 'MMM d') : 'Never' }}</span>
+            </div>
+          </div>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="primary"
+            [disabled]="healthCheckingAccountId === account.id"
+            (click)="runHealthCheck(account.id)">
+            <ion-spinner *ngIf="healthCheckingAccountId === account.id" name="crescent" slot="start"></ion-spinner>
+            <ion-icon *ngIf="healthCheckingAccountId !== account.id" name="pulse-outline" slot="start"></ion-icon>
+            {{ healthCheckingAccountId === account.id ? 'Checking Health...' : 'Run Health Check' }}
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
+    </section>
+
+    <section *ngIf="segmentValue === 'overview'" class="section-stack">
+      <ion-card class="section-card overview-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="analytics"></ion-icon>
+            Overall Statistics
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stats-grid" *ngIf="overallStats as s">
+            <div class="stat-item accent-gold">
+              <span class="stat-label">Total Accounts</span>
+              <span class="stat-value">{{ s.totalAccounts || 0 }}</span>
+            </div>
+            <div class="stat-item accent-teal">
+              <span class="stat-label">Healthy Accounts</span>
+              <span class="stat-value">{{ s.healthyAccounts || 0 }}</span>
+            </div>
+            <div class="stat-item accent-blue">
+              <span class="stat-label">Warning Accounts</span>
+              <span class="stat-value">{{ s.warningAccounts || 0 }}</span>
+            </div>
+            <div class="stat-item accent-coral">
+              <span class="stat-label">Critical Accounts</span>
+              <span class="stat-value">{{ s.criticalAccounts || 0 }}</span>
+            </div>
+            <div class="stat-item accent-teal">
+              <span class="stat-label">Sent Today</span>
+              <span class="stat-value">{{ s.totalSentToday || 0 }}</span>
+            </div>
+            <div class="stat-item accent-gold">
+              <span class="stat-label">Capacity Used</span>
+              <span class="stat-value">{{ s.capacityUsedPercentage || 0 }}%</span>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="!overallStats">
+            <ion-icon name="pie-chart-outline"></ion-icon>
+            <h3>No overview data yet</h3>
+            <p>Overall statistics will appear here once your connected accounts start contributing sending activity.</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </section>
+  </div>
+</ion-content>

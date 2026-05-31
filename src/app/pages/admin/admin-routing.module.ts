@@ -22,6 +22,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'webinars',
+        loadChildren: () => import('../admin-webinars/admin-webinars.module')
+          .then(m => m.AdminWebinarsPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'kpi-policies',
         loadChildren: () => import('../admin-kpi-policies/admin-kpi-policies.module')
           .then(m => m.AdminKpiPoliciesPageModule),
@@ -64,6 +70,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'extract',
+        loadComponent: () => import('../admin-extract/admin-extract.page')
+          .then(m => m.AdminExtractPage),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'assessments',
         loadChildren: () => import('../admin-assessments/admin-assessments.module')
           .then(m => m.AdminAssessmentsPageModule),
@@ -73,6 +85,18 @@ const routes: Routes = [
         path: 'inboxes',
         loadChildren: () => import('../admin-inboxes/admin-inboxes.module')
           .then(m => m.AdminInboxesPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
+        path: 'relay',
+        loadChildren: () => import('../admin-relay/admin-relay.module')
+          .then(m => m.AdminRelayPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
+        path: 'relay-inbox',
+        loadComponent: () => import('../admin-relay-inbox/admin-relay-inbox.page')
+          .then(m => m.AdminRelayInboxPage),
         canActivate: [AdminGuard]
       },
       {

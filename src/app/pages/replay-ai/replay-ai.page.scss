@@ -490,7 +490,6 @@ $green:     #28c840;
     animation-delay: calc(var(--di, 0) * 0.08s);
     &:hover { border-color: rgba($teal, 0.35); box-shadow: 0 8px 28px rgba(0,0,0,0.3); transform: translateX(4px); }
     &.active   .nw-status-dot { background: $green;  box-shadow: 0 0 8px rgba($green, 0.5); }
-    &.warming  .nw-status-dot { background: $gold;   box-shadow: 0 0 8px rgba($gold, 0.4); }
     &.nw-domain-more {
       display: flex; align-items: center; gap: 10px;
       font-size: 0.92rem; color: $text-2; cursor: default;

@@ -57,13 +57,12 @@
       </div>
 
       <h1 class="hero-title">
-        More replies.<br>
-        <span class="hero-gradient">More calls. More commission.</span>
+        Monetize your inbox.<br>
+        <span class="hero-gradient">Make money from your email.</span>
       </h1>
 
       <p class="hero-sub">
-        Replay AI sends cold outreach for you from your own inbox.
-        No more manual cold calls, cold emails, or cold DMs. You get warm leads in your dashboard, and dedicated Process Zero closers help turn them into closed deals.
+        Relay AI turns your inbox into a revenue engine. Connect your email and let AI run cold outreach campaigns that generate replies from potential clients. No manual outreach like cold calling or cold DMs. Your only job is to continuously monitor your inbox for interested prospects and keep KPI updates current.
       </p>
 
       <div class="hero-ctas">
@@ -77,6 +76,9 @@
         <ion-button *ngIf="isLoggedIn" fill="solid" class="btn-hero-primary" (click)="navigateTo('/account/dashboard')">
           Go to Dashboard
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="isLoggedIn" fill="outline" class="btn-hero-ghost" (click)="navigateTo('/account/relay-user')">
+          Open Replay Workspace
         </ion-button>
       </div>
 
@@ -202,7 +204,7 @@
     <div class="section-header">
       <p class="section-eyebrow">The Flow</p>
       <h2 class="section-title">From setup to signed deals</h2>
-      <p class="section-subtitle">Four simple steps. The system fills your pipeline while you focus on conversations that close.</p>
+      <p class="section-subtitle">Four simple steps. The system fills your pipeline while you monitor inbox replies and continuously update KPI tracking.</p>
     </div>
     <div class="hiw-grid">
       <div class="hiw-step" *ngFor="let step of howItWorks; let i = index" [style.--i]="i">
@@ -226,7 +228,7 @@
     <div class="section-header">
       <p class="section-eyebrow">The Network</p>
       <h2 class="section-title">Your inbox joins a winning outreach network</h2>
-      <p class="section-subtitle">You get consistent daily outreach and a steady stream of warm opportunities without doing manual prospecting.</p>
+      <p class="section-subtitle">You get consistent daily outreach and warm opportunities while you monitor inbox replies and keep KPI tracking updated.</p>
     </div>
     <div class="network-widget">
       <div class="nw-center">
@@ -267,7 +269,7 @@
     <div class="section-header">
       <p class="section-eyebrow">Key Components</p>
       <h2 class="section-title">Everything you need to win more deals</h2>
-      <p class="section-subtitle">Replay AI handles the outreach work. You focus on calls, demos, and closing revenue.</p>
+      <p class="section-subtitle">Replay AI handles outreach execution. You focus on inbox monitoring for interested prospects and continuous KPI updates.</p>
     </div>
     <div class="bento-grid">
       <div class="bento-card" *ngFor="let c of components; let i = index" [style.--bi]="i">
@@ -372,7 +374,7 @@
           <li><ion-icon name="checkmark-circle-outline"></ion-icon> No manual cold calls, emails, or DMs needed</li>
           <li><ion-icon name="checkmark-circle-outline"></ion-icon> Domain rotation protects reputation at scale</li>
           <li><ion-icon name="checkmark-circle-outline"></ion-icon> Replies are tracked and attributed to your account</li>
-          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Qualified opportunities are routed to your dashboard</li>
+          <li><ion-icon name="checkmark-circle-outline"></ion-icon> Your only job is to monitor inbox replies and continuously update KPI/prospect-interest status</li>
           <li><ion-icon name="checkmark-circle-outline"></ion-icon> Dedicated Process Zero closers help convert and close deals</li>
         </ul>
       </div>
@@ -445,7 +447,7 @@
         Ready to let AI fill<br>
         <span class="cta-em">your pipeline automatically?</span>
       </h2>
-      <p class="cta-sub">Connect your inbox once. Replay AI keeps outreach running in the background while Process Zero closers help you convert more deals.</p>
+      <p class="cta-sub">Connect your inbox once. Replay AI keeps outreach running in the background while you monitor inbox replies and continuously keep KPI/prospect-interest updates accurate.</p>
       <div class="cta-btns">
         <ion-button *ngIf="!isLoggedIn" fill="solid" class="btn-cta" (click)="navigateTo('/register')">
           Get Started Free
@@ -459,6 +461,8 @@
       <div class="cta-checks">
         <span><ion-icon name="checkmark-circle-outline"></ion-icon> AI outreach from your own inbox</span>
         <span><ion-icon name="checkmark-circle-outline"></ion-icon> No manual cold calls, emails, or DMs</span>
+        <span><ion-icon name="checkmark-circle-outline"></ion-icon> Monitor replies and update KPI interest tracking</span>
+        <span><ion-icon name="checkmark-circle-outline"></ion-icon> Continuously monitor interested prospects in your inbox</span>
         <span><ion-icon name="checkmark-circle-outline"></ion-icon> Dedicated Process Zero closers for deal conversion</span>
       </div>
     </div>

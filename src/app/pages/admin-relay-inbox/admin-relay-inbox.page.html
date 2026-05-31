@@ -1,0 +1,110 @@
+<ion-content class="admin-relay-inbox-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="hero-shell">
+    <div class="hero-glow"></div>
+    <section class="page-header page-shell">
+      <div class="hero-copy">
+        <div class="hero-badge">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span>Process Zero Admin</span>
+        </div>
+        <h1>Relay Inbox <span class="hero-highlight">Control Center</span></h1>
+        <p>
+          Review unread relay replies, choose the correct contact status,
+          and upsert recipients into your Contacts table.
+        </p>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel-label">Admin Workflow</div>
+        <ul class="hero-panel-list">
+          <li>Sync unread replies across relay accounts</li>
+          <li>Inspect sender, subject, and message body</li>
+          <li>Upsert sender as a contact with the right status</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="page-shell page-body">
+
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="mail-open-outline"></ion-icon>
+          Unread Relay Replies
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button
+          fill="outline"
+          color="primary"
+          [disabled]="syncing"
+          (click)="syncAllReplies()">
+          <ion-spinner *ngIf="syncing" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!syncing" name="sync-outline" slot="start"></ion-icon>
+          {{ syncing ? 'Syncing Replies...' : 'Sync All Replies' }}
+        </ion-button>
+
+        <div class="loading-wrap" *ngIf="loading">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+
+        <div *ngIf="!loading && unreadReplies.length > 0" class="tool-grid">
+          <ion-item>
+            <ion-label position="stacked">Select Unread Reply</ion-label>
+            <ion-select [(ngModel)]="selectedReplyId" placeholder="Choose a reply">
+              <ion-select-option *ngFor="let reply of unreadReplies" [value]="reply.id">
+                {{ reply.fromEmail }} - {{ reply.subject || 'No subject' }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Contact Status</ion-label>
+            <ion-select [(ngModel)]="selectedReplyContactStatus">
+              <ion-select-option *ngFor="let status of contactStatusOptions" [value]="status">
+                {{ status }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            color="success"
+            [disabled]="!selectedReplyId || upsertingContact"
+            (click)="upsertContactFromSelectedReply()">
+            <ion-spinner *ngIf="upsertingContact" name="crescent" slot="start"></ion-spinner>
+            <ion-icon *ngIf="!upsertingContact" name="person-add-outline" slot="start"></ion-icon>
+            {{ upsertingContact ? 'Upserting Contact...' : 'Upsert Contact From Selected Reply' }}
+          </ion-button>
+        </div>
+
+        <div *ngIf="!loading && unreadReplies.length === 0" class="empty-state">
+          <ion-icon name="mail-outline"></ion-icon>
+          <h3>No unread relay replies</h3>
+          <p>Run sync or wait for new replies to arrive.</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="section-card" *ngIf="selectedReply as reply">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="document-text-outline"></ion-icon>
+          Reply Preview
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="preview">
+        <p><strong>From:</strong> {{ reply.fromEmail }}</p>
+        <p><strong>Subject:</strong> {{ reply.subject || 'No subject' }}</p>
+        <p><strong>Received:</strong> {{ reply.receivedDate | date:'medium' }}</p>
+        <p><strong>Body:</strong></p>
+        <p class="body">{{ reply.body || 'No body content' }}</p>
+      </ion-card-content>
+    </ion-card>
+  </section>
+</ion-content>

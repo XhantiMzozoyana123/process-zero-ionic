@@ -1,0 +1,138 @@
+<ion-content class="admin-extract-page">
+  <div class="hero-shell">
+    <div class="hero-glow"></div>
+    <section class="page-header page-shell">
+      <div class="hero-copy">
+        <div class="hero-badge">
+          <ion-icon name="search-outline"></ion-icon>
+          <span>Process Zero Admin</span>
+        </div>
+        <h1>Lead Extractor <span class="hero-highlight">Workspace</span></h1>
+        <p>
+          Search Yellow Pages by keyword and location, scrape business lead data,
+          and save new records directly into LeadLake.
+        </p>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel-label">Workflow</div>
+        <ul class="hero-panel-list">
+          <li>Enter a search keyword and target location</li>
+          <li>Scrape up to five result pages per request</li>
+          <li>Review saved leads returned by the extract API</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="page-shell page-body">
+    <ion-card class="section-card action-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="flash-outline"></ion-icon>
+          Run Lead Extraction
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="health-row">
+          <div class="health-pill" [class.bad]="!health">
+            <ion-spinner *ngIf="healthChecking" name="crescent"></ion-spinner>
+            <ion-icon *ngIf="!healthChecking" [name]="health ? 'checkmark-circle-outline' : 'alert-circle-outline'"></ion-icon>
+            <span>{{ healthChecking ? 'Checking service...' : (health?.status === 'healthy' ? 'Extract service healthy' : 'Service unavailable') }}</span>
+          </div>
+          <ion-button fill="outline" color="primary" [disabled]="healthChecking" (click)="checkHealth()">
+            <ion-icon name="pulse-outline" slot="start"></ion-icon>
+            Check Health
+          </ion-button>
+        </div>
+
+        <div class="form-grid">
+          <ion-item>
+            <ion-label position="stacked">Keyword</ion-label>
+            <ion-input [(ngModel)]="keyword" placeholder="software developer"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Location</ion-label>
+            <ion-input [(ngModel)]="location" placeholder="Cape Town"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Pages</ion-label>
+            <ion-select [(ngModel)]="pages">
+              <ion-select-option *ngFor="let option of pageOptions" [value]="option">
+                {{ option }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" color="primary" [disabled]="loading" (click)="scrape()">
+          <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!loading" name="search-outline" slot="start"></ion-icon>
+          {{ loading ? 'Extracting Leads...' : 'Extract Leads' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="section-card" *ngIf="scrapeResult">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="analytics-outline"></ion-icon>
+          Extraction Summary
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="summary-grid">
+          <div class="summary-tile accent-gold">
+            <span class="summary-label">Message</span>
+            <span class="summary-text">{{ scrapeResult.message }}</span>
+          </div>
+          <div class="summary-tile accent-teal">
+            <span class="summary-label">Returned Leads</span>
+            <span class="summary-value">{{ scrapedLeads.length }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list-outline"></ion-icon>
+          Scraped Lead Results
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="empty-state" *ngIf="!scrapedLeads.length && !loading">
+          <ion-icon name="business-outline"></ion-icon>
+          <h3>No extracted leads yet</h3>
+          <p>Run a search to populate this workspace with the latest extracted leads.</p>
+        </div>
+
+        <div class="results-grid" *ngIf="scrapedLeads.length > 0">
+          <article class="lead-card" *ngFor="let lead of scrapedLeads; trackBy: trackByLead">
+            <div class="lead-card-head">
+              <div>
+                <h3>{{ lead.company || ((lead.firstName || '') + ' ' + (lead.lastName || '')).trim() || 'Unnamed Lead' }}</h3>
+                <p>{{ lead.email || 'No email provided' }}</p>
+              </div>
+              <span class="industry-pill">{{ getIndustryLabel(lead.industry) }}</span>
+            </div>
+
+            <div class="lead-meta">
+              <span>{{ lead.job || 'Role unavailable' }}</span>
+              <span>{{ lead.location || 'Location unavailable' }}</span>
+              <span>{{ lead.phone || 'Phone unavailable' }}</span>
+            </div>
+
+            <div class="intent-row">
+              <span class="intent-label">Intent</span>
+              <span class="intent-pill">{{ getIntentLabel(lead.intent) }}</span>
+            </div>
+          </article>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </section>
+</ion-content>

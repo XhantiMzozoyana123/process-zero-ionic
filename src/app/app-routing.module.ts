@@ -68,6 +68,10 @@ const routes: Routes = [
   {
     path: 'replay-ai',
     loadChildren: () => import('./pages/replay-ai/replay-ai.module').then( m => m.ReplayAiPageModule)
+  },
+  {
+    path: 'auth-callback',
+    loadComponent: () => import('./pages/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
   }
 ];
 

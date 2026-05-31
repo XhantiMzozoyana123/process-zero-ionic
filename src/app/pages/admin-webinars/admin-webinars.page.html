@@ -1,0 +1,170 @@
+<ion-content class="admin-webinars-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Webinar Management</h1>
+        <p>Create, update, and manage training webinars.</p>
+      </div>
+      <ion-button shape="round" class="add-btn" (click)="openAddModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Add Webinar
+      </ion-button>
+    </div>
+    <div class="search-row">
+      <ion-searchbar placeholder="Search webinars..." [(ngModel)]="searchTerm"
+        [ngModelOptions]="{ standalone: true }" class="webinar-search"></ion-searchbar>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && webinars.length === 0" class="empty-state">
+    <ion-icon name="videocam-outline"></ion-icon>
+    <p>No webinars found.</p>
+  </div>
+
+  <!-- Webinar cards -->
+  <section *ngIf="!loading && webinars.length > 0" class="webinars-section">
+    <div class="webinars-grid">
+      <div class="webinar-card" *ngFor="let webinar of webinars" (click)="openDetailModal(webinar)">
+        <div class="card-top">
+          <div class="webinar-thumb" *ngIf="webinar.thumbnailBase64">
+            <img [src]="'data:image/png;base64,' + webinar.thumbnailBase64" alt="Webinar thumbnail" />
+          </div>
+          <div class="webinar-thumb placeholder" *ngIf="!webinar.thumbnailBase64">
+            <ion-icon name="videocam-outline"></ion-icon>
+          </div>
+          <div class="webinar-info">
+            <h3>{{ webinar.title }}</h3>
+            <p class="webinar-date">{{ webinar.createdAt | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        <div class="webinar-desc" *ngIf="webinar.description">{{ webinar.description | slice:0:120 }}{{ webinar.description!.length > 120 ? '…' : '' }}</div>
+        <div class="card-meta">
+          <div class="meta-item" *ngIf="webinar.youtubeUrl">
+            <ion-icon name="logo-youtube"></ion-icon>
+            <span>{{ webinar.youtubeUrl }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openAddModal()" class="admin-fab">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Detail Modal -->
+  <ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Webinar Details</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content" *ngIf="detailWebinar">
+        <div class="detail-header">
+          <div class="detail-thumb" *ngIf="detailWebinar.thumbnailBase64">
+            <img [src]="'data:image/png;base64,' + detailWebinar.thumbnailBase64" alt="Webinar" />
+          </div>
+          <div class="detail-thumb placeholder" *ngIf="!detailWebinar.thumbnailBase64">
+            <ion-icon name="videocam-outline"></ion-icon>
+          </div>
+          <h2>{{ detailWebinar.title }}</h2>
+          <p class="detail-date">{{ detailWebinar.createdAt | date:'mediumDate' }}</p>
+        </div>
+
+        <div class="detail-section" *ngIf="detailWebinar.description">
+          <h4>Description</h4>
+          <p class="description-text">{{ detailWebinar.description }}</p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Details</h4>
+          <div class="detail-row" *ngIf="detailWebinar.youtubeUrl">
+            <span class="detail-label">YouTube URL</span>
+            <span class="detail-value link">{{ detailWebinar.youtubeUrl }}</span>
+          </div>
+          <div class="detail-row" *ngIf="detailWebinar.createdAt">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ detailWebinar.createdAt | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <ion-button expand="block" (click)="openEditModal(detailWebinar); closeDetailModal()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            Edit Webinar
+          </ion-button>
+          <ion-button expand="block" color="danger" fill="outline" (click)="deleteWebinar(detailWebinar)">
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Delete Webinar
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Form Modal (Add / Edit) -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeFormModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingWebinarId ? 'Edit' : 'Add' }} Webinar</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeFormModal()">Cancel</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <form [formGroup]="webinarForm" (ngSubmit)="saveWebinar()">
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label position="stacked">Title *</ion-label>
+              <ion-input formControlName="title" placeholder="Webinar title"></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('title')">Title is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Description</ion-label>
+              <ion-textarea formControlName="description" placeholder="Brief description of the webinar..." rows="4"></ion-textarea>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">YouTube URL *</ion-label>
+              <ion-input formControlName="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></ion-input>
+            </ion-item>
+            <p class="field-error" *ngIf="isInvalid('youtubeUrl')">Valid YouTube URL is required.</p>
+
+            <ion-item>
+              <ion-label position="stacked">Thumbnail (Base64)</ion-label>
+              <ion-textarea formControlName="thumbnailBase64" placeholder="Paste base64 image string" rows="2"></ion-textarea>
+            </ion-item>
+          </ion-list>
+
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+              {{ editingWebinarId ? 'Update' : 'Create' }} Webinar
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

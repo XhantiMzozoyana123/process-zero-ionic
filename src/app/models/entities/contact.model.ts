@@ -18,12 +18,14 @@ export enum ContactStatus {
   Reached = 0,
   FollowUp = 1,
   Converted = 2,
-  Active = 3
+  Active = 3,
+  Deactivated = 4
 }
 
 export const ContactStatusLabels: Record<ContactStatus, string> = {
   [ContactStatus.Reached]: 'Reached',
   [ContactStatus.FollowUp]: 'Follow Up',
   [ContactStatus.Converted]: 'Converted',
-  [ContactStatus.Active]: 'Active'
+  [ContactStatus.Active]: 'Active',
+  [ContactStatus.Deactivated]: 'Deactivated'
 };

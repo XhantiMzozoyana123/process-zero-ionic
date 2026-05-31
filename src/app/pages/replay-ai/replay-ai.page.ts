@@ -33,7 +33,7 @@ export class ReplayAiPage implements AfterViewInit, OnDestroy {
     { step: '03', title: 'Replies Get Sorted',     icon: 'git-network-outline',
       description: 'Interested replies are picked up and sorted automatically.' },
     { step: '04', title: 'You Close More Deals',   icon: 'return-down-forward-outline',
-      description: 'Hot leads land in your dashboard and Process Zero closers help convert them.' },
+      description: 'Hot leads land in your dashboard. You monitor inbox intent and continuously update KPI/prospect-interest status.' },
   ];
 
   // ── Core feature cards ─────────────────────────────────
@@ -42,8 +42,8 @@ export class ReplayAiPage implements AfterViewInit, OnDestroy {
     { icon: 'layers-outline',                title: 'Done-For-You Campaigns',description: 'No writing from your side. Campaigns are prepared for you.' },
     { icon: 'shuffle-outline',               title: 'Safe Daily Sending',    description: 'Outreach runs every day with smart volume control.' },
     { icon: 'sparkles-outline',              title: 'Better Replies Over Time',description: 'The system keeps improving based on what gets responses.' },
-    { icon: 'return-down-forward-outline',   title: 'Lead Delivery',         description: 'Interested people are sent straight to your dashboard.' },
-    { icon: 'bar-chart-outline',             title: 'Rep Results View',      description: 'See your emails, replies, booked calls, and wins in one place.' },
+    { icon: 'return-down-forward-outline',   title: 'Lead Delivery',         description: 'Interested replies are routed straight to your dashboard.' },
+    { icon: 'bar-chart-outline',             title: 'Reply Monitoring & KPI Updates', description: 'Monitor inbox replies from interested prospects and keep KPI/prospect-interest tracking continuously updated.' },
   ];
 
   // ── Live activity ticker ───────────────────────────────
@@ -65,9 +65,9 @@ export class ReplayAiPage implements AfterViewInit, OnDestroy {
     { name: 'thabo@salesteam.co.za',     health: 94, emails: 48, status: 'active' },
     { name: 'lerato@repzone.co.za',      health: 88, emails: 52, status: 'active' },
     { name: 'james@prorealty.co.za',     health: 97, emails: 45, status: 'active' },
-    { name: 'nandi@bizdev.co.za',        health: 71, emails: 31, status: 'warming' },
+    { name: 'nandi@bizdev.co.za',        health: 71, emails: 31, status: 'active' },
     { name: 'sipho@ventures.co.za',      health: 85, emails: 44, status: 'active' },
-    { name: 'anika@coldops.co.za',       health: 62, emails: 22, status: 'warming' },
+    { name: 'anika@coldops.co.za',       health: 62, emails: 22, status: 'active' },
   ];
 
   // ── FAQ ────────────────────────────────────────────────
@@ -79,29 +79,29 @@ export class ReplayAiPage implements AfterViewInit, OnDestroy {
       answer: 'No. Sending is controlled with safe limits and smart timing to protect your inbox health.',
       open: false },
     { question: 'Will I know which replies are mine?',
-      answer: 'Yes. Your replies are tracked and shown in your own dashboard so you can act fast.',
+      answer: 'Yes. Your replies are tracked and shown in your dashboard so you can monitor intent and update KPI/prospect-interest status quickly.',
       open: false },
     { question: 'Do I have to write cold emails myself?',
-      answer: 'No. Replay AI handles the writing and sending. You focus on speaking to interested people.',
+      answer: 'No. Replay AI handles writing and sending. Your role is to monitor inbox replies and continuously update KPI/prospect-interest tracking.',
       open: false },
     { question: 'How many emails can be sent each day?',
       answer: 'It starts safe and grows over time as inbox health stays strong.',
       open: false },
     { question: 'How do I make more money with this?',
-      answer: 'You get more warm conversations in your pipeline, and dedicated Process Zero closers help turn those into closed deals.',
+      answer: 'You get more qualified conversations while you consistently monitor inbox replies and keep KPI/prospect-interest status updated so follow-up stays accurate.',
       open: false },
   ];
 
   // ── Testimonials ───────────────────────────────────────
   testimonials = [
     { name: 'Thabo M.',  role: 'Sales Rep, Process Zero',   avatar: 'TM',
-      quote: 'I connected my inbox fast and stopped stressing about prospecting. Replies started landing and my pipeline woke up.' },
+      quote: 'I connected my inbox fast. Now I just monitor replies and keep interest KPIs updated while outreach keeps running.' },
     { name: 'Lerato K.', role: 'Business Development',       avatar: 'LK',
-      quote: 'This gave me my time back. No manual cold email grind, just warm leads and booked calls to work on.' },
+      quote: 'This gave me my time back. My daily role is reply monitoring and KPI updates, not manual outreach.' },
     { name: 'James O.',  role: 'Senior Sales Rep',           avatar: 'JO',
-      quote: 'I have more quality conversations every week now. I can finally focus on closing instead of chasing.' },
+      quote: 'I have better conversations every week because I focus on tracked replies and continuous prospect-interest updates.' },
     { name: 'Nandi S.',  role: 'Account Executive',          avatar: 'NS',
-      quote: 'Best part is momentum. Leads keep coming in, and our closers help finish deals I used to lose.' },
+      quote: 'Best part is momentum. I monitor inbox intent and update KPIs while the system keeps qualified replies flowing.' },
   ];
 
   activeTestimonial = 0;

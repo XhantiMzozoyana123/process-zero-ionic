@@ -64,7 +64,8 @@ export class HelpPage {
             { text: 'Open Lead Lake from the sidebar. Use the search bar and industry filter chips to find prospects relevant to the products you want to sell.' },
             { text: 'Promote at least one lead to your Contacts by tapping the \u0022Add\u0022 button next to their name in the LeadLake table.' },
             { text: 'Go to Meetings and create your first meeting by selecting a contact, a product, a weekday date/time, and adding any agenda notes.' },
-            { text: 'Tap the floating chart icon at the bottom-right of any page to open the KPI Form. Select a product and submit your first outreach metrics.' },
+            { text: 'Open Relay AI from the sidebar, connect your inbox, let AI run outreach campaigns, then continuously monitor incoming replies and keep prospect-interest status current.' },
+            { text: 'Tap the floating chart icon at the bottom-right of any page to open the KPI Form. Select a product and submit your first KPI/prospect-interest updates.' },
             { text: 'Return to the Dashboard, select the same product from the dropdown, and review your performance report.' }
           ]
         },
@@ -73,7 +74,7 @@ export class HelpPage {
           title: 'Navigating the App',
           content: 'Process Zero uses a dual-sidebar navigation layout accessible from any page within your account.',
           steps: [
-            { text: 'Left Sidebar (tap the menu icon top-left) \u2014 your primary navigation. Contains: Dashboard, Lead Lake, My Contacts, Meetings, Products, KPI Policies, Help and Guide, and Settings.' },
+            { text: 'Left Sidebar (tap the menu icon top-left) \u2014 your primary navigation. Contains: Dashboard, Lead Lake, My Contacts, Meetings, Products, KPI Policies, Relay AI, Help and Guide, and Settings.' },
             { text: 'Right Sidebar (tap the icon top-right) \u2014 quick actions. Contains: Banking Details, Change Password, Switch to Admin (if you have admin access), and Logout.' },
             { text: 'Floating Action Button (bottom-right corner) \u2014 the purple chart icon opens the KPI Form modal where you submit your sales performance metrics.' },
             { text: 'Pull-to-Refresh \u2014 on most pages, pull down from the top to reload the latest data from the server.' }
@@ -108,10 +109,10 @@ export class HelpPage {
         {
           id: 'kpi-form',
           title: 'Submitting KPI Data via the KPI Form',
-          content: 'The KPI Form records your sales activity. Access it by tapping the floating chart button at the bottom-right of any page. Each field has its own Save button \u2014 you submit one metric at a time.',
+          content: 'The KPI Form records your ongoing performance updates. Access it by tapping the floating chart button at the bottom-right of any page. Each field has its own Save button \u2014 you submit one metric at a time after reviewing replies and prospect intent.',
           steps: [
             { text: 'Product Selector \u2014 choose which product\u0027s KPIs you are updating from the dropdown at the top.' },
-            { text: 'Core Activity \u2014 enter Outreach Attempts, tap +1 to increment Calls Booked, enter Calls Attended, Deals Influenced, and Revenue Generated (ZAR).' },
+            { text: 'Core Activity \u2014 enter Outreach Attempts, tap +1 to increment Calls Booked, enter Calls Attended, Deals Influenced, and Revenue Generated (ZAR) based on confirmed reply outcomes from your inbox monitoring.' },
             { text: 'Deal Performance \u2014 enter Deals Closed, Deals Attempted, Average Deal Size (ZAR), Revenue Influenced (ZAR), Client Retention (0\u20131), and toggle Activity Consistency.' },
             { text: 'Team Metrics \u2014 read-only calculated fields: Team Size, Team Revenue, Close Rate, Churn Rate, and Leader Activity Level.' },
             { text: 'Business Health \u2014 enter Brand Compliance (0\u20131), Strategic Initiatives Delivered, Brand Risk Management (0\u20131), and Innovation Contribution (0\u20131). MRR, Growth Rate, Retention, and Leadership Stability are calculated.' },

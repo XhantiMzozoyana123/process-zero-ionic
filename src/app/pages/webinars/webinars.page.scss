@@ -1,0 +1,353 @@
+// ── Design tokens ───────────────────────────────────────
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+// ── Page background ─────────────────────────────────────
+.webinars-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
+// ── Header ──────────────────────────────────────────────
+.page-header {
+  padding: 32px 28px 0;
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: $muted;
+      font-size: 14px;
+    }
+  }
+}
+
+.search-row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.themed-search {
+  flex: 1;
+  --background: rgba(255, 255, 255, 0.85);
+  --border-radius: 14px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --placeholder-color: #{$muted};
+  --icon-color: #{$teal};
+  font-size: 14px;
+  padding: 0;
+}
+
+// ── Loading ─────────────────────────────────────────────
+.loading-wrap {
+  display: grid;
+  justify-items: center;
+  padding: 48px 0;
+}
+
+// ── Empty state ─────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 24px;
+
+  ion-icon {
+    font-size: 64px;
+    color: rgba($coral, 0.5);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  p {
+    margin: 0;
+    color: $muted;
+    font-size: 14px;
+  }
+}
+
+// ── Error state ─────────────────────────────────────────
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 28px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 24px;
+    color: $coral;
+  }
+
+  span {
+    color: $coral;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+
+// ── Cards section ───────────────────────────────────────
+.cards-section {
+  padding: 20px 28px 100px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+// ── Webinar card ────────────────────────────────────────
+.item-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+  }
+}
+
+// ── Image thumbnail ─────────────────────────────────────
+.product-thumb-wrap {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, rgba($sand, 0.8), rgba($paper, 0.6));
+  overflow: hidden;
+  position: relative;
+}
+
+.product-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 56px;
+    color: rgba($coral, 0.35);
+  }
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($ink, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  ion-icon {
+    font-size: 48px;
+    color: #fff;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.item-card:hover .play-overlay {
+  opacity: 1;
+}
+
+// ── Product body ────────────────────────────────────────
+.product-body {
+  padding: 18px 20px 6px;
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  .product-desc {
+    font-size: 14px;
+    line-height: 1.45;
+    color: $ink;
+    margin: 0 0 4px;
+    max-height: 4.5em;
+    overflow: hidden;
+  }
+
+  .product-desc.muted {
+    color: $muted;
+    font-style: italic;
+  }
+}
+
+// ── Card meta ───────────────────────────────────────────
+.card-meta {
+  padding: 10px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: $muted;
+
+    ion-icon {
+      font-size: 16px;
+      color: $coral;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ── Detail section ──────────────────────────────────────
+.detail-section {
+  padding: 20px 28px 40px;
+}
+
+.detail-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.detail-thumb-wrap {
+  width: 100%;
+  height: 400px;
+  background: $ink;
+  overflow: hidden;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+
+.detail-body {
+  padding: 24px 28px;
+
+  .detail-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: $muted;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 16px;
+      color: $coral;
+    }
+  }
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: $ink;
+  }
+
+  .detail-description {
+    font-size: 15px;
+    line-height: 1.65;
+    color: $ink;
+    margin: 0 0 20px;
+  }
+}
+
+.back-to-list-btn {
+  --color: #{$teal};
+  --border-color: #{$teal};
+  --border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 600px) {
+  .page-header {
+    padding: 24px 16px 0;
+  }
+
+  .cards-section {
+    padding: 16px 16px 100px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-section {
+    padding: 16px 16px 40px;
+  }
+
+  .detail-thumb-wrap {
+    height: 220px;
+  }
+
+  .detail-body {
+    padding: 20px 16px;
+  }
+
+  .detail-body h2 {
+    font-size: 18px;
+  }
+}

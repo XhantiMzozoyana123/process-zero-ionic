@@ -27,7 +27,13 @@ export class AdminClientsPage implements OnInit {
   clientForm: FormGroup;
   submitting = false;
 
-  statusOptions = [ContactStatus.Reached, ContactStatus.FollowUp, ContactStatus.Converted, ContactStatus.Active];
+  statusOptions = [
+    ContactStatus.Reached,
+    ContactStatus.FollowUp,
+    ContactStatus.Converted,
+    ContactStatus.Active,
+    ContactStatus.Deactivated,
+  ];
   statusLabels = ContactStatusLabels;
 
   constructor(
@@ -214,6 +220,7 @@ export class AdminClientsPage implements OnInit {
     if (status === ContactStatus.Converted) return 'primary';
     if (status === ContactStatus.FollowUp) return 'warning';
     if (status === ContactStatus.Reached) return 'tertiary';
+    if (status === ContactStatus.Deactivated) return 'danger';
     return 'medium';
   }
 

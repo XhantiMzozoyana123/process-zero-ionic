@@ -4,7 +4,13 @@
 
 export const environment = {
   production: false,
-  apiUrl: "https://processzero-api-3.somee.com/api"
+  apiUrl: "https://localhost:7183/api",
+  google: {
+    clientId: '1016527872417-u68elhobo3ochv74tpgolkehn2mlnd95.apps.googleusercontent.com',
+    redirectUrl: 'http://localhost:8100/oauth/google/callback',
+    scope: 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly',
+    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'],
+  }
 };
 
 /*

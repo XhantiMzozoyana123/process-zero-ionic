@@ -61,6 +61,12 @@ const routes: Routes = [
         canActivate: [AuthGuard, AssessmentGuard]
       },
       {
+        path: 'webinars',
+        loadComponent: () => import('./../../pages/webinars/webinars.page')
+          .then(m => m.WebinarsPage),
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'kpi-policies',
         loadChildren: () => import('./../../pages/kpi-policies/kpi-policies.module')
         .then( m => m.KpiPoliciesPageModule),
@@ -71,6 +77,12 @@ const routes: Routes = [
         loadChildren: () => import('./../../pages/help/help.module')
         .then( m => m.HelpPageModule),
         canActivate: [AuthGuard, AssessmentGuard]
+      },
+      {
+        path: 'relay-user',
+        loadComponent: () => import('./../../pages/relay-user/relay-user.page')
+          .then(m => m.RelayUserPage),
+        canActivate: [AuthGuard]
       },
       {
         path: 'assessments',

@@ -26,7 +26,13 @@ export class ContactsPage implements OnInit {
   viewMode: 'table' | 'cards' = 'table';
   currentPage = 1;
   pageSize = 3;
-  private readonly statusValues = [ContactStatus.Reached, ContactStatus.FollowUp, ContactStatus.Converted, ContactStatus.Active];
+  private readonly statusValues = [
+    ContactStatus.Reached,
+    ContactStatus.FollowUp,
+    ContactStatus.Converted,
+    ContactStatus.Active,
+    ContactStatus.Deactivated,
+  ];
 
   constructor(
     private contactService: ContactService,
@@ -111,11 +117,12 @@ export class ContactsPage implements OnInit {
     return ContactStatusLabels[status as ContactStatus] ?? 'Unknown';
   }
 
-  getStatusColor(status?: ContactStatus | number): 'success' | 'warning' | 'primary' | 'medium' {
+  getStatusColor(status?: ContactStatus | number): 'success' | 'warning' | 'primary' | 'danger' | 'medium' {
     if (status == null) return 'medium';
     if (status === ContactStatus.Reached) return 'success';
     if (status === ContactStatus.FollowUp) return 'warning';
     if (status === ContactStatus.Converted) return 'primary';
+    if (status === ContactStatus.Deactivated) return 'danger';
     return 'medium';
   }
 

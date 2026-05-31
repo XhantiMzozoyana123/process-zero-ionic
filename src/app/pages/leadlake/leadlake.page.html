@@ -35,24 +35,23 @@
     <div class="table-card">
       <ion-grid class="lead-table">
         <ion-row class="table-header">
-          <ion-col size="12" size-md="2">Name</ion-col>
-          <ion-col size="12" size-md="2">Email</ion-col>
+          <ion-col size="12" size-md="2">First Name</ion-col>
+          <ion-col size="12" size-md="2">Last Name</ion-col>
+          <ion-col size="12" size-md="3">Email</ion-col>
           <ion-col size="12" size-md="2">Company</ion-col>
-          <ion-col size="12" size-md="2">Role</ion-col>
-          <ion-col size="12" size-md="2">Industry</ion-col>
-          <ion-col size="12" size-md="2">Action</ion-col>
+          <ion-col size="12" size-md="1">Role</ion-col>
+          <ion-col size="12" size-md="1">Industry</ion-col>
+          <ion-col size="12" size-md="1">Action</ion-col>
         </ion-row>
 
         <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
-          <ion-col size="12" size-md="2">
-            <div class="cell-title">{{ lead.firstName }} {{ lead.lastName }}</div>
-            <div class="cell-sub">{{ lead.location || 'No location' }}</div>
-          </ion-col>
-          <ion-col size="12" size-md="2" class="email-col">{{ lead.email }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.firstName || '-' }}</ion-col>
+          <ion-col size="12" size-md="2">{{ lead.lastName || '-' }}</ion-col>
+          <ion-col size="12" size-md="3" class="email-col">{{ lead.email }}</ion-col>
           <ion-col size="12" size-md="2">{{ lead.company || '-' }}</ion-col>
-          <ion-col size="12" size-md="2">{{ lead.job || '-' }}</ion-col>
-          <ion-col size="12" size-md="2">{{ getIndustryLabel(lead.industry) }}</ion-col>
-          <ion-col size="12" size-md="2">
+          <ion-col size="12" size-md="1">{{ lead.job || '-' }}</ion-col>
+          <ion-col size="12" size-md="1">{{ getIndustryLabel(lead.industry) }}</ion-col>
+          <ion-col size="12" size-md="1">
             <button class="promote-btn" (click)="promoteToClient(lead)">
               <ion-icon name="person-add-outline"></ion-icon> Add
             </button>

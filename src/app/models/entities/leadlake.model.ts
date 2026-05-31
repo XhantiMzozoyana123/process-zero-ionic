@@ -10,8 +10,15 @@ export interface LeadLake {
   job: string;
   location: string;
   industry: LeadLakeIndustry;
+  intent?: LeadIntent;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export enum LeadIntent {
+  High = 'High',
+  Medium = 'Medium',
+  Low = 'Low'
 }
 
 export enum LeadLakeIndustry {
