@@ -117,25 +117,21 @@ export class ProductsPage implements OnInit {
   private checkAssessmentStatuses(): void {
     this.assessmentCheckLoading = true;
     this.qualifiedProductIds.clear();
-    let pending = this.products.length;
-    if (pending === 0) {
-      this.assessmentCheckLoading = false;
-      return;
-    }
-    for (const product of this.products) {
-      if (!product.id) { pending--; if (pending === 0) this.assessmentCheckLoading = false; continue; }
-      this.assessmentService.getMyProductResult(product.id).subscribe({
-        next: (result) => {
-          if (result.passed) this.qualifiedProductIds.add(product.id!);
-          pending--;
-          if (pending === 0) this.assessmentCheckLoading = false;
-        },
-        error: () => {
-          pending--;
-          if (pending === 0) this.assessmentCheckLoading = false;
-        }
-      });
-    }
+    this.assessmentService.getAllMyResults().subscribe({
+      next: (results) => {
+        results
+          .filter((r: any) => !!(r.passed ?? r.Passed))
+          .forEach((r: any) => {
+            const pid = (r.productId ?? r.ProductId) as number;
+            if (pid != null) this.qualifiedProductIds.add(pid);
+          });
+        this.assessmentCheckLoading = false;
+      },
+      error: (err) => {
+        console.error('Could not load assessment results', err);
+        this.assessmentCheckLoading = false;
+      },
+    });
   }
 
   isQualified(product: Product): boolean {

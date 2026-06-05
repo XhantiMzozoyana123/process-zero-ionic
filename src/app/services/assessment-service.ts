@@ -29,6 +29,11 @@ export class AssessmentService {
     return this.http.get<SubmissionResultDto>(`${this.apiUrl}/product/${productId}/my-result`);
   }
 
+  /** Returns all assessment results for the current user across all products */
+  getAllMyResults(): Observable<SubmissionResultDto[]> {
+    return this.http.get<SubmissionResultDto[]>(`${this.apiUrl}/my-results`);
+  }
+
   getByProduct(productId: number): Observable<AssessmentClientDto> {
     return this.http.get<AssessmentClientDto>(`${this.apiUrl}/product/${productId}`);
   }
@@ -55,5 +60,10 @@ export class AssessmentService {
 
   getByProductForAdmin(productId: number): Observable<AssessmentDto> {
     return this.http.get<AssessmentDto>(`${this.apiUrl}/admin/product/${productId}`);
+  }
+
+  /** Admin: get all assessments for all products */
+  getAllAssessmentsForAdmin(): Observable<AssessmentDto[]> {
+    return this.http.get<AssessmentDto[]>(`${this.apiUrl}/admin/all`);
   }
 }

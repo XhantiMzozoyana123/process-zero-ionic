@@ -1,0 +1,501 @@
+<ion-content class="admin-relay-page" [fullscreen]="true">
+  <!-- HERO -->
+  <div class="hero-shell">
+    <div class="hero-glow"></div>
+    <div class="content-shell">
+      <header class="page-header">
+        <div class="hero-copy">
+          <span class="hero-badge">
+            <ion-icon name="rocket-outline"></ion-icon>
+            Cold Email Automation
+          </span>
+          <h1>Relay <span class="hero-highlight">Campaigns</span></h1>
+          <p>
+            Build outreach campaigns the Instantly &amp; Lemlist way: create a campaign,
+            load leads from your LeadLake or a CSV, then activate and launch the sequence
+            engine. Imports and sends run in the background via Hangfire.
+          </p>
+        </div>
+        <aside class="hero-panel">
+          <div class="hero-panel-label">Last launched job</div>
+          <div *ngIf="lastJob; else noJob" class="hero-job">
+            <p class="hero-job-message">{{ lastJob.message }}</p>
+            <code class="hero-job-id">{{ lastJob.hangfireJobId }}</code>
+          </div>
+          <ng-template #noJob>
+            <ul class="hero-panel-list">
+              <li>1 — Create a campaign</li>
+              <li>2 — Add leads (picker or CSV)</li>
+              <li>3 — Activate &amp; launch the engine</li>
+            </ul>
+          </ng-template>
+        </aside>
+      </header>
+    </div>
+  </div>
+
+  <!-- SEGMENTS -->
+  <div class="content-shell">
+    <div class="segment-container">
+      <ion-segment [(ngModel)]="segmentValue">
+        <ion-segment-button value="campaigns">
+          <ion-icon name="megaphone-outline"></ion-icon>
+          <ion-label>Campaigns</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="leads">
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-label>Leads &amp; Import</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <!-- ───────────── CAMPAIGNS ───────────── -->
+    <div *ngIf="segmentValue === 'campaigns'" class="grid-2">
+      <!-- Create -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Create campaign
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-input label="Name" labelPlacement="stacked" [(ngModel)]="newCampaignName"
+              placeholder="Q2 Outreach"></ion-input>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-textarea label="Description" labelPlacement="stacked" [(ngModel)]="newCampaignDescription"
+              autoGrow="true" placeholder="Targeting notes (optional)"></ion-textarea>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-input label="Daily send limit" labelPlacement="stacked" type="number" min="0"
+              [(ngModel)]="newCampaignDailyLimit" placeholder="e.g. 50"></ion-input>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-input label="Start date" labelPlacement="stacked" type="date"
+              [(ngModel)]="newCampaignStartDate"></ion-input>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-input label="End date" labelPlacement="stacked" type="date"
+              [(ngModel)]="newCampaignEndDate"></ion-input>
+          </ion-item>
+
+          <!-- ── Sequence builder (campaign → sequences → steps → A/B messages) ── -->
+          <div class="builder">
+            <div class="builder-head">
+              <div class="builder-title">
+                <ion-icon name="git-branch-outline"></ion-icon>
+                <span>Email sequences <small>(optional)</small></span>
+              </div>
+              <ion-button size="small" fill="outline" (click)="addSequence()">
+                <ion-icon name="add-outline" slot="start"></ion-icon>
+                Add sequence
+              </ion-button>
+            </div>
+
+            <p class="hint" *ngIf="!newSequences.length">
+              Add a sequence to define your cadence — each step is one email touch, and
+              each step can hold multiple A/B message variants. You can also leave this
+              empty and configure sequences later.
+            </p>
+
+            <div class="sequence-card" *ngFor="let seq of newSequences; let si = index; trackBy: trackByIndex">
+              <div class="sequence-head">
+                <ion-input class="seq-name" placeholder="Sequence name" [(ngModel)]="seq.name"></ion-input>
+                <ion-button size="small" fill="clear" color="danger" (click)="removeSequence(si)">
+                  <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </div>
+
+              <div class="seq-toggles">
+                <ion-item lines="none" class="toggle-item">
+                  <ion-toggle [(ngModel)]="seq.messageRotationEnabled" labelPlacement="end">
+                    Rotate messages
+                  </ion-toggle>
+                </ion-item>
+                <ion-item lines="none" class="toggle-item">
+                  <ion-toggle [(ngModel)]="seq.inboxRotationEnabled" labelPlacement="end">
+                    Rotate inboxes
+                  </ion-toggle>
+                </ion-item>
+              </div>
+
+              <!-- Steps -->
+              <div class="step-card" *ngFor="let step of seq.steps; let ti = index; trackBy: trackByIndex">
+                <div class="step-head">
+                  <span class="step-badge">Step {{ step.stepOrder }}</span>
+                  <ion-input class="step-name" placeholder="Step name" [(ngModel)]="step.name"></ion-input>
+                  <ion-button size="small" fill="clear" color="danger" (click)="removeStep(si, ti)">
+                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                  </ion-button>
+                </div>
+
+                <div class="step-row">
+                  <ion-input class="delay-input" type="number" min="0" labelPlacement="stacked"
+                    label="Delay (days)" [(ngModel)]="step.delayDays"></ion-input>
+                  <ion-item lines="none" class="toggle-item">
+                    <ion-toggle [(ngModel)]="step.isActive" labelPlacement="end">Active</ion-toggle>
+                  </ion-item>
+                </div>
+
+                <!-- A/B Variants -->
+                <div class="variant-card" *ngFor="let v of step.variants; let vi = index; trackBy: trackByIndex">
+                  <div class="variant-head">
+                    <span class="variant-badge">Variant {{ v.variantName }}</span>
+                    <ion-input class="weight-input" type="number" min="0" max="100" labelPlacement="stacked"
+                      label="Weight %" [(ngModel)]="v.weight"></ion-input>
+                    <ion-button size="small" fill="clear" color="danger"
+                      *ngIf="step.variants && step.variants.length > 1" (click)="removeVariant(si, ti, vi)">
+                      <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+                    </ion-button>
+                  </div>
+                  <ion-item lines="none">
+                    <ion-input label="Subject" labelPlacement="stacked" [(ngModel)]="v.subject"
+                      placeholder="Quick question, {{ '{{firstName}}' }}"></ion-input>
+                  </ion-item>
+                  <ion-item lines="none">
+                    <ion-textarea label="Message (HTML)" labelPlacement="stacked" [(ngModel)]="v.htmlBody"
+                      autoGrow="true" placeholder="Hi {{ '{{firstName}}' }}, ..."></ion-textarea>
+                  </ion-item>
+                </div>
+
+                <ion-button size="small" fill="clear" color="primary" (click)="addVariant(si, ti)">
+                  <ion-icon name="add-outline" slot="start"></ion-icon>
+                  Add A/B variant
+                </ion-button>
+              </div>
+
+              <ion-button size="small" fill="outline" color="primary" class="add-step-btn"
+                (click)="addStep(si)">
+                <ion-icon name="add-outline" slot="start"></ion-icon>
+                Add step
+              </ion-button>
+            </div>
+          </div>
+
+          <ion-button expand="block" color="primary" class="ion-margin-top" (click)="createCampaign()"
+            [disabled]="creatingCampaign">
+
+            <ion-spinner *ngIf="creatingCampaign" name="dots" slot="start"></ion-spinner>
+
+            <ion-icon *ngIf="!creatingCampaign" name="add-outline" slot="start"></ion-icon>
+            Create campaign
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- All campaigns -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="list-outline"></ion-icon>
+            Your campaigns
+            <ion-button fill="clear" size="small" class="title-action" (click)="loadCampaigns()"
+              [disabled]="loadingCampaigns">
+              <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div *ngIf="loadingCampaigns" class="empty-state">
+            <ion-spinner name="dots"></ion-spinner>
+            <p>Loading campaigns…</p>
+          </div>
+
+          <div *ngIf="!loadingCampaigns && !campaigns.length" class="empty-state">
+            <ion-icon name="megaphone-outline"></ion-icon>
+            <p>No campaigns yet. Create your first one.</p>
+          </div>
+
+          <ion-list *ngIf="!loadingCampaigns && campaigns.length">
+            <ion-item *ngFor="let c of campaigns" button detail="false" lines="full"
+              [class.selected]="c.id === selectedCampaignId" (click)="selectCampaign(c.id)">
+              <ion-label class="ion-text-wrap">
+                <div class="activity-head">
+                  <h2>{{ c.name }}</h2>
+                  <ion-chip [color]="c.isActive ? 'success' : 'medium'">
+                    {{ c.isActive ? 'Active' : 'Paused' }}
+                  </ion-chip>
+                </div>
+                <p>{{ c.description || 'No description' }}</p>
+                <div class="campaign-details">
+                  <span>#{{ c.id }}</span>
+                  <span>{{ c.totalLeadCount }} leads</span>
+                  <span>{{ c.activeLeadCount }} active</span>
+                </div>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Manage selected -->
+      <ion-card class="span-2" *ngIf="selectedCampaignId">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="options-outline"></ion-icon>
+            Manage campaign
+            <ion-button fill="clear" size="small" class="title-action" (click)="clearSelection()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div *ngIf="loadingDetail" class="empty-state">
+            <ion-spinner name="dots"></ion-spinner>
+            <p>Loading campaign…</p>
+          </div>
+
+          <div *ngIf="!loadingDetail && campaignDetail">
+            <!-- Stats -->
+            <div class="detail-box">
+              <div class="detail-row"><span class="k">Id</span><span class="v">{{ campaignDetail.id }}</span></div>
+              <div class="detail-row">
+                <span class="k">Status</span>
+                <span class="v">
+                  <ion-chip [color]="campaignDetail.isActive ? 'success' : 'medium'">
+                    {{ campaignDetail.isActive ? 'Active' : 'Paused' }}
+                  </ion-chip>
+                </span>
+              </div>
+              <div class="detail-row"><span class="k">Total leads</span><span class="v">{{ campaignDetail.totalLeadCount }}</span></div>
+              <div class="detail-row"><span class="k">Active</span><span class="v">{{ campaignDetail.activeLeadCount }}</span></div>
+              <div class="detail-row"><span class="k">Completed</span><span class="v">{{ campaignDetail.completedLeadCount }}</span></div>
+              <div class="detail-row"><span class="k">Replied</span><span class="v">{{ campaignDetail.repliedLeadCount }}</span></div>
+              <div class="detail-row" *ngIf="campaignDetail.dailySendLimit != null">
+                <span class="k">Daily send limit</span><span class="v">{{ campaignDetail.dailySendLimit }}</span>
+              </div>
+              <div class="detail-row" *ngIf="campaignDetail.startDate">
+                <span class="k">Start date</span><span class="v">{{ campaignDetail.startDate | date:'mediumDate' }}</span>
+              </div>
+              <div class="detail-row" *ngIf="campaignDetail.endDate">
+                <span class="k">End date</span><span class="v">{{ campaignDetail.endDate | date:'mediumDate' }}</span>
+              </div>
+              <div class="detail-row"><span class="k">Created</span><span class="v">{{ campaignDetail.createdAt | date:'medium' }}</span></div>
+
+              <div class="detail-row" *ngIf="campaignDetail.updatedAt">
+                <span class="k">Updated</span><span class="v">{{ campaignDetail.updatedAt | date:'medium' }}</span>
+              </div>
+            </div>
+
+            <!-- Edit metadata -->
+            <ion-item lines="none">
+              <ion-input label="Name" labelPlacement="stacked" [(ngModel)]="editName"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-textarea label="Description" labelPlacement="stacked" [(ngModel)]="editDescription"
+                autoGrow="true"></ion-textarea>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-input label="Daily send limit" labelPlacement="stacked" type="number" min="0"
+                [(ngModel)]="editDailyLimit" placeholder="e.g. 50"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-input label="Start date" labelPlacement="stacked" type="date"
+                [(ngModel)]="editStartDate"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-input label="End date" labelPlacement="stacked" type="date"
+                [(ngModel)]="editEndDate"></ion-input>
+            </ion-item>
+
+            <div class="btn-row">
+
+              <ion-button fill="outline" color="primary" (click)="saveCampaign()" [disabled]="campaignActionBusy">
+                <ion-icon name="save-outline" slot="start"></ion-icon> Save
+              </ion-button>
+              <ion-button color="success" (click)="activateCampaign()"
+                [disabled]="campaignActionBusy || campaignDetail.isActive">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon> Activate
+              </ion-button>
+              <ion-button color="warning" (click)="pauseCampaign()"
+                [disabled]="campaignActionBusy || !campaignDetail.isActive">
+                <ion-icon name="pause-outline" slot="start"></ion-icon> Pause
+              </ion-button>
+              <ion-button color="danger" fill="outline" (click)="deleteCampaign()" [disabled]="campaignActionBusy">
+                <ion-icon name="trash-outline" slot="start"></ion-icon> Delete
+              </ion-button>
+            </div>
+
+            <!-- Launch -->
+            <ion-button expand="block" color="tertiary" class="ion-margin-top" (click)="launchCampaign()"
+              [disabled]="launchBusy || !campaignDetail.isActive">
+              <ion-spinner *ngIf="launchBusy" name="dots" slot="start"></ion-spinner>
+              <ion-icon *ngIf="!launchBusy" name="flash-outline" slot="start"></ion-icon>
+              Launch sequence engine
+            </ion-button>
+            <p class="hint" *ngIf="!campaignDetail.isActive">
+              Activate the campaign before launching. (Requires sequences &amp; inboxes configured.)
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- ───────────── LEADS & IMPORT ───────────── -->
+    <div *ngIf="segmentValue === 'leads'">
+      <!-- Selected campaign banner -->
+      <ion-card *ngIf="!selectedCampaignId">
+        <ion-card-content>
+          <div class="empty-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <p>Select a campaign in the <strong>Campaigns</strong> tab to manage its leads.</p>
+            <ion-button fill="outline" color="primary" size="small" (click)="segmentValue = 'campaigns'">
+              Go to campaigns
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ng-container *ngIf="selectedCampaignId">
+        <div class="picker-toolbar selected-banner">
+          <span class="picker-count">
+            <ion-icon name="megaphone-outline"></ion-icon>
+            Campaign #{{ selectedCampaignId }}{{ campaignDetail?.name ? ' · ' + campaignDetail?.name : '' }}
+          </span>
+        </div>
+
+        <!-- CSV import -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="cloud-upload-outline"></ion-icon>
+              Import leads from CSV
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="hint">
+              CSV columns: <code>Email, FirstName, LastName, Company</code>. Max 10 MB.
+              Rows are added to your LeadLake and linked to this campaign.
+            </p>
+            <div class="inline-row">
+              <input type="file" accept=".csv" (change)="onFileSelected($event)" class="file-input" />
+              <ion-button color="primary" (click)="uploadCsv()" [disabled]="importBusy || !importFile">
+                <ion-spinner *ngIf="importBusy" name="dots" slot="start"></ion-spinner>
+                <ion-icon *ngIf="!importBusy" name="cloud-upload-outline" slot="start"></ion-icon>
+                Upload &amp; import
+              </ion-button>
+            </div>
+
+            <div *ngIf="importStatus" class="detail-box">
+              <div class="detail-row">
+                <span class="k">Status</span>
+                <span class="v">
+                  <ion-chip [color]="importIsComplete ? (importStatus.status === 'Failed' ? 'danger' : 'success') : 'medium'">
+                    {{ importStatus.status || (importIsComplete ? 'Completed' : 'Processing') }}
+                  </ion-chip>
+                </span>
+              </div>
+              <div class="detail-row">
+                <span class="k">Progress</span>
+                <span class="v">{{ importStatus.processedRows ?? 0 }} / {{ importStatus.totalRows ?? 0 }}</span>
+              </div>
+              <ion-progress-bar [value]="importProgress"
+                [color]="importStatus.status === 'Failed' ? 'danger' : 'primary'"></ion-progress-bar>
+              <div class="detail-row" *ngIf="importStatus.importedCount != null">
+                <span class="k">Imported</span><span class="v">{{ importStatus.importedCount }}</span>
+              </div>
+              <div class="detail-row" *ngIf="importStatus.failedCount != null">
+                <span class="k">Failed</span><span class="v">{{ importStatus.failedCount }}</span>
+              </div>
+              <p class="result-text" *ngIf="importStatus.message">{{ importStatus.message }}</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- LeadLake picker -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="people-outline"></ion-icon>
+              Add / remove from LeadLake
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-searchbar [(ngModel)]="leadSearch" placeholder="Search name, email, company, industry…"
+              [debounce]="150"></ion-searchbar>
+
+            <div class="picker-toolbar">
+              <span class="picker-count">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                {{ selectedLeadCount }} selected
+              </span>
+              <span class="picker-actions">
+                <ion-button size="small" fill="clear" (click)="toggleSelectAllVisible()"
+                  [disabled]="leadLakeLoading || !filteredLeadLake.length">
+                  Select all
+                </ion-button>
+                <ion-button size="small" fill="clear" color="medium" (click)="clearLeadSelection()"
+                  [disabled]="!selectedLeadCount">
+                  Clear
+                </ion-button>
+                <ion-button size="small" fill="clear" color="primary" (click)="loadLeadLake()"
+                  [disabled]="leadLakeLoading">
+                  <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </span>
+            </div>
+
+            <div *ngIf="leadLakeLoading" class="empty-state">
+              <ion-spinner name="dots"></ion-spinner>
+              <p>Loading LeadLake…</p>
+            </div>
+
+            <div *ngIf="!leadLakeLoading && leadLakeError" class="empty-state">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              <p>{{ leadLakeError }}</p>
+            </div>
+
+            <div *ngIf="!leadLakeLoading && !leadLakeError && filteredLeadLake.length" class="lead-picker-list">
+              <button type="button" class="lead-row"
+                *ngFor="let lead of filteredLeadLake; trackBy: trackByLeadId"
+                [class.selected]="isLeadSelected(lead.id)" (click)="toggleLead(lead.id)">
+                <span class="lead-check" [class.checked]="isLeadSelected(lead.id)" aria-hidden="true">
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </span>
+                <span class="lead-avatar">{{ (lead.firstName || lead.email || '?').charAt(0) }}{{ (lead.lastName || '').charAt(0) }}</span>
+                <span class="lead-body">
+                  <span class="lead-name">
+                    {{ lead.firstName }} {{ lead.lastName }}
+                    <span class="lead-id">#{{ lead.id }}</span>
+                  </span>
+                  <span class="lead-email">{{ lead.email }}</span>
+                  <span class="lead-meta" *ngIf="lead.company || lead.job || lead.industry">
+                    <span class="meta-pill" *ngIf="lead.company">
+                      <ion-icon name="business-outline"></ion-icon>{{ lead.company }}
+                    </span>
+                    <span class="meta-pill" *ngIf="lead.job">
+                      <ion-icon name="briefcase-outline"></ion-icon>{{ lead.job }}
+                    </span>
+                    <span class="meta-pill industry" *ngIf="lead.industry">{{ lead.industry }}</span>
+                  </span>
+                </span>
+              </button>
+            </div>
+
+            <div *ngIf="!leadLakeLoading && !leadLakeError && !filteredLeadLake.length" class="empty-state">
+              <ion-icon name="people-outline"></ion-icon>
+              <p>No leads match your search.</p>
+            </div>
+
+            <ion-item lines="none">
+              <ion-segment [(ngModel)]="leadBatchMode">
+                <ion-segment-button value="add"><ion-label>Add to campaign</ion-label></ion-segment-button>
+                <ion-segment-button value="remove"><ion-label>Remove</ion-label></ion-segment-button>
+              </ion-segment>
+            </ion-item>
+            <ion-button expand="block" color="primary" class="ion-margin-top" (click)="applyLeadBatch()"
+              [disabled]="leadBatchBusy || !selectedLeadCount">
+              <ion-spinner *ngIf="leadBatchBusy" name="dots" slot="start"></ion-spinner>
+              <ion-icon *ngIf="!leadBatchBusy" name="people-outline" slot="start"></ion-icon>
+              {{ leadBatchMode === 'add' ? 'Add' : 'Remove' }} {{ selectedLeadCount }} selected
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+    </div>
+  </div>
+</ion-content>

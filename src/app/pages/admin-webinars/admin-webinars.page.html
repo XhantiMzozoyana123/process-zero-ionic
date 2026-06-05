@@ -38,7 +38,7 @@
       <div class="webinar-card" *ngFor="let webinar of webinars" (click)="openDetailModal(webinar)">
         <div class="card-top">
           <div class="webinar-thumb" *ngIf="webinar.thumbnailBase64">
-            <img [src]="'data:image/png;base64,' + webinar.thumbnailBase64" alt="Webinar thumbnail" />
+            <img [src]="webinar.thumbnailBase64" alt="Webinar thumbnail" />
           </div>
           <div class="webinar-thumb placeholder" *ngIf="!webinar.thumbnailBase64">
             <ion-icon name="videocam-outline"></ion-icon>
@@ -80,7 +80,7 @@
       <ion-content class="modal-content" *ngIf="detailWebinar">
         <div class="detail-header">
           <div class="detail-thumb" *ngIf="detailWebinar.thumbnailBase64">
-            <img [src]="'data:image/png;base64,' + detailWebinar.thumbnailBase64" alt="Webinar" />
+            <img [src]="detailWebinar.thumbnailBase64" alt="Webinar" />
           </div>
           <div class="detail-thumb placeholder" *ngIf="!detailWebinar.thumbnailBase64">
             <ion-icon name="videocam-outline"></ion-icon>

@@ -5,6 +5,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Webinar } from 'src/app/models/entities/webinar.model';
 import { WebinarService } from 'src/app/services/webinar-service';
+import { IntroService } from 'src/app/services/intro-service';
+
 
 @Component({
   selector: 'app-webinars',
@@ -20,14 +22,24 @@ export class WebinarsPage implements OnInit {
   errorMessage = '';
   searchTerm = '';
 
+  viewMode: 'table' | 'cards' = 'cards';
+  currentPage = 1;
+  pageSize = 6;
+
   constructor(
     private webinarService: WebinarService,
     private toastCtrl: ToastController,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private introService: IntroService
   ) {}
+
 
   ngOnInit(): void {
     this.loadWebinars();
+  }
+
+  startTour(): void {
+    this.introService.startWebinarsTour();
   }
 
   get filteredWebinars(): Webinar[] {
@@ -44,6 +56,26 @@ export class WebinarsPage implements OnInit {
       return haystack.includes(term);
     });
   }
+
+  get displayedWebinars(): Webinar[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredWebinars.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredWebinars.length / this.pageSize) || 1;
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
 
   get embedUrl(): SafeResourceUrl | null {
     if (!this.selectedWebinar?.youtubeUrl) {
@@ -118,8 +150,10 @@ export class WebinarsPage implements OnInit {
   }
 
   onSearchChange(): void {
-    // Search is handled by the filteredWebinars getter
+    // Reset to first page; filtering is handled by the filteredWebinars getter
+    this.currentPage = 1;
   }
+
 
   clearSelection(): void {
     this.selectedWebinar = null;

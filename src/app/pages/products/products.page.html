@@ -65,7 +65,7 @@
             <td>
               <div class="product-name-cell">
                 <div class="table-thumb" [class.placeholder]="!product.profilePictureBase64">
-                  <img *ngIf="product.profilePictureBase64" [src]="'data:image/png;base64,' + product.profilePictureBase64" [alt]="product.name" />
+                  <img *ngIf="product.profilePictureBase64" [src]="product.profilePictureBase64" [alt]="product.name" />
                   <ion-icon *ngIf="!product.profilePictureBase64" name="cube-outline"></ion-icon>
                 </div>
                 <div>
@@ -99,8 +99,8 @@
     <div class="cards-grid">
       <div class="item-card" *ngFor="let product of displayedProducts" (click)="openDetailModal(product)">
         <div class="product-thumb-wrap">
-          <img *ngIf="'data:image/png;base64,' + product.profilePictureBase64"
-               [src]="'data:image/png;base64,' + product.profilePictureBase64"
+          <img *ngIf="product.profilePictureBase64"
+               [src]="product.profilePictureBase64"
                [alt]="product.name || 'Product'"
                class="product-thumb-img" />
           <div *ngIf="!product.profilePictureBase64" class="product-thumb-placeholder">
@@ -174,8 +174,8 @@
       <ion-content class="modal-content" *ngIf="detailProduct as product">
         <div class="detail-header">
           <div class="detail-thumb" [class.placeholder]="!product.profilePictureBase64">
-            <img *ngIf="'data:image/png;base64,' + product.profilePictureBase64" [src]="'data:image/png;base64,' + product.profilePictureBase64" [alt]="product.name" />
-            <ion-icon *ngIf="'data:image/png;base64,' + !product.profilePictureBase64" name="cube-outline"></ion-icon>
+            <img *ngIf="product.profilePictureBase64" [src]="product.profilePictureBase64" [alt]="product.name" />
+            <ion-icon *ngIf="!product.profilePictureBase64" name="cube-outline"></ion-icon>
           </div>
           <span class="detail-price">{{ product.actualAmount || 0 | currency:'ZAR':'symbol-narrow':'1.2-2' }}</span>
           <h2>{{ product.name || 'Unnamed Product' }}</h2>

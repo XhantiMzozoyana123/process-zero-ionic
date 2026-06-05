@@ -289,7 +289,39 @@ export class IntroService {
     ]);
   }
 
+  startWebinarsTour(): void {
+    this.launchTour([
+      {
+        title: 'Webinars Library',
+        intro: 'This page holds all the training webinars available on the platform. Watch them to sharpen your sales skills and product knowledge.'
+      },
+      {
+        element: '.themed-search',
+        title: 'Search Webinars',
+        intro: 'Type a webinar title or description to filter the library instantly.',
+        position: 'bottom'
+      },
+      {
+        element: '.view-toggle',
+        title: 'Switch View',
+        intro: 'Toggle between a table layout for quick scanning or a card layout to see webinar thumbnails and full details.',
+        position: 'left'
+      },
+      {
+        element: '.webinars-table thead, .cards-grid',
+        title: 'Webinar Listings',
+        intro: 'Each webinar shows its title, description, and the date it was added. Click any webinar to open the video player.',
+        position: 'bottom'
+      },
+      {
+        title: 'Start Learning!',
+        intro: 'Browse the library, pick a webinar, and watch it right here. The more you learn, the more you earn!'
+      }
+    ]);
+  }
+
   startKpiPoliciesTour(): void {
+
     this.launchTour([
       {
         title: 'KPI Policies',

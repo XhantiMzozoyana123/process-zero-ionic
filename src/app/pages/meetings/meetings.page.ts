@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { MeetingService } from 'src/app/services/meeting-service';
 import { ProductService } from 'src/app/services/product-service';
 import { ContactService } from 'src/app/services/contact-service';
@@ -131,16 +133,97 @@ export class MeetingsPage implements OnInit {
   }
 
   private filterQualifiedProducts(): void {
-    this.qualifiedProducts = [];
-    for (const product of this.products) {
-      if (!product.id) continue;
-      this.assessmentService.getMyProductResult(product.id).subscribe({
-        next: (result) => {
-          if (result.passed) this.qualifiedProducts.push(product);
-        },
-        error: () => { /* not qualified or no assessment */ }
+    // A sales rep is qualified to sell a product ONLY if they passed THAT
+    // product's assessment. The global assessment is just for app access and
+    // does NOT grant product qualification.
+    this.assessmentService
+      .getAllMyResults()
+      .pipe(catchError(() => of([] as any[])))
+      .subscribe((bulk) => {
+        console.log('[Meetings] bulk /my-results raw response:', bulk);
+
+        const passedProductIds = this.extractPassedProductIds(bulk);
+        console.log('[Meetings] passed productIds (bulk):', Array.from(passedProductIds));
+        console.log('[Meetings] product ids available:', this.products.map((p) => p.id));
+
+        const qualified = this.products.filter(
+          (p) => p.id != null && passedProductIds.has(Number(p.id))
+        );
+
+        if (qualified.length > 0) {
+          this.qualifiedProducts = qualified;
+          console.log('[Meetings] qualified via bulk:', qualified.map((p) => p.id));
+        } else {
+          // Bulk returned nothing usable, so verify each product individually.
+          console.warn('[Meetings] bulk returned no qualified products, falling back to per-product checks.');
+          this.checkProductsIndividually();
+        }
       });
+  }
+
+  /** Determine if a single result object represents a pass, tolerating shapes. */
+  private isResultPassed(r: any): boolean {
+    if (!r) return false;
+    const passedFlag = r.passed ?? r.Passed ?? r.isPassed ?? r.IsPassed;
+    if (passedFlag === true) return true;
+    if (passedFlag === false) return false;
+
+    // No explicit boolean — fall back to percentage / score vs total.
+    const percentage = r.percentage ?? r.Percentage;
+    if (typeof percentage === 'number') return percentage >= 50;
+
+    const score = r.score ?? r.Score;
+    const total = r.total ?? r.Total;
+    if (typeof score === 'number' && typeof total === 'number' && total > 0) {
+      return (score / total) * 100 >= 50;
     }
+    return false;
+  }
+
+  /** Build a Set of productIds the user has passed, tolerating PascalCase JSON. */
+  private extractPassedProductIds(results: any[]): Set<number> {
+    return new Set<number>(
+      (results ?? [])
+        .filter((r: any) => this.isResultPassed(r))
+        .map((r: any) => Number(r.productId ?? r.ProductId))
+        .filter((id: number) => !Number.isNaN(id))
+    );
+  }
+
+  /** Fallback: query each product's assessment result individually. */
+  private checkProductsIndividually(): void {
+    const productsWithId = this.products.filter((p) => p.id != null);
+
+    if (productsWithId.length === 0) {
+      this.qualifiedProducts = [];
+      return;
+    }
+
+    forkJoin(
+      productsWithId.map((p) =>
+        this.assessmentService.getMyProductResult(p.id!).pipe(
+          map((res: any) => {
+            console.log(`[Meetings] /product/${p.id}/my-result response:`, res);
+            return { product: p, passed: this.isResultPassed(res) };
+          }),
+          catchError((err) => {
+            console.warn(`[Meetings] no result for product ${p.id}`, err?.status ?? err);
+            return of({ product: p, passed: false });
+          })
+        )
+      )
+    ).subscribe({
+      next: (outcomes) => {
+        this.qualifiedProducts = outcomes
+          .filter((o) => o.passed)
+          .map((o) => o.product);
+        console.log('[Meetings] qualified via per-product checks:', this.qualifiedProducts.map((p) => p.id));
+      },
+      error: (err) => {
+        console.error('[Meetings] Could not verify product assessments', err);
+        this.qualifiedProducts = [];
+      },
+    });
   }
 
   async saveMeeting() {
@@ -174,9 +257,12 @@ export class MeetingsPage implements OnInit {
         await this.showToast(isEdit ? 'Meeting updated successfully!' : 'Meeting created successfully!');
         this.resetForm();
         this.closeMeetingModal();
-        this.loadMeetings();
         this.submitting = false;
+        // Refresh the page after a successful form submission so all data
+        // (meetings, qualified products, etc.) reflects the latest state.
+        setTimeout(() => window.location.reload(), 600);
       },
+
       error: async (err) => {
         console.error(err);
         this.submitting = false;

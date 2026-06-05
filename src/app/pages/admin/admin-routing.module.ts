@@ -88,15 +88,15 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
-        path: 'relay',
-        loadChildren: () => import('../admin-relay/admin-relay.module')
-          .then(m => m.AdminRelayPageModule),
-        canActivate: [AdminGuard]
-      },
-      {
         path: 'relay-inbox',
         loadComponent: () => import('../admin-relay-inbox/admin-relay-inbox.page')
           .then(m => m.AdminRelayInboxPage),
+        canActivate: [AdminGuard]
+      },
+      {
+        path: 'relay-automation',
+        loadComponent: () => import('../admin-relay-automation/admin-relay-automation.page')
+          .then(m => m.AdminRelayAutomationPage),
         canActivate: [AdminGuard]
       },
       {

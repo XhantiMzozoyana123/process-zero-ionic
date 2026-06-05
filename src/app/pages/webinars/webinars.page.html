@@ -10,10 +10,22 @@
         <h1>Webinars</h1>
         <p>Watch training videos and expand your knowledge.</p>
       </div>
+      <button class="tour-btn" (click)="startTour()">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <span>Instructions</span>
+      </button>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search webinars..." [(ngModel)]="searchTerm"
         [ngModelOptions]="{ standalone: true }" (ionInput)="onSearchChange()" class="themed-search"></ion-searchbar>
+      <div class="view-toggle">
+        <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+        </ion-button>
+        <ion-button [fill]="viewMode === 'cards' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'cards'" class="toggle-btn">
+          <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+        </ion-button>
+      </div>
     </div>
   </section>
 
@@ -61,7 +73,7 @@
         </span>
         <h2>{{ selectedWebinar.title }}</h2>
         <p class="detail-description">{{ selectedWebinar.description || 'No description provided.' }}</p>
-        <ion-button fill="outline" class="back-to-list-btn" (click="clearSelection()">
+        <ion-button fill="outline" class="back-to-list-btn" (click)="clearSelection()">
           <ion-icon slot="start" name="grid-outline"></ion-icon>
           Browse All Webinars
         </ion-button>
@@ -69,13 +81,45 @@
     </div>
   </section>
 
+  <!-- Webinar table -->
+  <section *ngIf="!loading && displayedWebinars.length > 0 && !selectedWebinar && viewMode === 'table'" class="table-section">
+    <div class="table-wrap">
+      <table class="webinars-table">
+        <thead>
+          <tr>
+            <th>Webinar</th>
+            <th>Description</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let webinar of displayedWebinars" (click)="selectWebinar(webinar)">
+            <td>
+              <div class="webinar-name-cell">
+                <div class="table-thumb" [class.placeholder]="!webinar.thumbnailBase64">
+                  <img *ngIf="webinar.thumbnailBase64" [src]="webinar.thumbnailBase64" [alt]="webinar.title" />
+                  <ion-icon *ngIf="!webinar.thumbnailBase64" name="videocam-outline"></ion-icon>
+                </div>
+                <span class="webinar-name">{{ webinar.title || 'Untitled Webinar' }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="webinar-desc-short">{{ webinar.description ? (webinar.description | slice:0:80) : '—' }}</span>
+            </td>
+            <td>{{ webinar.createdAt | date:'mediumDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- Webinar cards grid -->
-  <section *ngIf="!loading && filteredWebinars.length > 0 && !selectedWebinar" class="cards-section">
+  <section *ngIf="!loading && displayedWebinars.length > 0 && !selectedWebinar && viewMode === 'cards'" class="cards-section">
     <div class="cards-grid">
-      <div class="item-card" *ngFor="let webinar of filteredWebinars" (click)="selectWebinar(webinar)">
+      <div class="item-card" *ngFor="let webinar of displayedWebinars" (click)="selectWebinar(webinar)">
         <div class="product-thumb-wrap">
           <img *ngIf="webinar.thumbnailBase64"
-               [src]=webinar.thumbnailBase64
+               [src]="webinar.thumbnailBase64"
                [alt]="webinar.title || 'Webinar'"
                class="product-thumb-img" />
           <div *ngIf="!webinar.thumbnailBase64" class="product-thumb-placeholder">
@@ -103,4 +147,19 @@
       </div>
     </div>
   </section>
+
+  <!-- Pagination -->
+  <div class="pagination-controls" *ngIf="!selectedWebinar && filteredWebinars.length > pageSize">
+    <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngFor="let p of pageNumbers" [fill]="p === currentPage ? 'solid' : 'clear'" size="small"
+      (click)="goToPage(p)" class="page-btn">
+      {{ p }}
+    </ion-button>
+    <ion-button fill="clear" size="small" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+    <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+  </div>
 </ion-content>

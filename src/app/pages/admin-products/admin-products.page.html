@@ -38,7 +38,7 @@
       <div class="product-card" *ngFor="let product of displayedProducts" (click)="openDetailModal(product)">
         <div class="card-top">
           <div class="product-thumb" *ngIf="product.profilePictureBase64">
-            <img [src]="'data:image/png;base64,' + product.profilePictureBase64" alt="Product image" />
+            <img [src]="product.profilePictureBase64" alt="Product image" />
           </div>
           <div class="product-thumb placeholder" *ngIf="!product.profilePictureBase64">
             <ion-icon name="pricetag-outline"></ion-icon>
@@ -88,7 +88,7 @@
       <ion-content class="modal-content" *ngIf="detailProduct">
         <div class="detail-header">
           <div class="detail-thumb" *ngIf="detailProduct.profilePictureBase64">
-            <img [src]="'data:image/png;base64,' + detailProduct.profilePictureBase64" alt="Product" />
+            <img [src]="detailProduct.profilePictureBase64" alt="Product" />
           </div>
           <div class="detail-thumb placeholder" *ngIf="!detailProduct.profilePictureBase64">
             <ion-icon name="pricetag-outline"></ion-icon>
