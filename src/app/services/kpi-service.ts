@@ -4,175 +4,93 @@ import { KPI } from '../models/entities/kpi.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-interface AttemptsDto {
-  attempts: number;
+/** Count of activity records to add, e.g. { count: 5 }. */
+interface CountDto {
+  count: number;
 }
 
-interface AttendanceDto {
-  attended: number;
+/** Deal amount closed, e.g. { amount: 15000.50 }. */
+interface AmountDto {
+  amount: number;
 }
 
-interface DealsDto {
-  deals: number;
-}
-
-interface RevenueDto {
-  revenue: number;
-}
-
-interface CloseRateDto {
-  dealsClosed: number;
-  dealsAttempted: number;
-}
-
-interface DoubleDto {
-  value: number;
-}
-
-interface InitiativesDto {
-  initiatives: number;
-}
-
+/**
+ * Maps 1:1 to the backend KpiController ([Route("api/[controller]")]).
+ *
+ * A KPI is a daily snapshot of a sales rep's performance for a product. The
+ * activity endpoints are additive (they add `count` to the running daily total).
+ * MeetingsBooked has no endpoint — it is incremented automatically by the backend
+ * MeetingService when a meeting is created. MRR is recalculated automatically from
+ * active client contacts + closed invoices on every update.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class KpiService {
 
-  private baseUrl = `${environment.apiUrl}/kpi`
+  private baseUrl = `${environment.apiUrl}/kpi`;
 
   constructor(private http: HttpClient) { }
 
-  private asAttendanceCount(value: boolean | number): number {
-    if (typeof value === 'boolean') {
-      return value ? 1 : 0;
+  /** Coerce to a positive whole number (backend requires Range(1, int.MaxValue)). */
+  private normalizeCount(count: number): number {
+    const num = Number(count);
+    if (!Number.isFinite(num)) {
+      return 1;
     }
+    return Math.max(1, Math.trunc(num));
+  }
 
-    if (!Number.isFinite(value)) {
+  /** Coerce to a non-negative amount (backend requires Range(0, double.MaxValue)). */
+  private normalizeAmount(amount: number): number {
+    const num = Number(amount);
+    if (!Number.isFinite(num)) {
       return 0;
     }
-
-    return Math.max(0, Math.trunc(value));
+    return Math.max(0, num);
   }
 
-  updateOutreach(productId: number, attempts: number): Observable<void> {
-    const payload: AttemptsDto = { attempts };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/outreach`, payload);
+  // ── Daily activity updates ─────────────────────────────────
+
+  /** POST api/kpi/product/{productId}/call-outreach */
+  addCallOutreach(productId: number, count = 1): Observable<void> {
+    const payload: CountDto = { count: this.normalizeCount(count) };
+    return this.http.post<void>(`${this.baseUrl}/product/${productId}/call-outreach`, payload);
   }
 
-  incrementCallsBooked(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/calls/booked`, {});
+  /** POST api/kpi/product/{productId}/email-outreach */
+  addEmailOutreach(productId: number, count = 1): Observable<void> {
+    const payload: CountDto = { count: this.normalizeCount(count) };
+    return this.http.post<void>(`${this.baseUrl}/product/${productId}/email-outreach`, payload);
   }
 
-  confirmCallAttendance(productId: number, attended: number): Observable<void> {
-    const payload: AttendanceDto = { attended: this.asAttendanceCount(attended) };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/calls/attendance`, payload);
+  /** POST api/kpi/product/{productId}/calls-made */
+  addCallsMade(productId: number, count = 1): Observable<void> {
+    const payload: CountDto = { count: this.normalizeCount(count) };
+    return this.http.post<void>(`${this.baseUrl}/product/${productId}/calls-made`, payload);
   }
 
-  incrementDealsInfluenced(productId: number, deals: number): Observable<void> {
-    const payload: DealsDto = { deals };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/deals/influenced`, payload);
+  /** POST api/kpi/product/{productId}/deal-closed */
+  addDealClosed(productId: number, amount: number): Observable<void> {
+    const payload: AmountDto = { amount: this.normalizeAmount(amount) };
+    return this.http.post<void>(`${this.baseUrl}/product/${productId}/deal-closed`, payload);
   }
 
-  addRevenueGenerated(productId: number, revenue: number): Observable<void> {
-    const payload: RevenueDto = { revenue };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/revenue`, payload);
+  /** POST api/kpi/product/{productId}/recalculate-mrr */
+  recalculateMrr(productId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/product/${productId}/recalculate-mrr`, {});
   }
 
-  updateCloseRate(productId: number, dealsClosed: number, dealsAttempted: number): Observable<void> {
-    const payload: CloseRateDto = { dealsClosed, dealsAttempted };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/close-rate`, payload);
-  }
+  // ── Reads ──────────────────────────────────────────────────
 
-  updateAverageDealSize(productId: number, revenue: number): Observable<void> {
-    const payload: RevenueDto = { revenue };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/average-deal`, payload);
-  }
-
-  updateRevenueInfluenced(productId: number, revenue: number): Observable<void> {
-    const payload: RevenueDto = { revenue };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/revenue-influenced`, payload);
-  }
-
-  updateBasicClientRetention(productId: number, value: number): Observable<void> {
-    const payload: DoubleDto = { value };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/client-retention`, payload);
-  }
-
-  updateActivityConsistency(productId: number, attended: boolean | number): Observable<void> {
-    const payload: AttendanceDto = { attended: this.asAttendanceCount(attended) };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/activity-consistency`, payload);
-  }
-
-  updateActiveTeamSize(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/team/active-size`, {});
-  }
-
-  updateTeamRevenue(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/team/revenue`, {});
-  }
-
-  updateTeamCloseRate(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/team/close-rate`, {});
-  }
-
-  updateTeamChurnRate(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/team/churn-rate`, {});
-  }
-
-  updateLeaderActivityLevel(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/leader/activity-level`, {});
-  }
-
-  updateMonthlyRecurringRevenue(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/mrr`, {});
-  }
-
-  updateGrowthRate(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/growth-rate`, {});
-  }
-
-  updateTeamPerformanceHealth(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/team-performance-health`, {});
-  }
-
-  updateBrandCompliance(productId: number, value: number): Observable<void> {
-    const payload: DoubleDto = { value };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/brand-compliance`, payload);
-  }
-
-  updateClientRetentionExternal(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/client-retention/external`, {});
-  }
-
-  updateLongTermRevenueGrowth(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/long-term-growth`, {});
-  }
-
-  updateStrategicInitiativesDelivered(productId: number, initiatives: number): Observable<void> {
-    const payload: InitiativesDto = { initiatives };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/strategic-initiatives`, payload);
-  }
-
-  updateBrandRiskManagement(productId: number, value: number): Observable<void> {
-    const payload: DoubleDto = { value };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/brand-risk`, payload);
-  }
-
-  updateInnovationContribution(productId: number, value: number): Observable<void> {
-    const payload: DoubleDto = { value };
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/innovation`, payload);
-  }
-
-  updateLeadershipStability(productId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/partner/product/${productId}/leadership-stability`, {});
-  }
-
-  // ---------- General ----------
+  /** GET api/kpi/product/{productId}/latest */
   getLatestKpi(productId: number): Observable<KPI> {
-    return this.http.get<KPI>(`${this.baseUrl}/partner/product/${productId}/latest`);
+    return this.http.get<KPI>(`${this.baseUrl}/product/${productId}/latest`);
   }
 
-  // ---------- Admin ----------
+  // ── Admin ───────────────────────────────────────────────────
+
+  /** GET api/kpi/admin/partner/{userId}/product/{productId}/latest */
   getLatestKpiForUser(userId: string, productId: number): Observable<KPI> {
     return this.http.get<KPI>(`${this.baseUrl}/admin/partner/${userId}/product/${productId}/latest`);
   }

@@ -39,10 +39,9 @@ export class AdminKpiPoliciesPage implements OnInit {
       effectiveFrom: ['', Validators.required],
       effectiveTo: [null],
       isActive: [true],
-      // Key thresholds
-      minMonthlyRevenue: [0, [Validators.required, Validators.min(0)]],
-      minOutreachAttempts: [0, [Validators.required, Validators.min(0)]],
-      minCallsBooked: [0, [Validators.required, Validators.min(0)]],
+      // Target threshold
+      targetMRR: [0, [Validators.required, Validators.min(0)]],
+
       // Consequence flags
       gracePeriodDays: [0, [Validators.required, Validators.min(0)]],
       autoFreezeOnBreach: [false]
@@ -108,12 +107,11 @@ export class AdminKpiPoliciesPage implements OnInit {
     this.editingPolicyId = undefined;
     this.policyForm.reset({
       isActive: true,
-      minMonthlyRevenue: 0,
-      minOutreachAttempts: 0,
-      minCallsBooked: 0,
+      targetMRR: 0,
       gracePeriodDays: 0,
       autoFreezeOnBreach: false
     });
+
     this.isFormModalOpen = true;
   }
 
@@ -124,10 +122,9 @@ export class AdminKpiPoliciesPage implements OnInit {
       effectiveFrom: policy.effectiveFrom ?? '',
       effectiveTo: policy.effectiveTo ?? null,
       isActive: policy.isActive ?? true,
-      minMonthlyRevenue: policy.minMonthlyRevenue ?? 0,
-      minOutreachAttempts: policy.minOutreachAttempts ?? 0,
-      minCallsBooked: policy.minCallsBooked ?? 0,
+      targetMRR: policy.targetMRR ?? 0,
       gracePeriodDays: policy.gracePeriodDays ?? 0,
+
       autoFreezeOnBreach: policy.autoFreezeOnBreach ?? false
     });
     this.isFormModalOpen = true;
@@ -150,10 +147,9 @@ export class AdminKpiPoliciesPage implements OnInit {
       effectiveFrom: val.effectiveFrom,
       effectiveTo: val.effectiveTo || null,
       isActive: val.isActive,
-      minMonthlyRevenue: +val.minMonthlyRevenue,
-      minOutreachAttempts: +val.minOutreachAttempts,
-      minCallsBooked: +val.minCallsBooked,
+      targetMRR: +val.targetMRR,
       gracePeriodDays: +val.gracePeriodDays,
+
       autoFreezeOnBreach: val.autoFreezeOnBreach
     };
 

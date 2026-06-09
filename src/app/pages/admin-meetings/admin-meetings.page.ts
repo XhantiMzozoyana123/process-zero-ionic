@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, IonModal, ToastController } from '@ionic/angular';
 import { MeetingService } from 'src/app/services/meeting-service';
 import { ProductService } from 'src/app/services/product-service';
 import { AdminClientService } from 'src/app/services/admin-client-service';
@@ -15,6 +15,9 @@ import { Product } from 'src/app/models/entities/product.model';
   standalone: false
 })
 export class AdminMeetingsPage implements OnInit {
+  @ViewChild('detailModal') detailModal!: IonModal;
+  @ViewChild('formModal') formModal!: IonModal;
+
   meetings: MeetingDto[] = [];
   contacts: Contact[] = [];
   products: Product[] = [];
@@ -26,10 +29,8 @@ export class AdminMeetingsPage implements OnInit {
   pageSize = 3;
   viewMode: 'table' | 'cards' = 'table';
 
-  isDetailModalOpen = false;
   detailMeeting: MeetingDto | null = null;
 
-  isFormModalOpen = false;
   editingMeeting: MeetingDto | null = null;
   meetingForm: FormGroup;
   submitting = false;
@@ -135,11 +136,14 @@ export class AdminMeetingsPage implements OnInit {
   // ── Detail modal ────────────────────────────
   openDetailModal(meeting: MeetingDto): void {
     this.detailMeeting = meeting;
-    this.isDetailModalOpen = true;
+    this.detailModal?.present();
   }
 
   closeDetailModal(): void {
-    this.isDetailModalOpen = false;
+    this.detailModal?.dismiss();
+  }
+
+  onDetailDismiss(): void {
     this.detailMeeting = null;
   }
 
@@ -147,7 +151,7 @@ export class AdminMeetingsPage implements OnInit {
   openAddModal(): void {
     this.editingMeeting = null;
     this.meetingForm.reset();
-    this.isFormModalOpen = true;
+    this.formModal?.present();
   }
 
   openEditModal(dto: MeetingDto): void {
@@ -159,11 +163,14 @@ export class AdminMeetingsPage implements OnInit {
       meetingDate: dto.meeting?.meetingDate ?? '',
       notes: dto.meeting?.notes ?? ''
     });
-    this.isFormModalOpen = true;
+    this.formModal?.present();
   }
 
   closeFormModal(): void {
-    this.isFormModalOpen = false;
+    this.formModal?.dismiss();
+  }
+
+  onFormDismiss(): void {
     this.editingMeeting = null;
   }
 

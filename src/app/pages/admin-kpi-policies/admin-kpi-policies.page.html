@@ -55,18 +55,15 @@
 
         <div class="card-metrics">
           <div class="metric-item">
-            <span class="metric-label">Revenue</span>
-            <span class="metric-value">{{ formatCurrency(policy.minMonthlyRevenue) }}</span>
+            <span class="metric-label">Target MRR</span>
+            <span class="metric-value">{{ formatCurrency(policy.targetMRR) }}</span>
           </div>
           <div class="metric-item">
-            <span class="metric-label">Outreach</span>
-            <span class="metric-value">{{ policy.minOutreachAttempts ?? 0 }}</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Calls Booked</span>
-            <span class="metric-value">{{ policy.minCallsBooked ?? 0 }}</span>
+            <span class="metric-label">Grace</span>
+            <span class="metric-value">{{ policy.gracePeriodDays ?? 0 }} days</span>
           </div>
         </div>
+
 
         <div class="card-tags">
           <ion-chip *ngIf="policy.autoFreezeOnBreach" color="danger" outline class="tag-chip">
@@ -124,22 +121,15 @@
           </div>
         </div>
 
-        <!-- Key Thresholds -->
+        <!-- Target Threshold -->
         <div class="detail-section">
-          <h4>Key Thresholds</h4>
+          <h4>Target Threshold</h4>
           <div class="detail-row">
-            <span class="detail-label">Min Monthly Revenue</span>
-            <span class="detail-value amount">{{ formatCurrency(policy.minMonthlyRevenue) }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Min Outreach Attempts</span>
-            <span class="detail-value">{{ policy.minOutreachAttempts ?? 0 }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Min Calls Booked</span>
-            <span class="detail-value">{{ policy.minCallsBooked ?? 0 }}</span>
+            <span class="detail-label">Target MRR</span>
+            <span class="detail-value amount">{{ formatCurrency(policy.targetMRR) }}</span>
           </div>
         </div>
+
 
         <!-- Consequence Rules -->
         <div class="detail-section">
@@ -242,27 +232,16 @@
             </ion-item>
           </ion-list>
 
-          <!-- Key Thresholds -->
-          <div class="form-section-header">Key Thresholds</div>
+          <!-- Target Threshold -->
+          <div class="form-section-header">Target Threshold</div>
           <ion-list lines="none">
             <ion-item>
-              <ion-label position="stacked">Min Monthly Revenue *</ion-label>
-              <ion-input formControlName="minMonthlyRevenue" type="number" placeholder="0.00"></ion-input>
+              <ion-label position="stacked">Target MRR *</ion-label>
+              <ion-input formControlName="targetMRR" type="number" placeholder="0.00"></ion-input>
             </ion-item>
-            <p class="field-error" *ngIf="isInvalid('minMonthlyRevenue')">Valid amount is required.</p>
-
-            <ion-item>
-              <ion-label position="stacked">Min Outreach Attempts *</ion-label>
-              <ion-input formControlName="minOutreachAttempts" type="number" placeholder="0"></ion-input>
-            </ion-item>
-            <p class="field-error" *ngIf="isInvalid('minOutreachAttempts')">Valid number is required.</p>
-
-            <ion-item>
-              <ion-label position="stacked">Min Calls Booked *</ion-label>
-              <ion-input formControlName="minCallsBooked" type="number" placeholder="0"></ion-input>
-            </ion-item>
-            <p class="field-error" *ngIf="isInvalid('minCallsBooked')">Valid number is required.</p>
+            <p class="field-error" *ngIf="isInvalid('targetMRR')">Valid amount is required.</p>
           </ion-list>
+
 
           <!-- Consequence Flags -->
           <div class="form-section-header">Consequence Rules</div>

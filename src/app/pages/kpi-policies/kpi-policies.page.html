@@ -56,10 +56,10 @@
             <th>Product</th>
             <th>Effective From</th>
             <th>Effective To</th>
-            <th>Min Revenue</th>
-            <th>Outreach</th>
-            <th>Calls</th>
+            <th>Target MRR</th>
+            <th>Grace</th>
             <th>Status</th>
+
           </tr>
         </thead>
         <tbody>
@@ -74,9 +74,9 @@
             </td>
             <td>{{ policy.effectiveFrom | date:'mediumDate' }}</td>
             <td>{{ policy.effectiveTo ? (policy.effectiveTo | date:'mediumDate') : 'No end' }}</td>
-            <td class="revenue-cell">{{ formatCurrency(policy.minMonthlyRevenue) }}</td>
-            <td>{{ policy.minOutreachAttempts ?? 0 }}</td>
-            <td>{{ policy.minCallsBooked ?? 0 }}</td>
+            <td class="revenue-cell">{{ formatCurrency(policy.targetMRR) }}</td>
+            <td>{{ policy.gracePeriodDays ?? 0 }} days</td>
+
             <td>
               <span class="status-chip" [class.active]="policy.isActive" [class.inactive]="!policy.isActive">
                 {{ policy.isActive ? 'Active' : 'Inactive' }}
@@ -113,18 +113,15 @@
 
         <div class="metrics-preview">
           <div class="metric-item">
-            <span class="metric-label">Min Revenue</span>
-            <span class="metric-value">{{ formatCurrency(policy.minMonthlyRevenue) }}</span>
+            <span class="metric-label">Target MRR</span>
+            <span class="metric-value">{{ formatCurrency(policy.targetMRR) }}</span>
           </div>
           <div class="metric-item">
-            <span class="metric-label">Outreach</span>
-            <span class="metric-value">{{ policy.minOutreachAttempts ?? 0 }}</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Calls Booked</span>
-            <span class="metric-value">{{ policy.minCallsBooked ?? 0 }}</span>
+            <span class="metric-label">Grace Period</span>
+            <span class="metric-value">{{ policy.gracePeriodDays ?? 0 }} days</span>
           </div>
         </div>
+
 
         <div class="card-meta">
           <div class="meta-item" *ngIf="policy.gracePeriodDays">
@@ -191,24 +188,17 @@
           </div>
         </div>
 
-        <!-- Key Thresholds -->
+        <!-- Target Threshold -->
         <div class="detail-section">
-          <h4>Key Thresholds</h4>
+          <h4>Target Threshold</h4>
           <div class="detail-metrics-grid cols-2">
             <div class="detail-metric">
-              <span class="detail-metric-value">{{ formatCurrency(policy.minMonthlyRevenue) }}</span>
-              <span class="detail-metric-label">Min Monthly Revenue</span>
-            </div>
-            <div class="detail-metric">
-              <span class="detail-metric-value">{{ policy.minOutreachAttempts ?? 0 }}</span>
-              <span class="detail-metric-label">Min Outreach Attempts</span>
-            </div>
-            <div class="detail-metric">
-              <span class="detail-metric-value">{{ policy.minCallsBooked ?? 0 }}</span>
-              <span class="detail-metric-label">Min Calls Booked</span>
+              <span class="detail-metric-value">{{ formatCurrency(policy.targetMRR) }}</span>
+              <span class="detail-metric-label">Target MRR</span>
             </div>
           </div>
         </div>
+
 
         <!-- Consequences -->
         <div class="detail-section">

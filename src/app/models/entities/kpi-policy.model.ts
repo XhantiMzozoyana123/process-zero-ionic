@@ -1,4 +1,9 @@
+/**
+ * Defines the MRR target for a product/rep over an effective period.
+ * Mirrors ProcessZero.Domain.Entities.KpiPolicy (BaseEntity + the fields below).
+ */
 export interface KpiPolicy {
+  // BaseEntity
   id?: number;
   userId?: string;
   createdAt?: string;
@@ -9,10 +14,8 @@ export interface KpiPolicy {
   effectiveTo?: string | null;
   isActive?: boolean;
 
-  // Key thresholds
-  minMonthlyRevenue?: number;
-  minOutreachAttempts?: number;
-  minCallsBooked?: number;
+  // Target threshold
+  targetMRR?: number;
 
   // Consequence flags
   gracePeriodDays?: number;

@@ -16,15 +16,14 @@
             <p class="milestones-subtitle">Complete these steps to set up your account and start earning.</p>
           </div>
         </div>
+        <button class="milestones-collapse-btn" (click)="toggleMilestonesCollapsed()"
+                [attr.aria-expanded]="!milestonesCollapsed"
+                [attr.aria-label]="milestonesCollapsed ? 'Expand Get Started' : 'Minimize Get Started'">
+          <ion-icon [name]="milestonesCollapsed ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
+        </button>
       </div>
 
       <p class="milestones-count">{{ completedMilestones }} of {{ milestones.length }} completed</p>
-
-      <div class="milestones-video">
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius: 14px; overflow: hidden;">
-          <iframe src="https://www.loom.com/embed/e7fc77f6d12e48d594982c32e242cf4e" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-        </div>
-      </div>
 
       <div class="milestones-progress">
         <div class="milestones-progress-track">
@@ -32,7 +31,15 @@
         </div>
       </div>
 
+      <div class="milestones-collapsible" *ngIf="!milestonesCollapsed">
+        <div class="milestones-video">
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius: 14px; overflow: hidden;">
+            <iframe src="https://www.loom.com/embed/e7fc77f6d12e48d594982c32e242cf4e" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+          </div>
+        </div>
+
       <div class="milestones-list">
+
         <div class="milestone-item"
              *ngFor="let m of milestones; let i = index; let last = last"
              [class.completed]="m.completed"
@@ -56,9 +63,11 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
 
     <!-- All Milestones Complete Celebration (replaces milestones once done) -->
+
     <div class="hero-copy milestones-complete-hero" *ngIf="!showMilestones && !milestonesDismissed && allMilestonesComplete && milestones.length">
       <div class="milestones-complete-content">
         <ion-icon name="trophy-outline" class="trophy-icon"></ion-icon>
@@ -176,13 +185,14 @@
             <strong>{{ kpi.productId }}</strong>
           </div>
           <div>
-            <span>Team Close Rate</span>
-            <strong>{{ kpi.teamCloseRate | percent:'1.0-0' }}</strong>
+            <span>Active Clients</span>
+            <strong>{{ kpi.activeClients }}</strong>
           </div>
           <div>
-            <span>Leader Activity</span>
-            <strong>{{ kpi.leaderActivityLevel | percent:'1.0-0' }}</strong>
+            <span>Meetings Booked</span>
+            <strong>{{ kpi.meetingsBooked }}</strong>
           </div>
+
           <div>
             <span>Updated</span>
             <strong>{{ kpi.updatedAt | date:'medium' }}</strong>
@@ -211,28 +221,8 @@
         </div>
       </article>
 
-      <article class="panel panel-wide">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Business Health</p>
-            <h3>Health scores for retention, team, brand, and leadership</h3>
-          </div>
-        </div>
-
-        <div class="health-grid">
-          <div class="health-card" *ngFor="let item of healthMetrics">
-            <div class="health-ring" [style.background]="item.ring">
-              <div class="health-ring-core">
-                <strong>{{ item.value }}%</strong>
-              </div>
-            </div>
-            <h4>{{ item.label }}</h4>
-            <p>{{ item.descriptor }}</p>
-          </div>
-        </div>
-      </article>
-
       <article class="panel panel-wide panel-soft">
+
         <div class="panel-header">
           <div>
             <p class="eyebrow">Operating Metrics</p>

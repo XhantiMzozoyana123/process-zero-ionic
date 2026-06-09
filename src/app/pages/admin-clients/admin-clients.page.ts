@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, ToastController } from '@ionic/angular';
-import { AdminClientService, PagedResult } from 'src/app/services/admin-client-service';
+import { AlertController, IonModal, ToastController } from '@ionic/angular';
+import { AdminClientService } from 'src/app/services/admin-client-service';
 import { Contact, ContactStatus, ContactStatusLabels } from 'src/app/models/entities/contact.model';
 
 @Component({
@@ -11,6 +11,9 @@ import { Contact, ContactStatus, ContactStatusLabels } from 'src/app/models/enti
   standalone: false
 })
 export class AdminClientsPage implements OnInit {
+  @ViewChild('detailModal') detailModal!: IonModal;
+  @ViewChild('formModal') formModal!: IonModal;
+
   clients: Contact[] = [];
   loading = false;
   searchTerm = '';
@@ -19,10 +22,8 @@ export class AdminClientsPage implements OnInit {
   currentPage = 1;
   pageSize = 3;
 
-  isDetailModalOpen = false;
   detailClient: Contact | null = null;
 
-  isFormModalOpen = false;
   editingClientId?: number;
   clientForm: FormGroup;
   submitting = false;
@@ -112,11 +113,14 @@ export class AdminClientsPage implements OnInit {
   // ── Detail modal ────────────────────────────
   openDetailModal(client: Contact): void {
     this.detailClient = client;
-    this.isDetailModalOpen = true;
+    this.detailModal?.present();
   }
 
   closeDetailModal(): void {
-    this.isDetailModalOpen = false;
+    this.detailModal?.dismiss();
+  }
+
+  onDetailDismiss(): void {
     this.detailClient = null;
   }
 
@@ -124,7 +128,7 @@ export class AdminClientsPage implements OnInit {
   openAddModal(): void {
     this.editingClientId = undefined;
     this.clientForm.reset({ status: ContactStatus.Active });
-    this.isFormModalOpen = true;
+    this.formModal?.present();
   }
 
   openEditModal(client: Contact): void {
@@ -140,11 +144,14 @@ export class AdminClientsPage implements OnInit {
       closedAmount: client.closedAmount ?? null,
       status: client.status ?? ContactStatus.Active
     });
-    this.isFormModalOpen = true;
+    this.formModal?.present();
   }
 
   closeFormModal(): void {
-    this.isFormModalOpen = false;
+    this.formModal?.dismiss();
+  }
+
+  onFormDismiss(): void {
     this.editingClientId = undefined;
   }
 

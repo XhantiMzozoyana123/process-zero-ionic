@@ -183,34 +183,15 @@
             </div>
 
             <div class="kpi-group">
-              <h5>Deal Performance</h5>
+              <h5>Revenue & Clients</h5>
               <div class="kpi-grid">
-                <div class="kpi-metric" *ngFor="let m of dealPerformanceMetrics">
+                <div class="kpi-metric" *ngFor="let m of revenueMetrics">
                   <span class="kpi-value">{{ m.value }}</span>
                   <span class="kpi-label">{{ m.label }}</span>
                 </div>
               </div>
             </div>
 
-            <div class="kpi-group">
-              <h5>Team</h5>
-              <div class="kpi-grid">
-                <div class="kpi-metric" *ngFor="let m of teamMetrics">
-                  <span class="kpi-value">{{ m.value }}</span>
-                  <span class="kpi-label">{{ m.label }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="kpi-group">
-              <h5>Business Health</h5>
-              <div class="kpi-grid">
-                <div class="kpi-metric" *ngFor="let m of businessHealthMetrics">
-                  <span class="kpi-value">{{ m.value }}</span>
-                  <span class="kpi-label">{{ m.label }}</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

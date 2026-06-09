@@ -185,61 +185,26 @@ export class AdminUsersPage implements OnInit {
     const k = this.kpiData;
     if (!k) return [];
     return [
-      { label: 'Outreach Attempts', value: k.outreachAttempts },
-      { label: 'Calls Booked', value: k.callsBooked },
-      { label: 'Calls Attended', value: k.callsAttended },
-      { label: 'Deals Influenced', value: k.dealsInfluenced },
-      { label: 'Revenue Generated', value: this.formatCurrency(k.revenueGenerated) },
+      { label: 'Call Outreach', value: k.callOutreach },
+      { label: 'Email Outreach', value: k.emailOutreach },
+      { label: 'Calls Made', value: k.callsMade },
+      { label: 'Meetings Booked', value: k.meetingsBooked },
     ];
   }
 
-  get dealPerformanceMetrics() {
+  get revenueMetrics() {
     const k = this.kpiData;
     if (!k) return [];
     return [
-      { label: 'Deals Closed', value: k.dealsClosed },
-      { label: 'Deals Attempted', value: k.dealsAttempted },
-      { label: 'Avg Deal Size', value: this.formatCurrency(k.averageDealSize) },
-      { label: 'Revenue Influenced', value: this.formatCurrency(k.revenueInfluenced) },
-      { label: 'Client Retention', value: this.formatPercent(k.basicClientRetention) },
-      { label: 'Activity Consistency', value: this.formatPercent(k.activityConsistency) },
-    ];
-  }
-
-  get teamMetrics() {
-    const k = this.kpiData;
-    if (!k) return [];
-    return [
-      { label: 'Active Team Size', value: k.activeTeamSize },
-      { label: 'Team Revenue', value: this.formatCurrency(k.teamRevenue) },
-      { label: 'Team Close Rate', value: this.formatPercent(k.teamCloseRate) },
-      { label: 'Team Churn Rate', value: this.formatPercent(k.teamChurnRate) },
-      { label: 'Leader Activity', value: this.formatPercent(k.leaderActivityLevel) },
-    ];
-  }
-
-  get businessHealthMetrics() {
-    const k = this.kpiData;
-    if (!k) return [];
-    return [
+      { label: 'Deal Size Closed', value: this.formatCurrency(k.dealSizeClosed) },
+      { label: 'Active Clients', value: k.activeClients },
       { label: 'MRR', value: this.formatCurrency(k.monthlyRecurringRevenue) },
-      { label: 'Growth Rate', value: this.formatPercent(k.growthRate) },
-      { label: 'Client Retention', value: this.formatPercent(k.clientRetention) },
-      { label: 'Team Health', value: this.formatPercent(k.teamPerformanceHealth) },
-      { label: 'Brand Compliance', value: this.formatPercent(k.brandCompliance) },
-      { label: 'Long-Term Growth', value: this.formatPercent(k.longTermRevenueGrowth) },
-      { label: 'Strategic Initiatives', value: k.strategicInitiativesDelivered },
-      { label: 'Brand Risk Mgmt', value: this.formatPercent(k.brandRiskManagement) },
-      { label: 'Innovation', value: this.formatPercent(k.innovationContribution) },
-      { label: 'Leadership Stability', value: this.formatPercent(k.leadershipStability) },
     ];
   }
 
   private formatCurrency(val: number): string {
     return 'R ' + (val ?? 0).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-
-  private formatPercent(val: number): string {
-    return ((val ?? 0) * 100).toFixed(1) + '%';
-  }
 }
+
+
