@@ -61,9 +61,9 @@ const routes: Routes = [
         canActivate: [AuthGuard, AssessmentGuard]
       },
       {
-        path: 'webinars',
-        loadComponent: () => import('./../../pages/webinars/webinars.page')
-          .then(m => m.WebinarsPage),
+        path: 'videos',
+        loadComponent: () => import('./../../pages/videos/videos.page')
+          .then(m => m.VideosPage),
         canActivate: [AuthGuard]
       },
       {

@@ -1,4 +1,4 @@
-<ion-content class="webinars-page">
+<ion-content class="videos-page">
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -7,7 +7,7 @@
   <section class="page-header">
     <div class="header-row">
       <div>
-        <h1>Webinars</h1>
+        <h1>Videos</h1>
         <p>Watch training videos and expand your knowledge.</p>
       </div>
       <button class="tour-btn" (click)="startTour()">
@@ -16,7 +16,7 @@
       </button>
     </div>
     <div class="search-row">
-      <ion-searchbar placeholder="Search webinars..." [(ngModel)]="searchTerm"
+      <ion-searchbar placeholder="Search videos..." [(ngModel)]="searchTerm"
         [ngModelOptions]="{ standalone: true }" (ionInput)="onSearchChange()" class="themed-search"></ion-searchbar>
       <div class="view-toggle">
         <ion-button [fill]="viewMode === 'table' ? 'solid' : 'outline'" size="small" (click)="viewMode = 'table'" class="toggle-btn">
@@ -35,16 +35,16 @@
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="!loading && webinars.length === 0 && !searchTerm" class="empty-state">
+  <div *ngIf="!loading && videos.length === 0 && !searchTerm" class="empty-state">
     <ion-icon name="videocam-outline"></ion-icon>
-    <h3>No webinars found</h3>
-    <p>Webinars will appear here once added by an administrator.</p>
+    <h3>No videos found</h3>
+    <p>Videos will appear here once added by an administrator.</p>
   </div>
 
-  <div *ngIf="!loading && filteredWebinars.length === 0 && searchTerm" class="empty-state">
+  <div *ngIf="!loading && filteredVideos.length === 0 && searchTerm" class="empty-state">
     <ion-icon name="search-outline"></ion-icon>
     <h3>No results</h3>
-    <p>No webinars match your search.</p>
+    <p>No videos match your search.</p>
   </div>
 
   <!-- Error state -->
@@ -53,8 +53,8 @@
     <span>{{ errorMessage }}</span>
   </div>
 
-  <!-- Selected Webinar Detail -->
-  <section *ngIf="selectedWebinar && !loading" class="detail-section">
+  <!-- Selected Video Detail -->
+  <section *ngIf="selectedVideo && !loading" class="detail-section">
     <div class="detail-card">
       <div class="detail-thumb-wrap">
         <iframe
@@ -63,66 +63,66 @@
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen
-          title="Webinar video player">
+          title="Video video player">
         </iframe>
       </div>
       <div class="detail-body">
         <span class="detail-date">
           <ion-icon name="calendar-outline"></ion-icon>
-          {{ selectedWebinar.createdAt | date:'MMMM d, y' }}
+          {{ selectedVideo.createdAt | date:'MMMM d, y' }}
         </span>
-        <h2>{{ selectedWebinar.title }}</h2>
-        <p class="detail-description">{{ selectedWebinar.description || 'No description provided.' }}</p>
+        <h2>{{ selectedVideo.title }}</h2>
+        <p class="detail-description">{{ selectedVideo.description || 'No description provided.' }}</p>
         <ion-button fill="outline" class="back-to-list-btn" (click)="clearSelection()">
           <ion-icon slot="start" name="grid-outline"></ion-icon>
-          Browse All Webinars
+          Browse All Videos
         </ion-button>
       </div>
     </div>
   </section>
 
-  <!-- Webinar table -->
-  <section *ngIf="!loading && displayedWebinars.length > 0 && !selectedWebinar && viewMode === 'table'" class="table-section">
+  <!-- Video table -->
+  <section *ngIf="!loading && displayedVideos.length > 0 && !selectedVideo && viewMode === 'table'" class="table-section">
     <div class="table-wrap">
-      <table class="webinars-table">
+      <table class="videos-table">
         <thead>
           <tr>
-            <th>Webinar</th>
+            <th>Video</th>
             <th>Description</th>
             <th>Created</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let webinar of displayedWebinars" (click)="selectWebinar(webinar)">
+          <tr *ngFor="let video of displayedVideos" (click)="selectVideo(video)">
             <td>
-              <div class="webinar-name-cell">
-                <div class="table-thumb" [class.placeholder]="!webinar.thumbnailBase64">
-                  <img *ngIf="webinar.thumbnailBase64" [src]="webinar.thumbnailBase64" [alt]="webinar.title" />
-                  <ion-icon *ngIf="!webinar.thumbnailBase64" name="videocam-outline"></ion-icon>
+              <div class="video-name-cell">
+                <div class="table-thumb" [class.placeholder]="!video.thumbnailBase64">
+                  <img *ngIf="video.thumbnailBase64" [src]="video.thumbnailBase64" [alt]="video.title" />
+                  <ion-icon *ngIf="!video.thumbnailBase64" name="videocam-outline"></ion-icon>
                 </div>
-                <span class="webinar-name">{{ webinar.title || 'Untitled Webinar' }}</span>
+                <span class="video-name">{{ video.title || 'Untitled Video' }}</span>
               </div>
             </td>
             <td>
-              <span class="webinar-desc-short">{{ webinar.description ? (webinar.description | slice:0:80) : '—' }}</span>
+              <span class="video-desc-short">{{ video.description ? (video.description | slice:0:80) : '—' }}</span>
             </td>
-            <td>{{ webinar.createdAt | date:'mediumDate' }}</td>
+            <td>{{ video.createdAt | date:'mediumDate' }}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- Webinar cards grid -->
-  <section *ngIf="!loading && displayedWebinars.length > 0 && !selectedWebinar && viewMode === 'cards'" class="cards-section">
+  <!-- Video cards grid -->
+  <section *ngIf="!loading && displayedVideos.length > 0 && !selectedVideo && viewMode === 'cards'" class="cards-section">
     <div class="cards-grid">
-      <div class="item-card" *ngFor="let webinar of displayedWebinars" (click)="selectWebinar(webinar)">
+      <div class="item-card" *ngFor="let video of displayedVideos" (click)="selectVideo(video)">
         <div class="product-thumb-wrap">
-          <img *ngIf="webinar.thumbnailBase64"
-               [src]="webinar.thumbnailBase64"
-               [alt]="webinar.title || 'Webinar'"
+          <img *ngIf="video.thumbnailBase64"
+               [src]="video.thumbnailBase64"
+               [alt]="video.title || 'Video'"
                class="product-thumb-img" />
-          <div *ngIf="!webinar.thumbnailBase64" class="product-thumb-placeholder">
+          <div *ngIf="!video.thumbnailBase64" class="product-thumb-placeholder">
             <ion-icon name="videocam-outline"></ion-icon>
           </div>
           <div class="play-overlay">
@@ -130,18 +130,18 @@
           </div>
         </div>
         <div class="product-body">
-          <h3>{{ webinar.title || 'Untitled Webinar' }}</h3>
-          <div class="product-desc" *ngIf="webinar.description">{{ webinar.description | slice:0:120 }}{{ webinar.description!.length > 120 ? '…' : '' }}</div>
-          <p class="product-desc muted" *ngIf="!webinar.description">No description provided.</p>
+          <h3>{{ video.title || 'Untitled Video' }}</h3>
+          <div class="product-desc" *ngIf="video.description">{{ video.description | slice:0:120 }}{{ video.description!.length > 120 ? '…' : '' }}</div>
+          <p class="product-desc muted" *ngIf="!video.description">No description provided.</p>
         </div>
         <div class="card-meta">
           <div class="meta-item">
             <ion-icon name="calendar-outline"></ion-icon>
-            <span>{{ webinar.createdAt | date:'mediumDate' }}</span>
+            <span>{{ video.createdAt | date:'mediumDate' }}</span>
           </div>
-          <div class="meta-item" *ngIf="webinar.youtubeUrl">
+          <div class="meta-item" *ngIf="video.youtubeUrl">
             <ion-icon name="logo-youtube"></ion-icon>
-            <span>{{ webinar.youtubeUrl }}</span>
+            <span>{{ video.youtubeUrl }}</span>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@
   </section>
 
   <!-- Pagination -->
-  <div class="pagination-controls" *ngIf="!selectedWebinar && filteredWebinars.length > pageSize">
+  <div class="pagination-controls" *ngIf="!selectedVideo && filteredVideos.length > pageSize">
     <ion-button fill="clear" size="small" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
       <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
     </ion-button>

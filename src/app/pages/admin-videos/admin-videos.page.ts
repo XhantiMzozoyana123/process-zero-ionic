@@ -3,36 +3,36 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { CommonModule, DatePipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WebinarService } from 'src/app/services/webinar-service';
-import { Webinar } from 'src/app/models/entities/webinar.model';
+import { VideoService } from 'src/app/services/video-service';
+import { Video } from 'src/app/models/entities/video.model';
 
 @Component({
-  selector: 'app-admin-webinars',
-  templateUrl: './admin-webinars.page.html',
-  styleUrls: ['./admin-webinars.page.scss'],
+  selector: 'app-admin-videos',
+  templateUrl: './admin-videos.page.html',
+  styleUrls: ['./admin-videos.page.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, DatePipe, SlicePipe]
 })
-export class AdminWebinarsPage implements OnInit {
-  webinars: Webinar[] = [];
+export class AdminVideosPage implements OnInit {
+  videos: Video[] = [];
   loading = false;
   searchTerm = '';
 
   isDetailModalOpen = false;
-  detailWebinar: Webinar | null = null;
+  detailVideo: Video | null = null;
 
   isFormModalOpen = false;
-  editingWebinarId?: number;
-  webinarForm: FormGroup;
+  editingVideoId?: number;
+  videoForm: FormGroup;
   submitting = false;
 
   constructor(
-    private webinarService: WebinarService,
+    private videoService: VideoService,
     private fb: FormBuilder,
     private alertController: AlertController,
     private toastController: ToastController
   ) {
-    this.webinarForm = this.fb.group({
+    this.videoForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
       youtubeUrl: ['', [Validators.required, this.youtubeUrlValidator.bind(this)]],
@@ -41,99 +41,99 @@ export class AdminWebinarsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadWebinars();
+    this.loadVideos();
   }
 
-  loadWebinars(): void {
+  loadVideos(): void {
     this.loading = true;
-    this.webinarService.getAll().subscribe({
-      next: res => { this.webinars = res; this.loading = false; },
-      error: () => { this.showToast('Could not load webinars.', 'danger'); this.loading = false; }
+    this.videoService.getAll().subscribe({
+      next: res => { this.videos = res; this.loading = false; },
+      error: () => { this.showToast('Could not load videos.', 'danger'); this.loading = false; }
     });
   }
 
   refresh(event: any): void {
-    this.webinarService.getAll().subscribe({
-      next: res => { this.webinars = res; event.target.complete(); },
-      error: () => { this.showToast('Could not refresh webinars.', 'danger'); event.target.complete(); }
+    this.videoService.getAll().subscribe({
+      next: res => { this.videos = res; event.target.complete(); },
+      error: () => { this.showToast('Could not refresh videos.', 'danger'); event.target.complete(); }
     });
   }
 
   // ── Detail modal ────────────────────────────
-  openDetailModal(webinar: Webinar): void {
-    this.detailWebinar = webinar;
+  openDetailModal(video: Video): void {
+    this.detailVideo = video;
     this.isDetailModalOpen = true;
   }
 
   closeDetailModal(): void {
     this.isDetailModalOpen = false;
-    this.detailWebinar = null;
+    this.detailVideo = null;
   }
 
   // ── Form modal ──────────────────────────────
   openAddModal(): void {
-    this.editingWebinarId = undefined;
-    this.webinarForm.reset();
+    this.editingVideoId = undefined;
+    this.videoForm.reset();
     this.isFormModalOpen = true;
   }
 
-  openEditModal(webinar: Webinar): void {
-    this.editingWebinarId = webinar.id;
-    this.webinarForm.patchValue({
-      title: webinar.title ?? '',
-      description: webinar.description ?? '',
-      youtubeUrl: webinar.youtubeUrl ?? '',
-      thumbnailBase64: webinar.thumbnailBase64 ?? ''
+  openEditModal(video: Video): void {
+    this.editingVideoId = video.id;
+    this.videoForm.patchValue({
+      title: video.title ?? '',
+      description: video.description ?? '',
+      youtubeUrl: video.youtubeUrl ?? '',
+      thumbnailBase64: video.thumbnailBase64 ?? ''
     });
     this.isFormModalOpen = true;
   }
 
   closeFormModal(): void {
     this.isFormModalOpen = false;
-    this.editingWebinarId = undefined;
+    this.editingVideoId = undefined;
   }
 
-  saveWebinar(): void {
-    if (this.webinarForm.invalid) {
-      this.webinarForm.markAllAsTouched();
+  saveVideo(): void {
+    if (this.videoForm.invalid) {
+      this.videoForm.markAllAsTouched();
       return;
     }
     this.submitting = true;
-    const val = this.webinarForm.getRawValue();
-    const payload: Webinar = {
+    const val = this.videoForm.getRawValue();
+    const payload: Video = {
       title: val.title.trim(),
       description: val.description?.trim() || undefined,
       youtubeUrl: val.youtubeUrl?.trim() || undefined,
       thumbnailBase64: val.thumbnailBase64?.trim() || undefined
     };
 
-    if (this.editingWebinarId) {
-      const existing = this.webinars.find(w => w.id === this.editingWebinarId);
-      payload.id = this.editingWebinarId;
+    if (this.editingVideoId) {
+      const existing = this.videos.find(w => w.id === this.editingVideoId);
+      payload.id = this.editingVideoId;
       payload.createdAt = existing?.createdAt;
-      this.webinarService.update(this.editingWebinarId, payload).subscribe({
-        next: () => { this.showToast('Webinar updated.', 'success'); this.submitting = false; this.closeFormModal(); this.loadWebinars(); },
-        error: () => { this.showToast('Could not update webinar.', 'danger'); this.submitting = false; }
+      this.videoService.update(this.editingVideoId, payload).subscribe({
+        next: () => { this.showToast('Video updated.', 'success'); this.submitting = false; this.closeFormModal(); this.loadVideos(); },
+        error: () => { this.showToast('Could not update video.', 'danger'); this.submitting = false; }
       });
     } else {
-      this.webinarService.create(payload).subscribe({
-        next: () => { this.showToast('Webinar created.', 'success'); this.submitting = false; this.closeFormModal(); this.loadWebinars(); },
-        error: () => { this.showToast('Could not create webinar.', 'danger'); this.submitting = false; }
+      this.videoService.create(payload).subscribe({
+        next: () => { this.showToast('Video created.', 'success'); this.submitting = false; this.closeFormModal(); this.loadVideos(); },
+        error: () => { this.showToast('Could not create video.', 'danger'); this.submitting = false; }
       });
     }
   }
 
-  async deleteWebinar(webinar: Webinar): Promise<void> {
+  async deleteVideo(video: Video): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Delete webinar?',
-      message: `Remove "${webinar.title}"? This cannot be undone.`,
+      header: 'Delete video?',
+      message: `Remove "${video.title}"? This cannot be undone.`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
           text: 'Delete', role: 'destructive', handler: () => {
-            this.webinarService.delete(webinar.id!).subscribe({
-              next: () => { this.webinars = this.webinars.filter(w => w.id !== webinar.id); this.showToast('Webinar deleted.', 'success'); this.closeDetailModal(); },
-              error: () => { this.showToast('Could not delete webinar.', 'danger'); }
+            this.videoService.delete(video.id!).subscribe({
+              next: () => { this.videos = this.videos.filter(w => w.id !== video.id); this.showToast('Video deleted.', 'success'); this.closeDetailModal(); },
+              error: () => { this.showToast('Could not delete video.', 'danger'); }
             });
           }
         }
@@ -143,7 +143,7 @@ export class AdminWebinarsPage implements OnInit {
   }
 
   isInvalid(name: string): boolean {
-    const ctrl = this.webinarForm.get(name);
+    const ctrl = this.videoForm.get(name);
     return !!ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched);
   }
 

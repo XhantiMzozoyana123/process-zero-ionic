@@ -3,21 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { Webinar } from 'src/app/models/entities/webinar.model';
-import { WebinarService } from 'src/app/services/webinar-service';
+import { Video } from 'src/app/models/entities/video.model';
+import { VideoService } from 'src/app/services/video-service';
 import { IntroService } from 'src/app/services/intro-service';
 
 
 @Component({
-  selector: 'app-webinars',
-  templateUrl: './webinars.page.html',
-  styleUrls: ['./webinars.page.scss'],
+  selector: 'app-videos',
+  templateUrl: './videos.page.html',
+  styleUrls: ['./videos.page.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule],
 })
-export class WebinarsPage implements OnInit {
-  webinars: Webinar[] = [];
-  selectedWebinar: Webinar | null = null;
+export class VideosPage implements OnInit {
+  videos: Video[] = [];
+  selectedVideo: Video | null = null;
   loading = false;
   errorMessage = '';
   searchTerm = '';
@@ -27,7 +27,7 @@ export class WebinarsPage implements OnInit {
   pageSize = 6;
 
   constructor(
-    private webinarService: WebinarService,
+    private videoService: VideoService,
     private toastCtrl: ToastController,
     private sanitizer: DomSanitizer,
     private introService: IntroService
@@ -35,21 +35,21 @@ export class WebinarsPage implements OnInit {
 
 
   ngOnInit(): void {
-    this.loadWebinars();
+    this.loadVideos();
   }
 
   startTour(): void {
-    this.introService.startWebinarsTour();
+    this.introService.startVideosTour();
   }
 
-  get filteredWebinars(): Webinar[] {
+  get filteredVideos(): Video[] {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) {
-      return this.webinars;
+      return this.videos;
     }
 
-    return this.webinars.filter((webinar) => {
-      const haystack = [webinar.title, webinar.description]
+    return this.videos.filter((video) => {
+      const haystack = [video.title, video.description]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
@@ -57,13 +57,13 @@ export class WebinarsPage implements OnInit {
     });
   }
 
-  get displayedWebinars(): Webinar[] {
+  get displayedVideos(): Video[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredWebinars.slice(start, start + this.pageSize);
+    return this.filteredVideos.slice(start, start + this.pageSize);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredWebinars.length / this.pageSize) || 1;
+    return Math.ceil(this.filteredVideos.length / this.pageSize) || 1;
   }
 
   get pageNumbers(): number[] {
@@ -78,11 +78,11 @@ export class WebinarsPage implements OnInit {
 
 
   get embedUrl(): SafeResourceUrl | null {
-    if (!this.selectedWebinar?.youtubeUrl) {
+    if (!this.selectedVideo?.youtubeUrl) {
       return null;
     }
 
-    const videoId = this.extractYoutubeId(this.selectedWebinar.youtubeUrl);
+    const videoId = this.extractYoutubeId(this.selectedVideo.youtubeUrl);
     if (!videoId) {
       return null;
     }
@@ -118,49 +118,49 @@ export class WebinarsPage implements OnInit {
     return idMatch?.[1] ?? null;
   }
 
-  loadWebinars(event?: any): void {
+  loadVideos(event?: any): void {
     this.loading = true;
     this.errorMessage = '';
 
-    this.webinarService.getAll().subscribe({
-      next: (webinars) => {
-        this.webinars = webinars;
+    this.videoService.getAll().subscribe({
+      next: (videos) => {
+        this.videos = videos;
         this.loading = false;
         if (event) {
           event.target.complete();
         }
       },
       error: async () => {
-        this.errorMessage = 'Could not load webinars.';
+        this.errorMessage = 'Could not load videos.';
         this.loading = false;
         if (event) {
           event.target.complete();
         }
-        await this.showToast('Unable to load webinars', 'danger');
+        await this.showToast('Unable to load videos', 'danger');
       },
     });
   }
 
   refresh(event: any): void {
-    this.loadWebinars(event);
+    this.loadVideos(event);
   }
 
-  selectWebinar(webinar: Webinar): void {
-    this.selectedWebinar = webinar;
+  selectVideo(video: Video): void {
+    this.selectedVideo = video;
   }
 
   onSearchChange(): void {
-    // Reset to first page; filtering is handled by the filteredWebinars getter
+    // Reset to first page; filtering is handled by the filteredVideos getter
     this.currentPage = 1;
   }
 
 
   clearSelection(): void {
-    this.selectedWebinar = null;
+    this.selectedVideo = null;
   }
 
-  thumbnailUrl(webinar: Webinar): string {
-    return webinar.thumbnailBase64;
+  thumbnailUrl(video: Video): string {
+    return video.thumbnailBase64;
   }
 
   private async showToast(message: string, color: 'success' | 'danger'): Promise<void> {

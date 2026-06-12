@@ -22,9 +22,9 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
-        path: 'webinars',
-        loadChildren: () => import('../admin-webinars/admin-webinars.module')
-          .then(m => m.AdminWebinarsPageModule),
+        path: 'videos',
+        loadChildren: () => import('../admin-videos/admin-videos.module')
+          .then(m => m.AdminVideosPageModule),
         canActivate: [AdminGuard]
       },
       {

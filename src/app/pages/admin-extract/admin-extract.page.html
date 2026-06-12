@@ -9,17 +9,17 @@
         </div>
         <h1>Lead Extractor <span class="hero-highlight">Workspace</span></h1>
         <p>
-          Search Yellow Pages by keyword and location, scrape business lead data,
-          and save new records directly into LeadLake.
+          Search Yellow Pages by keyword, scrape business lead data, and save new
+          records directly into LeadLake. Run a single extraction or queue a batch.
         </p>
       </div>
 
       <div class="hero-panel">
         <div class="hero-panel-label">Workflow</div>
         <ul class="hero-panel-list">
-          <li>Enter a search keyword and target location</li>
-          <li>Scrape up to five result pages per request</li>
-          <li>Review saved leads returned by the extract API</li>
+          <li>Enter keywords, page limit and an optional container URL</li>
+          <li>Run a single extraction or build a batch queue</li>
+          <li>Review extracted leads saved into LeadLake</li>
         </ul>
       </div>
     </section>
@@ -37,8 +37,11 @@
         <div class="health-row">
           <div class="health-pill" [class.bad]="!health">
             <ion-spinner *ngIf="healthChecking" name="crescent"></ion-spinner>
-            <ion-icon *ngIf="!healthChecking" [name]="health ? 'checkmark-circle-outline' : 'alert-circle-outline'"></ion-icon>
-            <span>{{ healthChecking ? 'Checking service...' : (health?.status === 'healthy' ? 'Extract service healthy' : 'Service unavailable') }}</span>
+            <ion-icon
+              *ngIf="!healthChecking"
+              [name]="health ? 'checkmark-circle-outline' : 'alert-circle-outline'"
+            ></ion-icon>
+            <span>{{ healthLabel }}</span>
           </div>
           <ion-button fill="outline" color="primary" [disabled]="healthChecking" (click)="checkHealth()">
             <ion-icon name="pulse-outline" slot="start"></ion-icon>
@@ -48,48 +51,92 @@
 
         <div class="form-grid">
           <ion-item>
-            <ion-label position="stacked">Keyword</ion-label>
-            <ion-input [(ngModel)]="keyword" placeholder="software developer"></ion-input>
+            <ion-label position="stacked">Keywords</ion-label>
+            <ion-input [(ngModel)]="keywords" placeholder="software developer"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked">Location</ion-label>
-            <ion-input [(ngModel)]="location" placeholder="Cape Town"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Pages</ion-label>
-            <ion-select [(ngModel)]="pages">
+            <ion-label position="stacked">Page View Limit</ion-label>
+            <ion-select [(ngModel)]="pageViewLimit">
               <ion-select-option *ngFor="let option of pageOptions" [value]="option">
                 {{ option }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Container URL (optional)</ion-label>
+            <ion-input [(ngModel)]="containerUrl" placeholder="https://www.yellowpages.com/..."></ion-input>
+          </ion-item>
         </div>
 
-        <ion-button expand="block" color="primary" [disabled]="loading" (click)="scrape()">
-          <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
-          <ion-icon *ngIf="!loading" name="search-outline" slot="start"></ion-icon>
-          {{ loading ? 'Extracting Leads...' : 'Extract Leads' }}
-        </ion-button>
+        <div class="action-buttons">
+          <ion-button expand="block" color="primary" [disabled]="loading" (click)="run()">
+            <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
+            <ion-icon *ngIf="!loading" name="search-outline" slot="start"></ion-icon>
+            {{ loading ? 'Extracting Leads...' : 'Run Extraction' }}
+          </ion-button>
+
+          <ion-button expand="block" fill="outline" color="medium" (click)="addToBatch()">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Add to Batch
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="section-card" *ngIf="scrapeResult">
+    <ion-card class="section-card" *ngIf="batchRows.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="layers-outline"></ion-icon>
+          Batch Queue ({{ batchRows.length }})
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list lines="full" class="batch-list">
+          <ion-item *ngFor="let row of batchRows; let i = index; trackBy: trackByBatch">
+            <ion-label>
+              <h3>{{ row.keywords }}</h3>
+              <p>
+                Pages: {{ row.pageViewLimit }}
+                <span *ngIf="row.containerUrl"> · {{ row.containerUrl }}</span>
+              </p>
+            </ion-label>
+            <ion-button fill="clear" color="danger" slot="end" (click)="removeBatchRow(i)">
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <div class="action-buttons">
+          <ion-button expand="block" color="primary" [disabled]="batchLoading" (click)="runBatch()">
+            <ion-spinner *ngIf="batchLoading" name="crescent" slot="start"></ion-spinner>
+            <ion-icon *ngIf="!batchLoading" name="rocket-outline" slot="start"></ion-icon>
+            {{ batchLoading ? 'Starting Batch...' : 'Run Batch (' + batchRows.length + ')' }}
+          </ion-button>
+          <ion-button expand="block" fill="outline" color="medium" (click)="clearBatch()">
+            <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+            Clear Queue
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="section-card" *ngIf="lastMessage">
       <ion-card-header>
         <ion-card-title>
           <ion-icon name="analytics-outline"></ion-icon>
-          Extraction Summary
+          Last Result
         </ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <div class="summary-grid">
           <div class="summary-tile accent-gold">
             <span class="summary-label">Message</span>
-            <span class="summary-text">{{ scrapeResult.message }}</span>
+            <span class="summary-text">{{ lastMessage }}</span>
           </div>
           <div class="summary-tile accent-teal">
-            <span class="summary-label">Returned Leads</span>
+            <span class="summary-label">Leads in LeadLake</span>
             <span class="summary-value">{{ scrapedLeads.length }}</span>
           </div>
         </div>
@@ -100,14 +147,19 @@
       <ion-card-header>
         <ion-card-title>
           <ion-icon name="list-outline"></ion-icon>
-          Scraped Lead Results
+          Extracted Leads
         </ion-card-title>
+        <ion-button fill="outline" size="small" color="primary" [disabled]="leadsLoading" (click)="loadLeads()">
+          <ion-spinner *ngIf="leadsLoading" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!leadsLoading" name="refresh-outline" slot="start"></ion-icon>
+          Refresh
+        </ion-button>
       </ion-card-header>
       <ion-card-content>
-        <div class="empty-state" *ngIf="!scrapedLeads.length && !loading">
+        <div class="empty-state" *ngIf="!scrapedLeads.length && !leadsLoading">
           <ion-icon name="business-outline"></ion-icon>
           <h3>No extracted leads yet</h3>
-          <p>Run a search to populate this workspace with the latest extracted leads.</p>
+          <p>Run an extraction to populate this workspace with the latest leads.</p>
         </div>
 
         <div class="results-grid" *ngIf="scrapedLeads.length > 0">

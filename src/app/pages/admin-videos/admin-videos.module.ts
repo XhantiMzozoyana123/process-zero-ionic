@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { AdminWebinarsPageRoutingModule } from './admin-webinars-routing.module';
-import { AdminWebinarsPage } from './admin-webinars.page';
+import { AdminVideosPageRoutingModule } from './admin-videos-routing.module';
+import { AdminVideosPage } from './admin-videos.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, AdminWebinarsPageRoutingModule, AdminWebinarsPage],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, AdminVideosPageRoutingModule, AdminVideosPage],
 })
-export class AdminWebinarsPageModule {}
+export class AdminVideosPageModule {}

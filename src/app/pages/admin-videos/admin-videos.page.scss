@@ -7,7 +7,7 @@ $teal: #1d7874;
 $blue: #335c67;
 $coral: #c06c52;
 
-.admin-webinars-page {
+.admin-videos-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
     linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
 }
@@ -51,7 +51,7 @@ $coral: #c06c52;
   margin-top: 16px;
 }
 
-.webinar-search {
+.video-search {
   --background: rgba($paper, 0.92);
   --border-radius: 14px;
   --box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
@@ -80,11 +80,11 @@ $coral: #c06c52;
 }
 
 // ── Grid ────────────────────────────────────
-.webinars-section {
+.videos-section {
   padding: 24px 18px 100px;
 }
 
-.webinars-grid {
+.videos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
@@ -93,7 +93,7 @@ $coral: #c06c52;
 }
 
 // ── Card ────────────────────────────────────
-.webinar-card {
+.video-card {
   background: rgba($paper, 0.92);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.7);
@@ -115,7 +115,7 @@ $coral: #c06c52;
   gap: 12px;
 }
 
-.webinar-thumb {
+.video-thumb {
   width: 48px;
   height: 48px;
   min-width: 48px;
@@ -138,7 +138,7 @@ $coral: #c06c52;
   }
 }
 
-.webinar-info {
+.video-info {
   flex: 1;
   min-width: 0;
 
@@ -153,13 +153,13 @@ $coral: #c06c52;
   }
 }
 
-.webinar-date {
+.video-date {
   font-size: 0.78rem;
   color: $muted;
   margin: 2px 0 0;
 }
 
-.webinar-desc {
+.video-desc {
   font-size: 0.82rem;
   color: $muted;
   margin: 10px 0 0;
@@ -330,7 +330,7 @@ $coral: #c06c52;
     flex-direction: column;
   }
 
-  .webinars-grid {
+  .videos-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -9,7 +9,7 @@ $coral: #c06c52;
 $muted: #607078;
 
 // ── Page background ─────────────────────────────────────
-.webinars-page {
+.videos-page {
   --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
 }
 
@@ -184,7 +184,7 @@ $muted: #607078;
   overflow-x: auto;
 }
 
-.webinars-table {
+.videos-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.88rem;
@@ -221,7 +221,7 @@ $muted: #607078;
   }
 }
 
-.webinar-name-cell {
+.video-name-cell {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -251,14 +251,14 @@ $muted: #607078;
   }
 }
 
-.webinar-name {
+.video-name {
   display: block;
   font-weight: 700;
   font-size: 0.9rem;
   color: $ink;
 }
 
-.webinar-desc-short {
+.video-desc-short {
   display: block;
   font-size: 0.82rem;
   color: $muted;
@@ -286,7 +286,7 @@ $muted: #607078;
 }
 
 
-// ── Webinar card ────────────────────────────────────────
+// ── Video card ────────────────────────────────────────
 .item-card {
   background: rgba($paper, 0.92);
   backdrop-filter: blur(14px);
