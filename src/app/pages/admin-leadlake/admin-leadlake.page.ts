@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
-import { LeadLake, LeadLakeIndustry } from 'src/app/models/entities/leadlake.model';
+import { Observable } from 'rxjs';
+import { AlertController, ToastController } from '@ionic/angular';
+
+import { LeadLake, LeadLakeIndustry, LeadIntent } from 'src/app/models/entities/leadlake.model';
 import { LeadlakeService } from 'src/app/services/leadlake-service';
+
 
 @Component({
   selector: 'app-admin-leadlake',
@@ -29,15 +32,26 @@ export class AdminLeadlakePage implements OnInit {
   parsedLeads: LeadLake[] = [];
   parseError = '';
 
+  // Create / edit form state
+  isFormModalOpen = false;
+  saving = false;
+  editingId: number | null = null;
+  formError = '';
+  formLead: LeadLake = this.emptyLead();
+
   private readonly industryValues = Object.values(LeadLakeIndustry) as LeadLakeIndustry[];
 
   industries: Array<{ label: string; value: LeadLakeIndustry }> = this.industryValues
     .map(v => ({ label: v, value: v }));
 
+  readonly intentValues = Object.values(LeadIntent) as LeadIntent[];
+
   constructor(
     private leadService: LeadlakeService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) {}
+
 
   ngOnInit() {
     this.loadLeads();
@@ -225,8 +239,116 @@ export class AdminLeadlakePage implements OnInit {
     });
   }
 
+  // ── Create / Edit / Delete ────────────────────────────
+  openCreateModal() {
+    this.editingId = null;
+    this.formError = '';
+    this.formLead = this.emptyLead();
+    this.isFormModalOpen = true;
+  }
+
+  openEditModal(lead: LeadLake) {
+    this.editingId = lead.id ?? null;
+    this.formError = '';
+    this.formLead = {
+      ...lead,
+      industry: this.normalizeIndustry(lead.industry)
+    };
+    this.isFormModalOpen = true;
+  }
+
+  closeFormModal() {
+    this.isFormModalOpen = false;
+  }
+
+  saveLead() {
+    if (this.saving) return;
+
+    const email = (this.formLead.email || '').trim();
+    if (!email) {
+      this.formError = 'Email is required.';
+      return;
+    }
+
+    this.formError = '';
+    this.saving = true;
+
+    const payload: LeadLake = { ...this.formLead, email };
+
+    const request$: Observable<unknown> = this.editingId != null
+      ? this.leadService.update(this.editingId, payload)
+      : this.leadService.create(payload);
+
+
+    request$.subscribe({
+      next: async () => {
+        this.saving = false;
+        const wasEditing = this.editingId != null;
+        this.closeFormModal();
+        await this.showToast(wasEditing ? 'Lead updated.' : 'Lead created.', 'success');
+        this.loadLeads();
+      },
+      error: async (err: any) => {
+        this.saving = false;
+        console.error('Save failed', err);
+
+        const msg = err?.error?.error || err?.error?.title || 'Failed to save lead.';
+        this.formError = msg;
+        await this.showToast(msg, 'danger');
+      }
+    });
+  }
+
+  async confirmDelete(lead: LeadLake) {
+    if (lead.id == null) return;
+
+    const alert = await this.alertCtrl.create({
+      header: 'Delete lead',
+      message: `Delete ${lead.firstName || ''} ${lead.lastName || ''} (${lead.email})? This cannot be undone.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => this.deleteLead(lead.id as number)
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private deleteLead(id: number) {
+    this.leadService.delete(id).subscribe({
+      next: async () => {
+        this.leads = this.leads.filter(l => l.id !== id);
+        this.filterLeads();
+        await this.showToast('Lead deleted.', 'success');
+      },
+      error: async (err) => {
+        console.error('Delete failed', err);
+        const msg = err?.error?.error || err?.error?.title || 'Failed to delete lead.';
+        await this.showToast(msg, 'danger');
+      }
+    });
+  }
+
+  private emptyLead(): LeadLake {
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      company: '',
+      job: '',
+      location: '',
+      industry: LeadLakeIndustry.Other,
+      intent: LeadIntent.Low
+    };
+  }
+
   // ── CSV parser ────────────────────────────────────────
   private parseCsv(raw: string): LeadLake[] {
+
     const lines = raw.split(/\r?\n/).filter(l => l.trim());
     if (lines.length < 2) throw new Error('CSV must have a header row and at least one data row.');
 

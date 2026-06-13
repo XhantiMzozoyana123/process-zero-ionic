@@ -39,6 +39,13 @@ $muted: #607078;
   }
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .add-btn {
   display: inline-flex;
   align-items: center;
@@ -61,7 +68,19 @@ $muted: #607078;
   ion-icon {
     font-size: 18px;
   }
+
+  &.ghost {
+    background: transparent;
+    color: $teal;
+    border: 1px solid rgba($teal, 0.3);
+
+    &:hover {
+      background: rgba($teal, 0.08);
+      box-shadow: none;
+    }
+  }
 }
+
 
 .search-row {
   margin-top: 18px;
@@ -529,8 +548,105 @@ $muted: #607078;
   }
 }
 
+// ── Row actions ─────────────────────────────────────────
+.actions-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba($paper, 0.9);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  ion-icon {
+    font-size: 17px;
+  }
+
+  &.edit {
+    color: $teal;
+
+    &:hover {
+      background: rgba($teal, 0.1);
+      border-color: rgba($teal, 0.3);
+    }
+  }
+
+  &.delete {
+    color: $coral;
+
+    &:hover {
+      background: rgba($coral, 0.1);
+      border-color: rgba($coral, 0.3);
+    }
+  }
+}
+
+// ── Lead form (create / edit) ───────────────────────────
+.lead-form {
+  padding: 24px 20px 40px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $muted;
+
+    .req {
+      color: $coral;
+    }
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    background: rgba($paper, 0.92);
+    color: $ink;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $teal;
+      box-shadow: 0 0 0 3px rgba($teal, 0.12);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 // ── Responsive ──────────────────────────────────────────
 @media (max-width: 768px) {
+
   .page-header,
   .filter-section,
   .table-section,

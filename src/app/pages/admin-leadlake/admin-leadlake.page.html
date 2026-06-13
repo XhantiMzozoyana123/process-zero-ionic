@@ -10,10 +10,17 @@
         <h1>LeadLake</h1>
         <p>Manage and upload leads for your sales network.</p>
       </div>
-      <button class="add-btn" (click)="openUploadModal()">
-        <ion-icon name="cloud-upload-outline"></ion-icon>
-        Upload CSV
-      </button>
+      <div class="header-actions">
+        <button class="add-btn ghost" (click)="openUploadModal()">
+          <ion-icon name="cloud-upload-outline"></ion-icon>
+          Upload CSV
+        </button>
+        <button class="add-btn" (click)="openCreateModal()">
+          <ion-icon name="add-outline"></ion-icon>
+          Add Lead
+        </button>
+      </div>
+
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search leads..." [(ngModel)]="searchTerm"
@@ -46,27 +53,37 @@
         <ion-row class="table-header">
           <ion-col size="12" size-md="2">First Name</ion-col>
           <ion-col size="12" size-md="2">Last Name</ion-col>
-          <ion-col size="12" size-md="3">Email</ion-col>
+          <ion-col size="12" size-md="2">Email</ion-col>
           <ion-col size="12" size-md="2">Company</ion-col>
           <ion-col size="12" size-md="1">Role</ion-col>
           <ion-col size="12" size-md="1">Industry</ion-col>
           <ion-col size="12" size-md="1">Location</ion-col>
+          <ion-col size="12" size-md="1" class="actions-col">Actions</ion-col>
         </ion-row>
 
         <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
           <ion-col size="12" size-md="2">{{ lead.firstName || '–' }}</ion-col>
           <ion-col size="12" size-md="2">{{ lead.lastName || '–' }}</ion-col>
-          <ion-col size="12" size-md="3" class="email-col">{{ lead.email }}</ion-col>
+          <ion-col size="12" size-md="2" class="email-col">{{ lead.email }}</ion-col>
           <ion-col size="12" size-md="2">{{ lead.company || '–' }}</ion-col>
           <ion-col size="12" size-md="1">{{ lead.job || '–' }}</ion-col>
           <ion-col size="12" size-md="1">
             <span class="industry-tag">{{ getIndustryLabel(lead.industry) }}</span>
           </ion-col>
           <ion-col size="12" size-md="1">{{ lead.location || '–' }}</ion-col>
+          <ion-col size="12" size-md="1" class="actions-col">
+            <button class="row-action edit" (click)="openEditModal(lead)" aria-label="Edit lead">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="row-action delete" (click)="confirmDelete(lead)" aria-label="Delete lead">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </ion-col>
         </ion-row>
 
         <ion-row *ngIf="!filteredLeads.length" class="table-row">
           <ion-col size="12" class="no-results">
+
             <ion-icon name="globe-outline"></ion-icon>
             <p>No leads found for the current search/filter.</p>
           </ion-col>
@@ -198,4 +215,88 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+
+  <!-- Create / Edit Modal -->
+  <ion-modal [isOpen]="isFormModalOpen" (didDismiss)="closeFormModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editingId != null ? 'Edit Lead' : 'Add Lead' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeFormModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <form class="lead-form" (ngSubmit)="saveLead()">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>First Name</label>
+              <input type="text" name="firstName" [(ngModel)]="formLead.firstName" placeholder="John" />
+            </div>
+
+            <div class="form-field">
+              <label>Last Name</label>
+              <input type="text" name="lastName" [(ngModel)]="formLead.lastName" placeholder="Doe" />
+            </div>
+
+            <div class="form-field">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" name="email" [(ngModel)]="formLead.email" required placeholder="john@example.com" />
+            </div>
+
+            <div class="form-field">
+              <label>Phone</label>
+              <input type="tel" name="phone" [(ngModel)]="formLead.phone" placeholder="+27821234567" />
+            </div>
+
+            <div class="form-field">
+              <label>Company</label>
+              <input type="text" name="company" [(ngModel)]="formLead.company" placeholder="Acme Corp" />
+            </div>
+
+            <div class="form-field">
+              <label>Job Title</label>
+              <input type="text" name="job" [(ngModel)]="formLead.job" placeholder="Sales Manager" />
+            </div>
+
+            <div class="form-field">
+              <label>Location</label>
+              <input type="text" name="location" [(ngModel)]="formLead.location" placeholder="Cape Town" />
+            </div>
+
+            <div class="form-field">
+              <label>Industry</label>
+              <select name="industry" [(ngModel)]="formLead.industry">
+                <option *ngFor="let opt of industries" [value]="opt.value">{{ opt.label }}</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Intent</label>
+              <select name="intent" [(ngModel)]="formLead.intent">
+                <option *ngFor="let value of intentValues" [value]="value">{{ value }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="parse-error" *ngIf="formError">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            {{ formError }}
+          </div>
+
+          <button type="submit" class="submit-btn" [disabled]="saving">
+            <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+            <span *ngIf="!saving">
+              <ion-icon name="save-outline"></ion-icon>
+              {{ editingId != null ? 'Update Lead' : 'Create Lead' }}
+            </span>
+          </button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
+
+
