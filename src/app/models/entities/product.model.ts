@@ -7,6 +7,7 @@ export interface Product {
   url?: string;
   negotiableAmounts?: string;
   actualAmount?: number;
+  calEventTypeId?: number;
   createdAt?: string;
   updatedAt?: string;
 }

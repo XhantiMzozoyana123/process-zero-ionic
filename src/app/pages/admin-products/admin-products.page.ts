@@ -36,7 +36,8 @@ export class AdminProductsPage implements OnInit {
       actualAmount: [0, [Validators.required, Validators.min(0)]],
       url: [''],
       negotiableAmounts: [''],
-      profilePictureBase64: ['']
+      profilePictureBase64: [''],
+      calEventTypeId: [null]
     });
   }
 
@@ -95,7 +96,8 @@ export class AdminProductsPage implements OnInit {
       actualAmount: product.actualAmount ?? 0,
       url: product.url ?? '',
       negotiableAmounts: product.negotiableAmounts ?? '',
-      profilePictureBase64: product.profilePictureBase64 ?? ''
+      profilePictureBase64: product.profilePictureBase64 ?? '',
+      calEventTypeId: product.calEventTypeId ?? null
     });
     this.isFormModalOpen = true;
   }
@@ -118,7 +120,8 @@ export class AdminProductsPage implements OnInit {
       actualAmount: +val.actualAmount,
       url: val.url?.trim() || undefined,
       negotiableAmounts: val.negotiableAmounts?.trim() || undefined,
-      profilePictureBase64: val.profilePictureBase64?.trim() || undefined
+      profilePictureBase64: val.profilePictureBase64?.trim() || undefined,
+      calEventTypeId: val.calEventTypeId != null ? +val.calEventTypeId : undefined
     };
 
     if (this.editingProductId) {

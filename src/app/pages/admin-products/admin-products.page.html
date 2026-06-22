@@ -116,6 +116,10 @@
             <span class="detail-label">Price</span>
             <span class="detail-value amount">{{ formatCurrency(detailProduct.actualAmount) }}</span>
           </div>
+          <div class="detail-row" *ngIf="detailProduct.calEventTypeId != null">
+            <span class="detail-label">Cal Event Type ID</span>
+            <span class="detail-value mono">{{ detailProduct.calEventTypeId }}</span>
+          </div>
         </div>
 
         <div class="detail-section">
@@ -202,6 +206,11 @@
             <ion-item>
               <ion-label position="stacked">Image (Base64)</ion-label>
               <ion-textarea formControlName="profilePictureBase64" placeholder="Paste base64 image string" rows="2"></ion-textarea>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Cal Event Type ID</ion-label>
+              <ion-input formControlName="calEventTypeId" type="number" placeholder="e.g. 12345 (optional)"></ion-input>
             </ion-item>
           </ion-list>
 

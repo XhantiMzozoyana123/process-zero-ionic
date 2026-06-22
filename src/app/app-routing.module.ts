@@ -72,6 +72,10 @@ const routes: Routes = [
   {
     path: 'auth-callback',
     loadComponent: () => import('./pages/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
+  },
+  {
+    path: 'products',
+    loadChildren: () => import('./pages/products/products.module').then( m => m.ProductsPageModule)
   }
 ];
 

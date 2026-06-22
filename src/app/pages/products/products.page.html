@@ -207,6 +207,10 @@
 
         <div class="detail-section">
           <h4>Metadata</h4>
+          <div class="detail-row" *ngIf="product.calEventTypeId != null">
+            <span class="detail-label">Cal Event Type ID</span>
+            <span class="detail-value">{{ product.calEventTypeId }}</span>
+          </div>
           <div class="detail-row" *ngIf="product.createdAt">
             <span class="detail-label">Created</span>
             <span class="detail-value">{{ product.createdAt | date:'medium' }}</span>
