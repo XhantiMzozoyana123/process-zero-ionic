@@ -54,7 +54,8 @@
           <tr>
             <th>Contact</th>
             <th>Product</th>
-            <th>Date &amp; Time</th>
+            <th>Date & Time</th>
+            <th>Meeting Link</th>
             <th>Status</th>
             <th>Notes</th>
             <th class="actions-col">Actions</th>
@@ -72,6 +73,13 @@
             </td>
             <td>{{ m.product.name }}</td>
             <td>{{ m.meeting.meetingDate | date:'medium' }}</td>
+            <td>
+              <a *ngIf="m.meeting.calMeetingUrl" [href]="m.meeting.calMeetingUrl" target="_blank" rel="noopener noreferrer" class="cal-link" (click)="$event.stopPropagation()">
+                <ion-icon name="videocam-outline"></ion-icon>
+                Join
+              </a>
+              <span *ngIf="!m.meeting.calMeetingUrl" class="no-link">—</span>
+            </td>
             <td>
               <ion-chip [color]="isFuture(m.meeting.meetingDate) ? 'success' : 'medium'" outline class="status-chip">
                 {{ isFuture(m.meeting.meetingDate) ? 'Upcoming' : 'Past' }}
@@ -112,6 +120,12 @@
           <div class="meta-item">
             <ion-icon name="calendar-outline"></ion-icon>
             <span>{{ m.meeting.meetingDate | date:'medium' }}</span>
+          </div>
+          <div class="meta-item" *ngIf="m.meeting.calMeetingUrl">
+            <ion-icon name="videocam-outline"></ion-icon>
+            <a [href]="m.meeting.calMeetingUrl" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">
+              Join Meeting
+            </a>
           </div>
           <div class="meta-item" *ngIf="m.meeting.notes">
             <ion-icon name="document-text-outline"></ion-icon>
@@ -165,6 +179,12 @@
       </ion-header>
 
       <ion-content class="modal-content">
+        <!-- cal.com info hint -->
+        <div class="cal-hint" *ngIf="!editingMeeting && selectedProductCalEventTypeId">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>A cal.com booking will be created automatically for this product.</span>
+        </div>
+
         <form [formGroup]="meetingForm" (ngSubmit)="saveMeeting()">
           <ion-list lines="none">
             <ion-item>
@@ -178,7 +198,7 @@
 
             <ion-item>
               <ion-label position="stacked">Product *</ion-label>
-              <ion-select formControlName="productId" interface="popover" placeholder="Select product">
+              <ion-select formControlName="productId" interface="popover" placeholder="Select product" (ionChange)="onProductChange($event)">
                 <ion-select-option *ngFor="let p of qualifiedProducts" [value]="p.id">
                   {{ p.name }}
                 </ion-select-option>
@@ -189,7 +209,7 @@
             </ion-item>
 
             <ion-item>
-              <ion-label position="stacked">Date &amp; Time *</ion-label>
+              <ion-label position="stacked">Date & Time *</ion-label>
               <ion-input type="datetime-local" formControlName="meetingDate"></ion-input>
             </ion-item>
             <p class="field-error" *ngIf="meetingForm.get('meetingDate')?.hasError('weekend')">

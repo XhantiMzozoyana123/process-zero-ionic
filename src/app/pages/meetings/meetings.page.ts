@@ -2,15 +2,17 @@
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
 import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { MeetingService } from 'src/app/services/meeting-service';
 import { ProductService } from 'src/app/services/product-service';
 import { ContactService } from 'src/app/services/contact-service';
 import { AssessmentService } from 'src/app/services/assessment-service';
+import { CalService } from 'src/app/services/cal-service';
 import { MeetingDto } from 'src/app/models/dtos/meeting-dto.model';
 import { Contact } from 'src/app/models/entities/contact.model';
 import { Product } from 'src/app/models/entities/product.model';
 import { IntroService } from 'src/app/services/intro-service';
+import { CreateCalBookingRequest } from 'src/app/models/dtos/cal-booking.model';
 
 @Component({
   selector: 'app-meetings',
@@ -33,12 +35,14 @@ export class MeetingsPage implements OnInit {
   viewMode: 'table' | 'cards' = 'table';
 
   meetingForm: FormGroup;
+  selectedProductCalEventTypeId: number | null = null;
 
   constructor(
     private meetingService: MeetingService,
     private contactService: ContactService,
     private productService: ProductService,
     private assessmentService: AssessmentService,
+    private calService: CalService,
     private fb: FormBuilder,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
@@ -96,6 +100,12 @@ export class MeetingsPage implements OnInit {
 
   get pageNumbers(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  onProductChange(event: any): void {
+    const productId = event?.detail?.value;
+    const product = this.products.find(p => p.id === productId);
+    this.selectedProductCalEventTypeId = product?.calEventTypeId ?? null;
   }
 
   onSearchChange(): void {
@@ -234,10 +244,13 @@ export class MeetingsPage implements OnInit {
     const { contactId, productId, meetingDate, notes } =
       this.meetingForm.value;
 
+    const contact = this.contacts.find((c) => c.id === contactId)!;
+    const product = this.products.find((p) => p.id === productId)!;
+
     const meetingDto: MeetingDto = {
       userId,
-      contact: this.contacts.find((c) => c.id === contactId)!,
-      product: this.products.find((p) => p.id === productId)!,
+      contact,
+      product,
       meeting: {
         ...(this.editingMeeting?.meeting ?? {}),
         clientId: contactId,
@@ -248,21 +261,55 @@ export class MeetingsPage implements OnInit {
     };
 
     const isEdit = !!this.editingMeeting;
-    const request$ = isEdit
+
+    // Step 1: Save the meeting first
+    const meetingSave$ = isEdit
       ? this.meetingService.updateMeeting(meetingDto.meeting.id!, meetingDto, notes)
       : this.meetingService.createMeeting(meetingDto, notes);
 
-    request$.subscribe({
+    meetingSave$.pipe(
+      // Step 2: If the product has a cal.com event type, create a cal.com booking
+      switchMap(async () => {
+        if (!isEdit && product.calEventTypeId && contact.email) {
+          try {
+            const startDate = new Date(meetingDate);
+            const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hour default
+
+            const calRequest: CreateCalBookingRequest = {
+              eventTypeId: product.calEventTypeId,
+              attendee: {
+                name: `${contact.firstName} ${contact.lastName}`.trim(),
+                email: contact.email,
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              },
+              start: startDate.toISOString(),
+              end: endDate.toISOString(),
+              location: notes || undefined,
+              owner: userId,
+              metadata: {
+                productId: String(product.id),
+                productName: product.name || '',
+              },
+            };
+
+            const calBooking = await this.calService.createBooking(calRequest).toPromise();
+            console.log('[Meetings] cal.com booking created:', calBooking);
+            return calBooking;
+          } catch (calErr) {
+            console.warn('[Meetings] cal.com booking creation failed (non-fatal):', calErr);
+            return null;
+          }
+        }
+        return null;
+      })
+    ).subscribe({
       next: async () => {
         await this.showToast(isEdit ? 'Meeting updated successfully!' : 'Meeting created successfully!');
         this.resetForm();
         this.closeMeetingModal();
         this.submitting = false;
-        // Refresh the page after a successful form submission so all data
-        // (meetings, qualified products, etc.) reflects the latest state.
         setTimeout(() => window.location.reload(), 600);
       },
-
       error: async (err) => {
         console.error(err);
         this.submitting = false;

@@ -197,10 +197,27 @@
       </div>
 
       <!-- Notes -->
-      <div class="detail-section" *ngIf="m.meeting.notes">
-        <h4>Notes</h4>
-        <p class="notes-text">{{ m.meeting.notes }}</p>
-      </div>
+        <div class="detail-section" *ngIf="m.meeting.calMeetingUrl || m.meeting.calBookingUid">
+          <h4>Cal.com Booking</h4>
+          <div class="detail-row" *ngIf="m.meeting.calMeetingUrl">
+            <span class="detail-label">Meeting Link</span>
+            <span class="detail-value link">
+              <a [href]="m.meeting.calMeetingUrl" target="_blank" rel="noopener noreferrer">
+                <ion-icon name="videocam-outline"></ion-icon>
+                Join Meeting
+              </a>
+            </span>
+          </div>
+          <div class="detail-row" *ngIf="m.meeting.calBookingUid">
+            <span class="detail-label">Booking UID</span>
+            <span class="detail-value mono">{{ m.meeting.calBookingUid }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="m.meeting.notes">
+          <h4>Notes</h4>
+          <p class="notes-text">{{ m.meeting.notes }}</p>
+        </div>
 
       <!-- Metadata -->
       <div class="detail-section">

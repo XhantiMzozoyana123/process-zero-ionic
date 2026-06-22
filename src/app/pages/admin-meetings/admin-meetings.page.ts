@@ -1,12 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AlertController, IonModal, ToastController } from '@ionic/angular';
+import { switchMap } from 'rxjs/operators';
 import { MeetingService } from 'src/app/services/meeting-service';
 import { ProductService } from 'src/app/services/product-service';
 import { AdminClientService } from 'src/app/services/admin-client-service';
+import { CalService } from 'src/app/services/cal-service';
 import { MeetingDto } from 'src/app/models/dtos/meeting-dto.model';
 import { Contact } from 'src/app/models/entities/contact.model';
 import { Product } from 'src/app/models/entities/product.model';
+import { CreateCalBookingRequest } from 'src/app/models/dtos/cal-booking.model';
 
 @Component({
   selector: 'app-admin-meetings',
@@ -34,11 +37,13 @@ export class AdminMeetingsPage implements OnInit {
   editingMeeting: MeetingDto | null = null;
   meetingForm: FormGroup;
   submitting = false;
+  selectedProductCalEventTypeId: number | null = null;
 
   constructor(
     private meetingService: MeetingService,
     private clientService: AdminClientService,
     private productService: ProductService,
+    private calService: CalService,
     private fb: FormBuilder,
     private alertController: AlertController,
     private toastController: ToastController
@@ -87,6 +92,12 @@ export class AdminMeetingsPage implements OnInit {
       this.currentPage = page;
       this.loadData();
     }
+  }
+
+  onProductChange(event: any): void {
+    const productId = event?.detail?.value;
+    const product = this.products.find(p => p.id === productId);
+    this.selectedProductCalEventTypeId = product?.calEventTypeId ?? null;
   }
 
   onSearchChange(): void {
@@ -205,17 +216,58 @@ export class AdminMeetingsPage implements OnInit {
 
     const notes = val.notes ?? '';
 
-    if (this.editingMeeting) {
-      this.meetingService.updateMeeting(meetingDto.meeting.id!, meetingDto, notes).subscribe({
-        next: () => { this.showToast('Meeting updated.', 'success'); this.submitting = false; this.closeFormModal(); this.loadData(); },
-        error: () => { this.showToast('Could not update meeting.', 'danger'); this.submitting = false; }
-      });
-    } else {
-      this.meetingService.createMeeting(meetingDto, notes).subscribe({
-        next: () => { this.showToast('Meeting created.', 'success'); this.submitting = false; this.closeFormModal(); this.loadData(); },
-        error: () => { this.showToast('Could not create meeting.', 'danger'); this.submitting = false; }
-      });
-    }
+    const isEdit = !!this.editingMeeting;
+
+    const meetingSave$ = isEdit
+      ? this.meetingService.updateMeeting(meetingDto.meeting.id!, meetingDto, notes)
+      : this.meetingService.createMeeting(meetingDto, notes);
+
+    meetingSave$.pipe(
+      switchMap(async () => {
+        if (!isEdit && product.calEventTypeId && contact.email) {
+          try {
+            const startDate = new Date(val.meetingDate);
+            const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+            const calRequest: CreateCalBookingRequest = {
+              eventTypeId: product.calEventTypeId,
+              attendee: {
+                name: `${contact.firstName} ${contact.lastName}`.trim(),
+                email: contact.email,
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              },
+              start: startDate.toISOString(),
+              end: endDate.toISOString(),
+              location: notes || undefined,
+              owner: val.userId || undefined,
+              metadata: {
+                productId: String(product.id),
+                productName: product.name || '',
+              },
+            };
+
+            const calBooking = await this.calService.createBooking(calRequest).toPromise();
+            console.log('[AdminMeetings] cal.com booking created:', calBooking);
+            return calBooking;
+          } catch (calErr) {
+            console.warn('[AdminMeetings] cal.com booking failed (non-fatal):', calErr);
+            return null;
+          }
+        }
+        return null;
+      })
+    ).subscribe({
+      next: () => {
+        this.showToast(isEdit ? 'Meeting updated.' : 'Meeting created.', 'success');
+        this.submitting = false;
+        this.closeFormModal();
+        this.loadData();
+      },
+      error: () => {
+        this.showToast('Could not save meeting.', 'danger');
+        this.submitting = false;
+      }
+    });
   }
 
   async deleteMeeting(dto: MeetingDto): Promise<void> {
