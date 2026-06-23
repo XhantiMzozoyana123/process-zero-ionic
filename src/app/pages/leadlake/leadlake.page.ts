@@ -163,6 +163,7 @@ export class LeadlakePage implements OnInit {
     this.contactService.create(payload).subscribe({
       next: async () => {
         await this.showToast(`${payload.firstName} ${payload.lastName} added to Contacts.`, 'success');
+        setTimeout(() => window.location.reload(), 600);
       },
       error: async (err) => {
         console.error('Error promoting lead', err);
