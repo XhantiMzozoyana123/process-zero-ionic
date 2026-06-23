@@ -41,13 +41,20 @@ export class MilestoneService {
       ),
       meetings: this.meetingService.getUserMeetings().pipe(
         catchError(() => of([]))
+      ),
+      allResults: this.assessmentService.getAllMyResults().pipe(
+        catchError(() => of([]))
       )
     }).pipe(
-      map(({ assessmentPassed, contacts, meetings }) => {
+      map(({ assessmentPassed, contacts, meetings, allResults }) => {
         const hasContacts = contacts.length > 0;
         const hasMeetings = meetings.length > 0;
+        const productAssessmentPassed = (allResults ?? []).some((r: any) => {
+          const pid = r.productId ?? r.ProductId;
+          return pid != null && Number(pid) !== 0 && (r.passed ?? r.Passed) === true;
+        });
 
-        return this.buildMilestones(assessmentPassed, hasContacts, hasMeetings);
+        return this.buildMilestones(assessmentPassed, productAssessmentPassed, hasContacts, hasMeetings);
       }),
       tap(milestones => this.saveToStorage(milestones))
     );
@@ -68,7 +75,7 @@ export class MilestoneService {
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  private buildMilestones(assessmentPassed: boolean, hasContacts: boolean, hasMeetings: boolean): Milestone[] {
+  private buildMilestones(assessmentPassed: boolean, productAssessmentPassed: boolean, hasContacts: boolean, hasMeetings: boolean): Milestone[] {
     return [
       {
         id: 'assessment',
@@ -87,7 +94,7 @@ export class MilestoneService {
         description: 'Complete a product assessment to qualify for selling that product to your contacts.',
         icon: 'clipboard-outline',
         route: '/account/products',
-        completed: assessmentPassed,
+        completed: productAssessmentPassed,
         loading: false
       },
       {

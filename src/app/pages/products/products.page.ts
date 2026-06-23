@@ -117,13 +117,22 @@ export class ProductsPage implements OnInit {
   private checkAssessmentStatuses(): void {
     this.assessmentCheckLoading = true;
     this.qualifiedProductIds.clear();
+    
+    const validProductIds = new Set<number>(
+      this.products
+        .map((p) => p.id)
+        .filter((id): id is number => id != null)
+    );
+    
     this.assessmentService.getAllMyResults().subscribe({
       next: (results) => {
         results
           .filter((r: any) => !!(r.passed ?? r.Passed))
           .forEach((r: any) => {
             const pid = (r.productId ?? r.ProductId) as number;
-            if (pid != null) this.qualifiedProductIds.add(pid);
+            if (validProductIds.has(pid)) {
+              this.qualifiedProductIds.add(pid);
+            }
           });
         this.assessmentCheckLoading = false;
       },

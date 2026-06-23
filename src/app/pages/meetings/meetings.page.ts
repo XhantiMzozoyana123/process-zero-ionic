@@ -146,6 +146,12 @@ export class MeetingsPage implements OnInit {
     // A sales rep is qualified to sell a product ONLY if they passed THAT
     // product's assessment. The global assessment is just for app access and
     // does NOT grant product qualification.
+    const validProductIds = new Set<number>(
+      this.products
+        .map((p) => p.id)
+        .filter((id): id is number => id != null)
+    );
+    
     this.assessmentService
       .getAllMyResults()
       .pipe(catchError(() => of([] as any[])))
@@ -157,7 +163,7 @@ export class MeetingsPage implements OnInit {
         console.log('[Meetings] product ids available:', this.products.map((p) => p.id));
 
         const qualified = this.products.filter(
-          (p) => p.id != null && passedProductIds.has(Number(p.id))
+          (p) => validProductIds.has(Number(p.id)) && passedProductIds.has(Number(p.id))
         );
 
         if (qualified.length > 0) {
