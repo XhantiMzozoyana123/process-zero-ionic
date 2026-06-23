@@ -240,6 +240,7 @@ export class ContactsPage implements OnInit {
               next: () => {
                 this.contacts = this.contacts.filter((contact) => contact.id !== id);
                 this.message = 'Contact deleted.';
+                setTimeout(() => window.location.reload(), 600);
               },
               error: () => {
                 this.errorMessage = 'Could not delete contact. Please try again.';
