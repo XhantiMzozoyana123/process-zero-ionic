@@ -51,7 +51,8 @@ export class MilestoneService {
         const hasMeetings = meetings.length > 0;
         const productAssessmentPassed = (allResults ?? []).some((r: any) => {
           const pid = r.productId ?? r.ProductId;
-          return pid != null && Number(pid) !== 0 && (r.passed ?? r.Passed) === true;
+          if (pid == null || Number(pid) === 0) return false;
+          return this.isResultPassed(r);
         });
 
         return this.buildMilestones(assessmentPassed, productAssessmentPassed, hasContacts, hasMeetings);
@@ -128,6 +129,23 @@ export class MilestoneService {
         loading: false
       }
     ];
+  }
+
+  private isResultPassed(r: any): boolean {
+    if (!r) return false;
+    const passedFlag = r.passed ?? r.Passed ?? r.isPassed ?? r.IsPassed;
+    if (passedFlag === true) return true;
+    if (passedFlag === false) return false;
+
+    const percentage = r.percentage ?? r.Percentage;
+    if (typeof percentage === 'number') return percentage >= 50;
+
+    const score = r.score ?? r.Score;
+    const total = r.total ?? r.Total;
+    if (typeof score === 'number' && typeof total === 'number' && total > 0) {
+      return (score / total) * 100 >= 50;
+    }
+    return false;
   }
 
   private saveToStorage(milestones: Milestone[]): void {
