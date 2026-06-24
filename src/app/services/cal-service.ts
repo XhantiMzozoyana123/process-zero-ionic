@@ -67,4 +67,12 @@ export class CalService {
 
     return this.http.get<CalAvailabilityData>(`${this.apiUrl}/slots/available`, { params });
   }
+
+  /**
+   * POST /api/cal/webhook
+   * Receive webhook events from cal.com.
+   */
+  handleWebhook(triggerEvent: string, body: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/webhook`, { triggerEvent, payload: body });
+  }
 }
