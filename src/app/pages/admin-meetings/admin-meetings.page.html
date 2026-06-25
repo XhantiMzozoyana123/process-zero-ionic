@@ -1,5 +1,5 @@
 <ion-content class="admin-meetings-page">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -293,17 +293,50 @@
           </ion-item>
           <p class="field-error" *ngIf="isInvalid('productId')">Product is required.</p>
 
-          <ion-item>
-            <ion-label position="stacked">Date &amp; Time *</ion-label>
-            <ion-datetime-button datetime="meetingDateDt"></ion-datetime-button>
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime id="meetingDateDt" presentation="date-time"
-                  [value]="meetingForm.get('meetingDate')?.value"
-                  (ionChange)="meetingForm.get('meetingDate')?.setValue($event.detail.value)">
-                </ion-datetime>
-              </ng-template>
-            </ion-modal>
+          <ion-item lines="none" *ngIf="selectedProductCalEventTypeId">
+            <div class="cal-picker">
+              <div class="cal-picker-header">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <label>Select Date & Time</label>
+              </div>
+              <div class="cal-date-nav">
+                <button type="button" class="cal-nav-btn" (click)="calPrev()">
+                  <ion-icon name="chevron-back-outline"></ion-icon>
+                </button>
+                <span class="cal-date-label">{{ calDateLabel }}</span>
+                <button type="button" class="cal-nav-btn" (click)="calNext()">
+                  <ion-icon name="chevron-forward-outline"></ion-icon>
+                </button>
+              </div>
+              <div class="cal-time-section">
+                <div class="cal-time-header">
+                  <ion-icon name="time-outline"></ion-icon>
+                  <span>Available Times</span>
+                  <ion-spinner *ngIf="calLoading" name="crescent" class="cal-spinner"></ion-spinner>
+                </div>
+                <div class="cal-slots-grid" *ngIf="calSlots.length > 0">
+                  <button type="button" *ngFor="let slot of calSlots"
+                    class="cal-slot-btn"
+                    [class.selected]="isSlotSelected(slot)"
+                    (click)="selectCalSlot(slot)"
+                    [disabled]="submitting">
+                    {{ slot | date:'shortTime' }}
+                  </button>
+                </div>
+                <div class="cal-no-slots" *ngIf="!calLoading && calSlots.length === 0">
+                  <ion-icon name="alert-circle-outline"></ion-icon>
+                  <span>No available times for this date</span>
+                </div>
+              </div>
+              <div class="cal-selected" *ngIf="meetingForm.get('meetingDate')?.value">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                <span>Selected: {{ meetingForm.get('meetingDate')?.value | date:'medium' }}</span>
+              </div>
+            </div>
+          </ion-item>
+          <ion-item *ngIf="!selectedProductCalEventTypeId">
+            <ion-label position="stacked">Date & Time *</ion-label>
+            <ion-input type="datetime-local" formControlName="meetingDate"></ion-input>
           </ion-item>
           <p class="field-error" *ngIf="isInvalid('meetingDate')">
             {{ meetingForm.get('meetingDate')?.hasError('weekend') ? 'Meetings cannot be on weekends.' : 'Date is required.' }}

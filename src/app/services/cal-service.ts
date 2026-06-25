@@ -69,6 +69,18 @@ export class CalService {
   }
 
   /**
+   * GET /api/cal/slots/datetimes?eventTypeId=123&timeZone=Africa/Johannesburg
+   * Returns a flattened sorted list of available ISO datetime strings for an event type.
+   */
+  getAllAvailableDateTimes(eventTypeId: number, timeZone?: string): Observable<string[]> {
+    let params = new HttpParams().set('eventTypeId', eventTypeId.toString());
+    if (timeZone) {
+      params = params.set('timeZone', timeZone);
+    }
+    return this.http.get<string[]>(`${this.apiUrl}/slots/datetimes`, { params });
+  }
+
+  /**
    * POST /api/cal/webhook
    * Receive webhook events from cal.com.
    */

@@ -208,7 +208,36 @@
               </p>
             </ion-item>
 
-            <ion-item>
+            <!-- Cal.com slot picker (shown when product has calEventTypeId) -->
+            <ng-container *ngIf="selectedProductCalEventTypeId">
+              <ion-item lines="none">
+                <ion-label position="stacked">Timezone</ion-label>
+                <ion-select [value]="selectedTimezone" (ionChange)="onTimezoneChange($event)" interface="popover">
+                  <ion-select-option *ngFor="let tz of calTimezones" [value]="tz.value">{{ tz.label }} ({{ tz.value }})</ion-select-option>
+                </ion-select>
+              </ion-item>
+
+              <ion-item lines="none">
+                <ion-label position="stacked">Date</ion-label>
+                <ion-input type="date" [value]="calDate | date:'yyyy-MM-dd'" (ionChange)="onCalDateChange($event)"></ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Available Time Slots</ion-label>
+                <ion-select formControlName="meetingDate" [disabled]="submitting || calLoading" placeholder="Select a time">
+                  <ion-select-option *ngFor="let slot of calSlots" [value]="slot">
+                    {{ slot }}
+                  </ion-select-option>
+                </ion-select>
+                <ion-spinner *ngIf="calLoading" slot="end" name="crescent"></ion-spinner>
+              </ion-item>
+              <p *ngIf="!calLoading && calSlots.length === 0" class="ion-text-center" style="color: var(--ion-color-medium);">
+                No available slots for this date/timezone.
+              </p>
+            </ng-container>
+
+            <!-- Fallback datetime input for products without cal.com -->
+            <ion-item *ngIf="!selectedProductCalEventTypeId">
               <ion-label position="stacked">Date & Time *</ion-label>
               <ion-input type="datetime-local" formControlName="meetingDate"></ion-input>
             </ion-item>

@@ -37,6 +37,33 @@ export class MeetingsPage implements OnInit {
   meetingForm: FormGroup;
   selectedProductCalEventTypeId: number | null = null;
 
+  // ── Cal.com slot picker ────────────────────
+  calTimezones = [
+    { label: 'South Africa', value: 'Africa/Johannesburg' },
+    { label: 'UTC', value: 'UTC' },
+    { label: 'London', value: 'Europe/London' },
+    { label: 'Paris', value: 'Europe/Paris' },
+    { label: 'Rome', value: 'Europe/Rome' },
+    { label: 'New York', value: 'America/New_York' },
+    { label: 'Chicago', value: 'America/Chicago' },
+    { label: 'Denver', value: 'America/Denver' },
+    { label: 'Los Angeles', value: 'America/Los_Angeles' },
+    { label: 'Toronto', value: 'America/Toronto' },
+    { label: 'São Paulo', value: 'America/Sao_Paulo' },
+    { label: 'Dubai', value: 'Asia/Dubai' },
+    { label: 'Mumbai', value: 'Asia/Kolkata' },
+    { label: 'Singapore', value: 'Asia/Singapore' },
+    { label: 'Hong Kong', value: 'Asia/Hong_Kong' },
+    { label: 'Tokyo', value: 'Asia/Tokyo' },
+    { label: 'Seoul', value: 'Asia/Seoul' },
+    { label: 'Sydney', value: 'Australia/Sydney' },
+    { label: 'Auckland', value: 'Pacific/Auckland' },
+  ];
+  selectedTimezone = 'Africa/Johannesburg';
+  calDate = new Date();
+  calSlots: string[] = [];
+  calLoading = false;
+
   constructor(
     private meetingService: MeetingService,
     private contactService: ContactService,
@@ -105,11 +132,81 @@ export class MeetingsPage implements OnInit {
   onProductChange(event: any): void {
     const productId = event?.detail?.value;
     const product = this.products.find(p => p.id === productId);
+    const prev = this.selectedProductCalEventTypeId;
     this.selectedProductCalEventTypeId = product?.calEventTypeId ?? null;
+    if (this.selectedProductCalEventTypeId && this.selectedProductCalEventTypeId !== prev) {
+      this.calSlots = [];
+      this.loadCalSlots();
+    }
   }
 
   onSearchChange(): void {
     this.currentPage = 1;
+  }
+
+  // ── Cal.com slot picker methods ────────────
+  onTimezoneChange(event: any): void {
+    this.selectedTimezone = event?.detail?.value || 'Africa/Johannesburg';
+    this.calSlots = [];
+    this.loadCalSlots();
+  }
+
+  get calDateLabel(): string {
+    return this.calDate.toLocaleDateString(undefined, {
+      weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  calPrev(): void {
+    this.calDate = new Date(this.calDate.getTime() - 86400000);
+    this.calSlots = [];
+    this.loadCalSlots();
+  }
+
+  calNext(): void {
+    this.calDate = new Date(this.calDate.getTime() + 86400000);
+    this.calSlots = [];
+    this.loadCalSlots();
+  }
+
+  onCalDateChange(event: any): void {
+    const value = event?.detail?.value;
+    if (!value) return;
+    const parts = String(value).split('-');
+    if (parts.length === 3) {
+      this.calDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      this.calSlots = [];
+      this.loadCalSlots();
+    }
+  }
+
+  loadCalSlots(): void {
+    if (!this.selectedProductCalEventTypeId) { this.calSlots = []; return; }
+    this.calLoading = true;
+    this.calSlots = [];
+    this.calService.getAllAvailableDateTimes(
+      this.selectedProductCalEventTypeId,
+      this.selectedTimezone
+    ).subscribe({
+      next: (times: string[]) => {
+        this.calSlots = times;
+        this.calLoading = false;
+      },
+      error: () => {
+        this.calSlots = [];
+        this.calLoading = false;
+      },
+    });
+  }
+
+  selectCalSlot(slot: string): void {
+    if (!slot) return;
+    this.meetingForm.patchValue({ meetingDate: slot });
+  }
+
+  isSlotSelected(slot: string): boolean {
+    const current = this.meetingForm.get('meetingDate')?.value as string || '';
+    return current === slot;
   }
 
   loadAll() {
@@ -286,16 +383,11 @@ export class MeetingsPage implements OnInit {
               attendee: {
                 name: `${contact.firstName} ${contact.lastName}`.trim(),
                 email: contact.email,
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timeZone: this.selectedTimezone,
               },
               start: startDate.toISOString(),
               end: endDate.toISOString(),
               location: notes || undefined,
-              owner: userId,
-              metadata: {
-                productId: String(product.id),
-                productName: product.name || '',
-              },
             };
 
             const calBooking = await this.calService.createBooking(calRequest).toPromise();

@@ -1,11 +1,9 @@
 export interface CreateCalBookingRequest {
   eventTypeId: number;
   attendee: CalAttendee;
-  start: string; // ISO 8601
-  end: string;   // ISO 8601
+  start: string; // ISO 8601 "YYYY-MM-DDTHH:mm:ssZ"
+  end: string;   // ISO 8601 "YYYY-MM-DDTHH:mm:ssZ"
   location?: string;
-  metadata?: Record<string, string>;
-  owner?: string; // OwnerEmail
 }
 
 export interface CalAttendee {

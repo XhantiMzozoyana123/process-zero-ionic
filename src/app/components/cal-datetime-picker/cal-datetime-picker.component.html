@@ -1,0 +1,46 @@
+<div class="cal-picker" [class.disabled]="disabled">
+  <div class="cal-picker-header">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <label>Select Date & Time</label>
+  </div>
+
+  <div class="cal-date-nav">
+    <button type="button" class="cal-nav-btn" (click)="changeDate(-1)" [disabled]="disabled">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </button>
+    <span class="cal-date-label">{{ currentDateLabel }}</span>
+    <button type="button" class="cal-nav-btn" (click)="changeDate(1)" [disabled]="disabled">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+  </div>
+
+  <div class="cal-time-section" *ngIf="showSlots">
+    <div class="cal-time-header">
+      <ion-icon name="time-outline"></ion-icon>
+      <span>Available Times</span>
+      <ion-spinner *ngIf="loading" name="crescent" class="cal-spinner"></ion-spinner>
+    </div>
+
+    <div class="cal-slots-grid" *ngIf="slots.length > 0">
+      <button
+        type="button"
+        *ngFor="let slot of slots"
+        class="cal-slot-btn"
+        [class.selected]="isSelected(slot)"
+        (click)="selectSlot(slot)"
+        [disabled]="disabled">
+        {{ slot | date:'shortTime' }}
+      </button>
+    </div>
+
+    <div class="cal-no-slots" *ngIf="!loading && slots.length === 0">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>No available times for this date</span>
+    </div>
+  </div>
+
+  <div class="cal-selected" *ngIf="selectedValue">
+    <ion-icon name="checkmark-circle-outline"></ion-icon>
+    <span>Selected: {{ selectedValue | date:'medium' }}</span>
+  </div>
+</div>
