@@ -390,9 +390,23 @@ export class MeetingsPage implements OnInit {
               location: notes || undefined,
             };
 
-            const calBooking = await this.calService.createBooking(calRequest).toPromise();
-            console.log('[Meetings] cal.com booking created:', calBooking);
-            return calBooking;
+            const calBookingData = await this.calService.createBooking(calRequest).toPromise();
+            console.log('[Meetings] cal.com booking created:', calBookingData);
+            
+            // Update meeting with cal.com booking data
+            if (calBookingData && meetingDto.meeting.id) {
+              const updatedMeeting: MeetingDto = {
+                ...meetingDto,
+                meeting: {
+                  ...meetingDto.meeting,
+                  calBookingUid: calBookingData.uid,
+                  calMeetingUrl: calBookingData.meetingUrl,
+                }
+              };
+              return this.meetingService.updateMeeting(meetingDto.meeting.id, updatedMeeting, notes).toPromise();
+            }
+            
+            return null;
           } catch (calErr) {
             console.warn('[Meetings] cal.com booking creation failed (non-fatal):', calErr);
             return null;

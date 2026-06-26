@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
-import { AdminInvoiceService, PagedResult } from 'src/app/services/admin-invoice-service';
+import { AdminInvoiceService } from 'src/app/services/admin-invoice-service';
 import { ProductService } from 'src/app/services/product-service';
 import { AdminClientService } from 'src/app/services/admin-client-service';
 import { Invoice } from 'src/app/models/entities/invoice.model';
@@ -46,13 +46,8 @@ export class AdminInvoicesPage implements OnInit {
     this.invoiceForm = this.fb.group({
       productId: [null, Validators.required],
       clientId: [null, Validators.required],
-      invoiceCode: ['', Validators.required],
-      customerCode: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0)]],
-      isPaid: [false],
-      issuedAt: ['', Validators.required],
-      paidAt: [''],
-      externalInvoiceId: ['']
+      isPaid: [false]
     });
   }
 
@@ -60,13 +55,14 @@ export class AdminInvoicesPage implements OnInit {
     this.loadData();
   }
 
+  onSearchChange(): void {
+  }
+
   get filteredInvoices(): Invoice[] {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) return this.invoices;
     return this.invoices.filter(inv => {
       const haystack = [
-        inv.invoiceCode, inv.customerCode,
-        inv.externalInvoiceId,
         this.getProductName(inv.productId),
         this.getClientName(inv.clientId),
         inv.isPaid ? 'paid' : 'unpaid'
@@ -94,19 +90,15 @@ export class AdminInvoicesPage implements OnInit {
     }
   }
 
-  onSearchChange(): void {
-  }
-
   loadData(): void {
     this.loading = true;
     forkJoin({
-      invoices: this.invoiceService.getAll(this.currentPage, this.pageSize),
+      invoices: this.invoiceService.getAll(),
       products: this.productService.getAll(),
       clients: this.clientService.getAll(1, 500)
     }).subscribe({
       next: res => {
-        this.invoices = res.invoices.items;
-        this.totalCount = res.invoices.totalCount;
+        this.invoices = res.invoices;
         this.products = res.products;
         this.clients = res.clients.items;
         this.loading = false;
@@ -120,13 +112,12 @@ export class AdminInvoicesPage implements OnInit {
 
   refresh(event: any): void {
     forkJoin({
-      invoices: this.invoiceService.getAll(this.currentPage, this.pageSize),
+      invoices: this.invoiceService.getAll(),
       products: this.productService.getAll(),
       clients: this.clientService.getAll(1, 500)
     }).subscribe({
       next: res => {
-        this.invoices = res.invoices.items;
-        this.totalCount = res.invoices.totalCount;
+        this.invoices = res.invoices;
         this.products = res.products;
         this.clients = res.clients.items;
         event.target.complete();
@@ -171,13 +162,8 @@ export class AdminInvoicesPage implements OnInit {
     this.invoiceForm.patchValue({
       productId: invoice.productId,
       clientId: invoice.clientId,
-      invoiceCode: invoice.invoiceCode,
-      customerCode: invoice.customerCode,
       amount: invoice.amount,
-      isPaid: invoice.isPaid,
-      issuedAt: invoice.issuedAt ? new Date(invoice.issuedAt).toISOString() : '',
-      paidAt: invoice.paidAt ? new Date(invoice.paidAt).toISOString() : '',
-      externalInvoiceId: invoice.externalInvoiceId ?? ''
+      isPaid: invoice.isPaid
     });
     this.isFormModalOpen = true;
   }
@@ -194,21 +180,15 @@ export class AdminInvoicesPage implements OnInit {
     }
     this.submitting = true;
     const val = this.invoiceForm.getRawValue();
-    const payload: Invoice = {
+    const payload: Partial<Invoice> = {
       productId: +val.productId,
       clientId: +val.clientId,
-      invoiceCode: val.invoiceCode.trim(),
-      customerCode: val.customerCode.trim(),
       amount: +val.amount,
-      isPaid: !!val.isPaid,
-      issuedAt: val.issuedAt,
-      paidAt: val.paidAt || undefined,
-      externalInvoiceId: val.externalInvoiceId?.trim() || undefined
+      isPaid: !!val.isPaid
     };
 
     if (this.editingInvoiceId) {
       const existing = this.invoices.find(i => i.id === this.editingInvoiceId);
-      payload.id = this.editingInvoiceId;
       payload.userId = existing?.userId;
       payload.createdAt = existing?.createdAt;
       payload.updatedAt = existing?.updatedAt;
@@ -227,7 +207,7 @@ export class AdminInvoicesPage implements OnInit {
   async deleteInvoice(invoice: Invoice): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Delete invoice?',
-      message: `Remove invoice ${invoice.invoiceCode}? This cannot be undone.`,
+      message: `Remove invoice? This cannot be undone.`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {

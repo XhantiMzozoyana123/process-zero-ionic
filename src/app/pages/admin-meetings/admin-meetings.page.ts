@@ -206,7 +206,22 @@ export class AdminMeetingsPage implements OnInit {
           const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
           const toCalIso = (d: Date) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}T${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}:${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
           const calRequest: CreateCalBookingRequest = { eventTypeId: product.calEventTypeId, attendee: { name: `${contact.firstName} ${contact.lastName}`.trim(), email: contact.email, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }, start: toCalIso(startDate), end: toCalIso(endDate), location: notes || undefined };
-          return await this.calService.createBooking(calRequest).toPromise();
+          const calBookingData = await this.calService.createBooking(calRequest).toPromise();
+          
+          // Update meeting with cal.com booking data
+          if (calBookingData && meetingDto.meeting.id) {
+            const updatedMeeting: MeetingDto = {
+              ...meetingDto,
+              meeting: {
+                ...meetingDto.meeting,
+                calBookingUid: calBookingData.uid,
+                calMeetingUrl: calBookingData.meetingUrl,
+              }
+            };
+            return this.meetingService.updateMeeting(meetingDto.meeting.id, updatedMeeting, notes).toPromise();
+          }
+          
+          return null;
         } catch (calErr) { console.warn('[AdminMeetings] cal.com booking failed (non-fatal):', calErr); return null; }
       }
       return null;
