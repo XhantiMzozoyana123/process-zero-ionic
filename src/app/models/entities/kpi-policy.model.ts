@@ -1,23 +1,23 @@
-/**
- * Defines the MRR target for a product/rep over an effective period.
- * Mirrors ProcessZero.Domain.Entities.KpiPolicy (BaseEntity + the fields below).
- */
+export type ConsequenceLevel = 'None' | 'Warning' | 'Freeze' | 'Suspend';
+
 export interface KpiPolicy {
-  // BaseEntity
-  id?: number;
-  userId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-
-  productId?: number | null;
-  effectiveFrom?: string;
-  effectiveTo?: string | null;
-  isActive?: boolean;
-
-  // Target threshold
-  targetMRR?: number;
-
-  // Consequence flags
-  gracePeriodDays?: number;
-  autoFreezeOnBreach?: boolean;
+    id: number;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    productId: number | null;
+    policyName: string;
+    effectiveFrom: Date;
+    effectiveTo: Date | null;
+    isActive: boolean;
+    dailyEmailsTarget: number;
+    dailyCallsTarget: number;
+    minimumReplyRate: number; // decimal -> number in TS/JS
+    weeklyMeetingsTarget: number;
+    monthlyRevenueTarget: number; // decimal
+    monthlyRecurringRevenueTarget: number; // decimal
+    performanceTolerance: number; // decimal
+    consequenceLevel: ConsequenceLevel;
+    consequenceOnBreach: number;
+    managerApprovalRequiredToUnfreeze: boolean;
 }
