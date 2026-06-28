@@ -77,4 +77,20 @@ export class AdminKpiPolicyService {
       tap(() => console.log(`Successfully deleted policy ${id}.`))
     );
   }
+
+  getAll(): Observable<KpiPolicy[]> {
+    return this.getAllPolicies();
+  }
+
+  create(policy: KpiPolicy): Observable<KpiPolicy> {
+    return this.createPolicy(policy);
+  }
+
+  update(id: number, policy: KpiPolicy): Observable<void> {
+    return this.updatePolicy(id, policy);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.deletePolicy(id);
+  }
 }
