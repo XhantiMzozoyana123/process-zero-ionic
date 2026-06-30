@@ -1,5 +1,5 @@
 <ion-content class="admin-assessments-page">
-  <ion-refresher slot="fixed" (ionRefresh)="loadProducts(); $event.target.complete()">
+  <ion-refresher slot="fixed" (ionRefresh)="refreshPage($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -34,6 +34,79 @@
       <div *ngIf="loadingExisting" class="loading-existing">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
         <span>Loading existing assessment...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Admin Results -->
+  <section class="results-section">
+    <div class="results-card">
+      <div class="results-header">
+        <div>
+          <h3>Users Assessment Results</h3>
+          <p>View all submitted results and inspect a specific user's global result.</p>
+        </div>
+        <ion-button fill="outline" size="small" (click)="loadAllUsersResults()" [disabled]="resultsLoading">
+          <ion-icon slot="start" name="refresh-outline"></ion-icon>
+          Refresh
+        </ion-button>
+      </div>
+
+      <div class="lookup-row">
+        <ion-input
+          [(ngModel)]="adminUserId"
+          placeholder="Enter user id"
+          class="form-input lookup-input">
+        </ion-input>
+        <ion-button (click)="lookupUserGlobalResult()" [disabled]="userLookupLoading" class="lookup-btn">
+          <ion-spinner *ngIf="userLookupLoading" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!userLookupLoading" slot="start" name="search-outline"></ion-icon>
+          Lookup Global
+        </ion-button>
+        <ion-button fill="clear" color="medium" (click)="clearUserGlobalLookup()">Clear</ion-button>
+      </div>
+
+      <div *ngIf="selectedUserGlobalResult" class="user-result-card">
+        <div class="user-result-title">Global Result</div>
+        <div class="result-grid">
+          <div><span>User</span><strong>{{ getResultUserId(selectedUserGlobalResult) }}</strong></div>
+          <div><span>Product</span><strong>{{ getResultProductId(selectedUserGlobalResult) }}</strong></div>
+          <div><span>Score</span><strong>{{ getResultScoreSummary(selectedUserGlobalResult) }}</strong></div>
+          <div><span>Percentage</span><strong>{{ getResultPercentage(selectedUserGlobalResult) }}</strong></div>
+          <div><span>Status</span><strong>{{ getResultPassed(selectedUserGlobalResult) }}</strong></div>
+        </div>
+      </div>
+
+      <!-- Raw API debug — shows exactly what the first result row looks like from the server -->
+      <details *ngIf="rawDebugSample" class="debug-panel">
+        <summary>⚠ Raw API sample (first row) — use this to confirm field names</summary>
+        <pre class="debug-pre">{{ rawDebugSample }}</pre>
+      </details>
+
+      <div *ngIf="resultsLoading" class="loading-existing">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <span>Loading user results...</span>
+      </div>
+
+      <div *ngIf="!resultsLoading && adminResults.length === 0" class="empty-inline">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <span>No user assessment results available yet.</span>
+      </div>
+
+      <div *ngIf="!resultsLoading && adminResults.length > 0" class="results-list">
+        <div class="result-item" *ngFor="let item of adminResults">
+          <div class="result-grid">
+            <div><span>User</span><strong>{{ getResultUserId(item) }}</strong></div>
+            <div><span>Product</span><strong>{{ getResultProductId(item) }}</strong></div>
+            <div><span>Score</span><strong>{{ getResultScoreSummary(item) }}</strong></div>
+            <div><span>Percentage</span><strong>{{ getResultPercentage(item) }}</strong></div>
+            <div><span>Status</span>
+              <strong [style.color]="item.passed ? 'var(--ion-color-success)' : 'var(--ion-color-danger)'">
+                {{ getResultPassed(item) }}
+              </strong>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

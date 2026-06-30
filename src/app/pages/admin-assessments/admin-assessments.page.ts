@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
+import { forkJoin } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { AssessmentService } from 'src/app/services/assessment-service';
 import { ProductService } from 'src/app/services/product-service';
+import { AdminUserService } from 'src/app/services/admin-user-service';
 import { Product } from 'src/app/models/entities/product.model';
-import { AssessmentDto } from 'src/app/models/dtos/assessment-dto.model';
+import { AssessmentDto, AdminSubmissionResultDto } from 'src/app/models/dtos/assessment-dto.model';
+import { ApplicationUser } from 'src/app/models/entities/application-user.model';
 
 @Component({
   selector: 'app-admin-assessments',
@@ -17,6 +21,17 @@ export class AdminAssessmentsPage implements OnInit {
   loading = false;
   submitting = false;
   loadingExisting = false;
+  resultsLoading = false;
+  userLookupLoading = false;
+
+  adminResults: AdminSubmissionResultDto[] = [];
+  adminUserId = '';
+  selectedUserGlobalResult: AdminSubmissionResultDto | null = null;
+  adminUsers: ApplicationUser[] = [];
+  rawDebugSample: string | null = null;
+
+  private usersById = new Map<string, ApplicationUser>();
+  private usersByLookup = new Map<string, ApplicationUser>();
 
   targetMode: 'global' | 'product' = 'global';
   targetProductId: number | null = null;
@@ -26,6 +41,7 @@ export class AdminAssessmentsPage implements OnInit {
   constructor(
     private assessmentService: AssessmentService,
     private productService: ProductService,
+    private adminUserService: AdminUserService,
     private fb: FormBuilder,
     private alertController: AlertController,
     private toastController: ToastController
@@ -42,6 +58,7 @@ export class AdminAssessmentsPage implements OnInit {
   ngOnInit(): void {
     this.loadProducts();
     this.loadExisting();
+    this.loadUsersAndResults();
   }
 
   get mcqs(): FormArray {
@@ -64,6 +81,52 @@ export class AdminAssessmentsPage implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  refreshPage(event?: any): void {
+    this.loadProducts();
+    this.loadExisting();
+    this.loadUsersAndResults();
+    event?.target?.complete();
+  }
+
+  /** Load users and results in parallel, then enrich results with user identity. */
+  loadUsersAndResults(): void {
+    this.resultsLoading = true;
+    this.rawDebugSample = null;
+
+    forkJoin({
+      users: this.adminUserService.getAll().pipe(catchError(() => of([]))),
+      results: this.assessmentService.getAllUsersResults().pipe(catchError(() => of([])))
+    }).subscribe(({ users, results }) => {
+      // Build user index first
+      this.adminUsers = Array.isArray(users) ? users : [];
+      this.rebuildUsersIndex(this.adminUsers);
+
+      // Capture raw debug sample before normalizing
+      const rawArr = Array.isArray(results) ? results : [];
+      if (rawArr.length > 0) {
+        this.rawDebugSample = JSON.stringify(rawArr[0], null, 2);
+      }
+
+      // Enrich results with user identity from index
+      this.adminResults = rawArr.map((item) => this.normalizeResultWithUser(item));
+      this.resultsLoading = false;
+    });
+  }
+
+  private rebuildUsersIndex(users: ApplicationUser[]): void {
+    this.usersById.clear();
+    this.usersByLookup.clear();
+
+    for (const u of users) {
+      if (!u?.id) continue;
+      const id = String(u.id);
+      this.usersById.set(id, u);
+      this.usersByLookup.set(id.toLowerCase(), u);
+      if (u.userName) this.usersByLookup.set(u.userName.toLowerCase(), u);
+      if (u.email) this.usersByLookup.set(u.email.toLowerCase(), u);
+    }
   }
 
   // -- MCQ management --
@@ -165,6 +228,63 @@ export class AdminAssessmentsPage implements OnInit {
         }
       }
     });
+  }
+
+  loadAllUsersResults(): void {
+    this.loadUsersAndResults();
+  }
+
+  lookupUserGlobalResult(): void {
+    const userInput = (this.adminUserId || '').trim();
+    if (!userInput) {
+      this.showToast('Please enter a user id, username, or email.', 'warning');
+      return;
+    }
+
+    // Try to resolve via index, but fall back to the raw input as a userId.
+    const resolvedUserId = this.resolveUserInputToId(userInput) ?? userInput;
+
+    // ── 1. Try to find it in already-loaded results first ──────────────────
+    const cached = this.adminResults.find((r) => {
+      const pid = r.productId ?? (r as any).ProductId;
+      const uid = this.getResultUserId(r);
+      return (pid === 0 || pid == null) &&
+        (uid === resolvedUserId ||
+          uid.toLowerCase() === userInput.toLowerCase() ||
+          (r as any)._userName?.toLowerCase() === userInput.toLowerCase() ||
+          (r as any)._email?.toLowerCase() === userInput.toLowerCase());
+    });
+
+    if (cached) {
+      this.selectedUserGlobalResult = cached;
+      this.showToast('Showing global result from loaded data.', 'medium');
+      return;
+    }
+
+    // ── 2. Call API ────────────────────────────────────────────────────────
+    this.userLookupLoading = true;
+    this.selectedUserGlobalResult = null;
+
+    this.assessmentService.getUserGlobalResultForAdmin(resolvedUserId).subscribe({
+      next: (result) => {
+        this.selectedUserGlobalResult = this.normalizeResultWithUser(result, resolvedUserId);
+        this.userLookupLoading = false;
+      },
+      error: (err) => {
+        this.userLookupLoading = false;
+        if (err?.status === 404) {
+          this.showToast('No global result found for this user.', 'medium');
+          return;
+        }
+        const status = err?.status ? ` (HTTP ${err.status})` : '';
+        this.showToast(`Could not load global result for this user${status}.`, 'danger');
+      }
+    });
+  }
+
+  clearUserGlobalLookup(): void {
+    this.adminUserId = '';
+    this.selectedUserGlobalResult = null;
   }
 
   private populateForm(data: any): void {
@@ -281,6 +401,179 @@ export class AdminAssessmentsPage implements OnInit {
     this.assessmentForm.reset({ title: '', description: '', passMark: null });
     this.mcqs.clear();
     this.openQuestions.clear();
+  }
+
+  private resolveUserInputToId(input: string): string | null {
+    const raw = (input || '').trim();
+    if (!raw) return null;
+    // Exact id map
+    if (this.usersById.has(raw)) return raw;
+    // Lookup by username/email/lowercase id
+    const fromMap = this.usersByLookup.get(raw.toLowerCase());
+    if (fromMap?.id) return String(fromMap.id);
+    return null;
+  }
+
+  private normalizeResultWithUser(result: any, preferredUserId?: string): any {
+    const normalized: any = { ...(result || {}) };
+
+    // Stamp preferred userId if nothing resolved yet
+    if (preferredUserId && !this.extractUserCandidate(normalized)) {
+      normalized.userId = preferredUserId;
+    }
+
+    const candidate = this.extractUserCandidate(normalized);
+    if (!candidate) return normalized;
+
+    // Try direct id lookup
+    const byId = this.usersById.get(String(candidate));
+    if (byId) {
+      normalized.userId = normalized.userId || byId.id;
+      normalized._userName = byId.userName;
+      normalized._email = byId.email;
+      return normalized;
+    }
+
+    // Try username/email lookup
+    const byLookup = this.usersByLookup.get(String(candidate).toLowerCase());
+    if (byLookup) {
+      normalized.userId = normalized.userId || byLookup.id;
+      normalized._userName = byLookup.userName;
+      normalized._email = byLookup.email;
+    }
+
+    return normalized;
+  }
+
+  private extractUserCandidate(result: any): string | null {
+    const value =
+      result?.userId ||
+      result?.UserId ||
+      result?.applicationUserId ||
+      result?.ApplicationUserId ||
+      result?.partnerUserId ||
+      result?.PartnerUserId ||
+      result?.submittedByUserId ||
+      result?.SubmittedByUserId ||
+      result?.createdByUserId ||
+      result?.CreatedByUserId ||
+      result?.ownerUserId ||
+      result?.OwnerUserId ||
+      result?.userName ||
+      result?.UserName ||
+      result?.email ||
+      result?.Email ||
+      result?.user?.id ||
+      result?.User?.Id ||
+      result?.user?.userName ||
+      result?.User?.UserName ||
+      result?.user?.email ||
+      result?.User?.Email;
+
+    if (value == null) return null;
+    const str = String(value).trim();
+    return str ? str : null;
+  }
+
+  /** Returns the best display label for the user column. */
+  getResultUserId(result: any): string {
+    // Prefer enriched friendly name set by normalizeResultWithUser
+    if (result?._userName) return String(result._userName);
+    if (result?._email) return String(result._email);
+
+    // Fallback to raw payload fields
+    if (result?.userId) return String(result.userId);
+    if (result?.UserId) return String(result.UserId);
+    if (result?.userName) return String(result.userName);
+    if (result?.UserName) return String(result.UserName);
+    if (result?.email) return String(result.email);
+    if (result?.Email) return String(result.Email);
+
+    const direct =
+      result?.userId ||
+      result?.UserId ||
+      result?.userid ||
+      result?.userID ||
+      result?.applicationUserId ||
+      result?.ApplicationUserId ||
+      result?.partnerUserId ||
+      result?.PartnerUserId ||
+      result?.submittedByUserId ||
+      result?.SubmittedByUserId ||
+      result?.createdByUserId ||
+      result?.CreatedByUserId ||
+      result?.ownerUserId ||
+      result?.OwnerUserId ||
+      result?.userName ||
+      result?.UserName ||
+      result?.username ||
+      result?.email ||
+      result?.Email ||
+      result?.user?.id ||
+      result?.User?.Id ||
+      result?.user?.userId ||
+      result?.User?.UserId ||
+      result?.user?.userName ||
+      result?.User?.UserName ||
+      result?.user?.email ||
+      result?.User?.Email;
+
+    if (direct != null && String(direct).trim() !== '') return String(direct);
+
+    const recursiveValue = this.findFirstUserLikeValue(result, 0);
+    if (recursiveValue) return recursiveValue;
+
+    return 'Unknown';
+  }
+
+  private findFirstUserLikeValue(node: any, depth: number): string | null {
+    if (!node || typeof node !== 'object' || depth > 3) return null;
+
+    for (const [key, value] of Object.entries(node)) {
+      const normalized = key.toLowerCase();
+      const looksLikeUserKey =
+        normalized.includes('userid') ||
+        normalized.includes('user_id') ||
+        normalized.includes('username') ||
+        normalized === 'user' ||
+        normalized.includes('email') ||
+        normalized.includes('partneruser');
+
+      if (looksLikeUserKey) {
+        if (typeof value === 'string' && value.trim() !== '') return value;
+        if (typeof value === 'number') return String(value);
+      }
+
+      if (value && typeof value === 'object') {
+        const nested = this.findFirstUserLikeValue(value, depth + 1);
+        if (nested) return nested;
+      }
+    }
+
+    return null;
+  }
+
+  getResultProductId(result: any): string {
+    const value = result?.productId ?? result?.ProductId;
+    return value == null ? '-' : String(value);
+  }
+
+  getResultScoreSummary(result: any): string {
+    const score = result?.score ?? result?.Score;
+    const total = result?.total ?? result?.Total;
+    if (score == null || total == null) return '-';
+    return `${score}/${total}`;
+  }
+
+  getResultPercentage(result: any): string {
+    const value = result?.percentage ?? result?.Percentage;
+    return value == null ? '-' : `${value}%`;
+  }
+
+  getResultPassed(result: any): string {
+    const value = result?.passed ?? result?.Passed;
+    if (value == null) return '-';
+    return value ? 'Passed' : 'Failed';
   }
 
   isInvalid(path: string): boolean {

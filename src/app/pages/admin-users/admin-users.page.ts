@@ -77,6 +77,42 @@ export class AdminUsersPage implements OnInit {
     return (parts[0]?.charAt(0) ?? '').toUpperCase() + (parts[1]?.charAt(0) ?? '').toUpperCase() || '?';
   }
 
+  async copyUserId(userId: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    if (!userId) {
+      await this.showToast('User ID is empty.', 'warning');
+      return;
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(userId);
+      } else {
+        this.fallbackCopy(userId);
+      }
+      await this.showToast('User ID copied to clipboard.', 'success');
+    } catch {
+      try {
+        this.fallbackCopy(userId);
+        await this.showToast('User ID copied to clipboard.', 'success');
+      } catch {
+        await this.showToast('Could not copy user ID.', 'danger');
+      }
+    }
+  }
+
+  private fallbackCopy(text: string): void {
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.setAttribute('readonly', 'true');
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
+
   openDetailModal(user: ApplicationUser): void {
     this.detailUser = user;
     this.kpiData = null;

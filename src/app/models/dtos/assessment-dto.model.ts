@@ -45,3 +45,17 @@ export interface AssessmentDto {
   mcqs: QuestionDto[];
   openQuestions: OpenQuestionDto[];
 }
+
+/** Admin-facing result that includes the submitting user's id */
+export interface AdminSubmissionResultDto {
+  userId: string;
+  productId: number;
+  score: number;
+  total: number;
+  percentage: number;
+  passed: boolean;
+  submittedAt?: string;
+  // enriched client-side
+  _userName?: string;
+  _email?: string;
+}
