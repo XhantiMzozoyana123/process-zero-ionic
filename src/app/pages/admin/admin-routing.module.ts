@@ -100,6 +100,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'email-blaster',
+        loadChildren: () => import('../admin-email-blaster/admin-email-blaster.module')
+          .then(m => m.AdminEmailBlasterPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

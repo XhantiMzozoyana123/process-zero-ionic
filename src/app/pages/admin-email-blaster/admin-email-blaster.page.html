@@ -1,0 +1,187 @@
+<ion-content class="admin-email-blaster-page">
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>
+          <ion-icon name="megaphone-outline" class="header-icon"></ion-icon>
+          Email Blaster
+        </h1>
+        <p>Compose and send bulk emails to registered app users.</p>
+      </div>
+      <div class="header-badge">
+        <span *ngIf="selectedUsers.length > 0" class="recipient-badge">
+          {{ selectedUsers.length }} selected
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-grid">
+
+    <!-- LEFT: Compose Panel -->
+    <div class="panel compose-panel">
+      <div class="panel-header">
+        <ion-icon name="create-outline"></ion-icon>
+        <h2>Compose Message</h2>
+      </div>
+      <form [formGroup]="composeForm">
+        <ion-item class="form-item">
+          <ion-label position="stacked">Subject <span class="required">*</span></ion-label>
+          <ion-input formControlName="subject" placeholder="Enter email subject line..."></ion-input>
+        </ion-item>
+        <div *ngIf="composeForm.get('subject')?.invalid && composeForm.get('subject')?.touched" class="field-error">
+          Subject is required.
+        </div>
+
+        <ion-item class="form-item body-item">
+          <ion-label position="stacked">Message Body <span class="required">*</span></ion-label>
+          <ion-textarea
+            formControlName="body"
+            placeholder="Write your message here..."
+            rows="10"
+            autoGrow="true">
+          </ion-textarea>
+        </ion-item>
+        <div *ngIf="composeForm.get('body')?.invalid && composeForm.get('body')?.touched" class="field-error">
+          Body is required.
+        </div>
+
+        <!-- Preview Toggle -->
+        <div class="preview-toggle" *ngIf="composeForm.get('body')?.value || composeForm.get('subject')?.value">
+          <ion-button fill="clear" size="small" (click)="showPreview = !showPreview">
+            <ion-icon slot="start" [name]="showPreview ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            {{ showPreview ? 'Hide Preview' : 'Show Preview' }}
+          </ion-button>
+        </div>
+
+        <!-- Live Preview -->
+        <div *ngIf="showPreview && (composeForm.get('body')?.value || composeForm.get('subject')?.value)" class="email-preview">
+          <div class="preview-header">
+            <strong>Preview</strong>
+          </div>
+          <div class="preview-body">
+            <div class="preview-field">
+              <span class="preview-label">Subject:</span>
+              <span class="preview-value">{{ composeForm.get('subject')?.value || '(no subject)' }}</span>
+            </div>
+            <div class="preview-divider"></div>
+            <div class="preview-content">{{ composeForm.get('body')?.value }}</div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- RIGHT: Select Users Panel -->
+    <div class="panel users-panel">
+      <div class="panel-header">
+        <ion-icon name="people-outline"></ion-icon>
+        <h2>Select Recipients</h2>
+      </div>
+
+      <!-- Search -->
+      <div class="search-row">
+        <form [formGroup]="searchForm">
+          <ion-searchbar
+            formControlName="search"
+            placeholder="Search users..."
+            class="user-search">
+          </ion-searchbar>
+        </form>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loadingUsers" class="loading-wrap">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+
+      <!-- Bulk actions -->
+      <div *ngIf="!loadingUsers && allUsers.length > 0" class="bulk-actions">
+        <ion-button fill="clear" size="small" (click)="selectAllFiltered()">
+          <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+          Select All
+        </ion-button>
+        <ion-button fill="clear" size="small" color="danger" (click)="deselectAll()">
+          <ion-icon slot="start" name="close-outline"></ion-icon>
+          Deselect All
+        </ion-button>
+      </div>
+
+      <!-- User list -->
+      <div *ngIf="!loadingUsers && filteredUsers.length > 0" class="user-list-scroll">
+        <ion-list lines="full">
+          <ion-item
+            *ngFor="let u of filteredUsers"
+            class="user-item"
+            [class.selected]="isSelected(u)"
+            (click)="toggleUser(u)">
+            <ion-avatar slot="start" class="user-avatar">
+              <span class="avatar-initials">{{ getInitials(u.userName) }}</span>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{ u.userName }}</h3>
+              <p>{{ u.email }}</p>
+            </ion-label>
+            <ion-icon
+              slot="end"
+              [name]="isSelected(u) ? 'checkbox' : 'square-outline'"
+              class="check-icon"
+              [class.checked]="isSelected(u)">
+            </ion-icon>
+          </ion-item>
+        </ion-list>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!loadingUsers && filteredUsers.length === 0" class="empty-users">
+        <div class="empty-icon">
+          <ion-icon name="people-outline"></ion-icon>
+        </div>
+        <p>No users found.</p>
+        <span class="empty-hint" *ngIf="searchTerm">Try a different search term.</span>
+      </div>
+    </div>
+
+  </div>
+
+
+</ion-content>
+
+<!-- Selected Users Bar (sticky, outside scroll) -->
+<div class="selected-bar" *ngIf="selectedUsers.length > 0">
+  <div class="selected-bar-inner">
+    <div class="selected-chips">
+      <span class="selected-label">Recipients:</span>
+      <ion-chip
+        *ngFor="let u of selectedUsers; let i = index"
+        class="user-chip"
+        [attr.title]="u.email">
+        <div class="chip-avatar">{{ getInitials(u.userName) }}</div>
+        <ion-label>{{ u.userName }}</ion-label>
+        <ion-icon name="close-circle" (click)="removeUser(i)"></ion-icon>
+      </ion-chip>
+    </div>
+  </div>
+</div>
+
+<!-- Send Bar (always visible footer) -->
+<ion-footer class="send-footer">
+  <div class="send-bar-inner">
+    <div class="send-summary" *ngIf="selectedUsers.length > 0">
+      <ion-icon name="mail-outline"></ion-icon>
+      <span>Sending to <strong>{{ selectedUsers.length }}</strong> user{{ selectedUsers.length !== 1 ? 's' : '' }}</span>
+    </div>
+    <ion-button
+      shape="round"
+      color="primary"
+      size="large"
+      [disabled]="composeForm.invalid || selectedUsers.length === 0 || sending"
+      (click)="send()"
+      class="send-btn">
+      <ion-spinner *ngIf="sending" name="crescent" slot="start"></ion-spinner>
+      <ion-icon *ngIf="!sending" slot="start" name="send-outline"></ion-icon>
+      {{ sending ? 'Sending...' : 'Send Blast' }}
+    </ion-button>
+  </div>
+</ion-footer>
