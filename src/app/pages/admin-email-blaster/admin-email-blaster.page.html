@@ -25,6 +25,10 @@
       <div class="panel-header">
         <ion-icon name="create-outline"></ion-icon>
         <h2>Compose Message</h2>
+        <ion-button fill="clear" size="small" class="ai-toggle-btn" (click)="toggleAi()">
+          <ion-icon slot="start" name="sparkles-outline"></ion-icon>
+          {{ aiPanelOpen ? 'Hide AI' : 'AI Assistant' }}
+        </ion-button>
       </div>
       <form [formGroup]="composeForm">
         <ion-item class="form-item">
@@ -71,6 +75,69 @@
           </div>
         </div>
       </form>
+
+      <!-- AI Chat Panel -->
+      <div class="ai-panel" [class.open]="aiPanelOpen">
+        <div class="ai-panel-header">
+          <ion-icon name="sparkles-outline" class="ai-spark-icon"></ion-icon>
+          <span class="ai-panel-title">AI Assistant</span>
+          <span class="ai-panel-hint">Ask me to draft an email or answer questions about the business</span>
+        </div>
+
+        <div class="ai-messages" #aiMsgContainer>
+          <div *ngIf="aiMessages.length === 0" class="ai-empty">
+            <p>Try: <em>&ldquo;Write a welcome email for new users&rdquo;</em> or <em>&ldquo;Draft a renewal reminder&rdquo;</em></p>
+          </div>
+
+          <div
+            *ngFor="let msg of aiMessages"
+            class="ai-msg"
+            [class.user-msg]="msg.role === 'user'"
+            [class.assistant-msg]="msg.role === 'assistant'">
+            <div class="msg-bubble">
+              <p class="msg-text">{{ msg.text }}</p>
+              <div *ngIf="msg.subject || msg.body" class="draft-actions">
+                <ion-button *ngIf="msg.subject" fill="outline" size="small" (click)="applySubject(msg.subject!)">
+                  <ion-icon slot="start" name="document-text-outline"></ion-icon>
+                  Use Subject
+                </ion-button>
+                <ion-button *ngIf="msg.body" fill="outline" size="small" (click)="applyBody(msg.body!)">
+                  <ion-icon slot="start" name="reader-outline"></ion-icon>
+                  Use Body
+                </ion-button>
+                <ion-button *ngIf="msg.subject && msg.body" fill="solid" size="small" color="primary" (click)="applyDraft(msg.subject!, msg.body!)">
+                  <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                  Apply Full Draft
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="aiThinking" class="ai-thinking">
+            <ion-spinner name="dots" color="primary"></ion-spinner>
+            <span>Thinking...</span>
+          </div>
+        </div>
+
+        <div class="ai-input-row">
+          <ion-input
+            [(ngModel)]="aiInput"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Ask AI to draft an email or ask a question..."
+            (keyup.enter)="sendAiMessage()"
+            class="ai-input">
+          </ion-input>
+          <ion-button
+            fill="solid"
+            color="primary"
+            [disabled]="!aiInput.trim() || aiThinking"
+            (click)="sendAiMessage()"
+            class="ai-send-btn">
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
     </div>
 
     <!-- RIGHT: Select Users Panel -->

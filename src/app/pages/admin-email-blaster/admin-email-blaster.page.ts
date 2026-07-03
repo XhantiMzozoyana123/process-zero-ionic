@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { EmailBlasterService } from 'src/app/services/email-blaster-service';
 import { AdminUserService } from 'src/app/services/admin-user-service';
+import { AiService, AiMessage } from 'src/app/services/ai.service';
 import { ApplicationUser } from 'src/app/models/entities/application-user.model';
 import { EmailDto } from 'src/app/models/dtos/email-dto.model';
 
@@ -13,6 +14,8 @@ import { EmailDto } from 'src/app/models/dtos/email-dto.model';
   standalone: false
 })
 export class AdminEmailBlasterPage implements OnInit {
+  @ViewChild('aiMsgContainer') aiMsgContainer!: ElementRef;
+
   composeForm: FormGroup;
   searchForm: FormGroup;
 
@@ -24,10 +27,17 @@ export class AdminEmailBlasterPage implements OnInit {
   sending = false;
   showPreview = false;
 
+  // AI Assistant
+  aiPanelOpen = false;
+  aiMessages: AiMessage[] = [];
+  aiInput = '';
+  aiThinking = false;
+
   constructor(
     private fb: FormBuilder,
     private emailBlasterService: EmailBlasterService,
     private userService: AdminUserService,
+    private aiService: AiService,
     private toastController: ToastController
   ) {
     this.composeForm = this.fb.group({
@@ -144,5 +154,67 @@ export class AdminEmailBlasterPage implements OnInit {
   private async showToast(message: string, color: string) {
     const toast = await this.toastController.create({ message, color, duration: 3000, position: 'top' });
     await toast.present();
+  }
+
+  // ── AI Assistant ──────────────────────────────────────────────────────────
+
+  toggleAi(): void {
+    this.aiPanelOpen = !this.aiPanelOpen;
+  }
+
+  sendAiMessage(): void {
+    const text = this.aiInput.trim();
+    if (!text || this.aiThinking) return;
+    this.aiMessages.push({ role: 'user', text });
+    this.aiInput = '';
+    this.aiThinking = true;
+    this.scrollAiToBottom();
+
+    this.aiService.generate(text).subscribe({
+      next: response => {
+        const parsed = this.parseEmailDraft(response);
+        this.aiMessages.push({ role: 'assistant', text: response, ...parsed });
+        this.aiThinking = false;
+        this.scrollAiToBottom();
+      },
+      error: () => {
+        this.aiMessages.push({
+          role: 'assistant',
+          text: 'Could not reach the AI server. Please check the connection and try again.'
+        });
+        this.aiThinking = false;
+        this.scrollAiToBottom();
+      }
+    });
+  }
+
+  private parseEmailDraft(text: string): { subject?: string; body?: string } {
+    const match = text.match(/^Subject:\s*(.+)$/im);
+    if (!match) return {};
+    const subject = match[1].trim();
+    const body = text.replace(/^Subject:\s*.+(\r?\n)+/im, '').trim();
+    return { subject, body: body || undefined };
+  }
+
+  applySubject(subject: string): void {
+    this.composeForm.patchValue({ subject });
+    this.showToast('Subject applied.', 'success');
+  }
+
+  applyBody(body: string): void {
+    this.composeForm.patchValue({ body });
+    this.showToast('Body applied.', 'success');
+  }
+
+  applyDraft(subject: string, body: string): void {
+    this.composeForm.patchValue({ subject, body });
+    this.showToast('Full draft applied to compose form.', 'success');
+  }
+
+  private scrollAiToBottom(): void {
+    setTimeout(() => {
+      const el = this.aiMsgContainer?.nativeElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    }, 60);
   }
 }
