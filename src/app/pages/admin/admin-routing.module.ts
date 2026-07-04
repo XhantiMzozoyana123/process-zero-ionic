@@ -106,6 +106,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'survey',
+        loadChildren: () => import('../admin-survey/admin-survey.module')
+          .then(m => m.AdminSurveyPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

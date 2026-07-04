@@ -18,7 +18,9 @@ interface OllamaResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AiService {
-  private readonly apiUrl = 'https://llm.processzero.xyz/api/generate';
+  // Routed through proxy (proxy.conf.json in dev, vercel.json rewrite in prod)
+  // to avoid CORS — the browser calls /api/ai/generate on the same origin.
+  private readonly apiUrl = '/api/ai/generate';
 
   private readonly systemPrompt = `You are an AI assistant embedded in Process Zero, a business management and CRM platform for sales teams and agencies. You help admins compose professional bulk emails for their users and answer general questions about the business.
 

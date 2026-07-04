@@ -3,6 +3,10 @@
   "outputDirectory": "www",
   "framework": null,
   "rewrites": [
+    {
+      "source": "/api/ai/:path*",
+      "destination": "https://llm.processzero.xyz/api/:path*"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

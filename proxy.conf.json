@@ -1,0 +1,11 @@
+{
+  "/api/ai": {
+    "target": "https://llm.processzero.xyz",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/ai": "/api"
+    },
+    "logLevel": "info"
+  }
+}

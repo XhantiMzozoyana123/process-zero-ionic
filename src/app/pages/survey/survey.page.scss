@@ -1,0 +1,162 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 16px;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 1.1rem;
+  }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 32px;
+  gap: 16px;
+
+  .error-icon {
+    font-size: 64px;
+    color: var(--ion-color-warning);
+  }
+
+  h2 {
+    color: var(--ion-color-dark);
+    margin: 0;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    max-width: 400px;
+  }
+}
+
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 16px;
+
+  .success-icon {
+    font-size: 72px;
+    color: var(--ion-color-success);
+  }
+
+  h2 {
+    color: var(--ion-color-dark);
+    margin: 0;
+    font-size: 1.8rem;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 1.1rem;
+  }
+
+  .result-card {
+    width: 100%;
+    max-width: 500px;
+    text-align: left;
+    margin: 16px 0;
+
+    ion-label h3 {
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin-bottom: 4px;
+    }
+
+    ion-label p {
+      font-size: 0.95rem;
+      margin: 2px 0;
+    }
+  }
+}
+
+.survey-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  .survey-description {
+    font-size: 1rem;
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+  }
+
+  .required-note {
+    font-size: 0.85rem;
+    color: var(--ion-color-medium-shade);
+    margin: 0;
+  }
+}
+
+.required-star {
+  color: var(--ion-color-danger);
+  font-weight: bold;
+}
+
+.question-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 4px;
+}
+
+.privacy-card {
+  margin: 16px 0;
+  --background: var(--ion-color-light);
+
+  ion-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium-shade);
+
+    .privacy-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  }
+}
+
+.submit-container {
+  margin: 24px 0 32px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .privacy-card {
+    --background: var(--ion-color-dark-shade);
+  }
+}
