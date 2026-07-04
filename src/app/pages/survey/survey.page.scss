@@ -1,162 +1,325 @@
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  gap: 16px;
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$muted: #607078;
+$gold:  #d7a449;
+$teal:  #1d7874;
+$blue:  #335c67;
+$coral: #c06c52;
 
-  ion-spinner {
-    width: 48px;
-    height: 48px;
-  }
+.survey-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.12), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
 
-  p {
-    color: var(--ion-color-medium);
-    font-size: 1.1rem;
-  }
-}
-
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  text-align: center;
-  padding: 32px;
-  gap: 16px;
-
-  .error-icon {
-    font-size: 64px;
-    color: var(--ion-color-warning);
-  }
-
-  h2 {
-    color: var(--ion-color-dark);
-    margin: 0;
-  }
-
-  p {
-    color: var(--ion-color-medium);
-    max-width: 400px;
-  }
-}
-
-.success-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 32px 16px;
-  gap: 16px;
-
-  .success-icon {
-    font-size: 72px;
-    color: var(--ion-color-success);
-  }
-
-  h2 {
-    color: var(--ion-color-dark);
-    margin: 0;
-    font-size: 1.8rem;
-  }
-
-  p {
-    color: var(--ion-color-medium);
-    font-size: 1.1rem;
-  }
-
-  .result-card {
-    width: 100%;
-    max-width: 500px;
-    text-align: left;
-    margin: 16px 0;
-
-    ion-label h3 {
-      font-weight: 600;
-      color: var(--ion-color-primary);
-      margin-bottom: 4px;
-    }
-
-    ion-label p {
-      font-size: 0.95rem;
-      margin: 2px 0;
-    }
-  }
-}
-
-.survey-header {
-  margin-bottom: 24px;
-
-  h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--ion-color-dark);
-    margin: 0 0 8px 0;
-  }
-
-  .survey-description {
-    font-size: 1rem;
-    color: var(--ion-color-medium);
-    line-height: 1.5;
-    margin: 0 0 8px 0;
-  }
-
-  .required-note {
-    font-size: 0.85rem;
-    color: var(--ion-color-medium-shade);
-    margin: 0;
-  }
-}
-
-.required-star {
-  color: var(--ion-color-danger);
-  font-weight: bold;
-}
-
-.question-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 4px;
-}
-
-.privacy-card {
-  margin: 16px 0;
-  --background: var(--ion-color-light);
-
-  ion-card-content {
+  // ── Loading ──────────────────────────────────
+  .loading-container {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 0.9rem;
-    color: var(--ion-color-medium-shade);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    gap: 16px;
 
-    .privacy-icon {
-      font-size: 24px;
-      color: var(--ion-color-primary);
-      flex-shrink: 0;
-      margin-top: 2px;
+    ion-spinner {
+      width: 40px;
+      height: 40px;
     }
 
     p {
+      color: $muted;
+      font-size: 0.95rem;
+    }
+  }
+
+  // ── Error ────────────────────────────────────
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    padding: 32px;
+    gap: 12px;
+
+    .error-icon {
+      font-size: 56px;
+      color: $coral;
+    }
+
+    h2 {
+      color: $ink;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    p {
+      color: $muted;
+      max-width: 400px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    ion-button {
+      --border-radius: 50px;
+      --background: linear-gradient(135deg, #{$teal}, #{$blue});
+      --box-shadow: 0 4px 16px rgba($teal, 0.3);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+  }
+
+  // ── Success ──────────────────────────────────
+  .success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 16px;
+    gap: 12px;
+
+    .success-icon {
+      font-size: 64px;
+      color: $teal;
+    }
+
+    h2 {
+      color: $ink;
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    > p {
+      color: $muted;
+      font-size: 0.95rem;
       margin: 0;
     }
 
-    a {
-      color: var(--ion-color-primary);
-      text-decoration: none;
-      font-weight: 500;
+    .result-card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba($paper, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 18px;
+      box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+      margin: 12px 0;
+      text-align: left;
+
+      ion-card-header {
+        padding-bottom: 4px;
+
+        ion-card-title {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: $ink;
+        }
+      }
+
+      ion-item {
+        --padding-start: 0;
+        --inner-padding-end: 0;
+        --background: transparent;
+
+        h3 {
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: $teal;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          margin-bottom: 4px;
+        }
+
+        p {
+          font-size: 0.92rem;
+          color: $ink;
+          margin: 2px 0;
+        }
+      }
+    }
+
+    ion-button {
+      --border-radius: 50px;
+      --background: linear-gradient(135deg, #{$teal}, #{$blue});
+      --box-shadow: 0 4px 16px rgba($teal, 0.3);
+      font-weight: 600;
+      margin-top: 8px;
     }
   }
-}
 
-.submit-container {
-  margin: 24px 0 32px;
-}
+  // ── Survey Header ────────────────────────────
+  .survey-header {
+    max-width: 640px;
+    margin: 0 auto 24px;
+    padding: 0 4px;
 
-@media (prefers-color-scheme: dark) {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: $ink;
+      margin: 0 0 8px;
+    }
+
+    .survey-description {
+      font-size: 0.95rem;
+      color: $muted;
+      line-height: 1.6;
+      margin: 0 0 8px;
+    }
+
+    .required-note {
+      font-size: 0.78rem;
+      color: $muted;
+      margin: 0;
+    }
+  }
+
+  // ── Form Cards ───────────────────────────────
+  .form-card {
+    max-width: 640px;
+    margin: 0 auto 20px;
+    background: rgba($paper, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+
+    ion-card-header {
+      padding-bottom: 8px;
+
+      ion-card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: $ink;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .card-icon {
+          font-size: 1.2rem;
+          color: $coral;
+        }
+      }
+    }
+
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --background: transparent;
+      --border-color: rgba($ink, 0.06);
+
+      ion-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: $muted;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+      }
+
+      ion-input,
+      ion-textarea {
+        --background: rgba($sand, 0.6);
+        --padding-start: 12px;
+        --padding-end: 12px;
+        --padding-top: 10px;
+        --padding-bottom: 10px;
+        border-radius: 12px;
+        --border-radius: 12px;
+        font-size: 0.92rem;
+        margin-top: 4px;
+      }
+    }
+
+    ion-note {
+      font-size: 0.78rem;
+      padding-left: 0;
+    }
+  }
+
+  // ── Question Items ───────────────────────────
+  .question-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --background: transparent;
+    margin-bottom: 4px;
+    align-items: flex-start;
+
+    ion-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $ink;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    ion-textarea {
+      --background: rgba($sand, 0.6);
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 10px;
+      --padding-bottom: 10px;
+      border-radius: 12px;
+      --border-radius: 12px;
+      font-size: 0.92rem;
+      margin-top: 4px;
+    }
+  }
+
+  // ── Privacy Card ─────────────────────────────
   .privacy-card {
-    --background: var(--ion-color-dark-shade);
+    max-width: 640px;
+    margin: 0 auto 20px;
+    --background: rgba($sand, 0.5);
+    border-radius: 16px;
+
+    ion-card-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: $muted;
+      line-height: 1.6;
+
+      .privacy-icon {
+        font-size: 20px;
+        color: $teal;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: $teal;
+        text-decoration: none;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // ── Submit ───────────────────────────────────
+  .submit-container {
+    max-width: 640px;
+    margin: 0 auto 32px;
+
+    ion-button {
+      --border-radius: 50px;
+      --background: linear-gradient(135deg, #{$teal}, #{$blue});
+      --box-shadow: 0 4px 20px rgba($teal, 0.3);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      height: 52px;
+    }
+  }
+
+  .required-star {
+    color: $coral;
+    font-weight: bold;
   }
 }

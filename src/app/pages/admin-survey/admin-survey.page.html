@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Survey Management</ion-title>
+    <ion-title>
+      <ion-icon name="document-text-outline" class="header-icon"></ion-icon>
+      Survey Management
+    </ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment [value]="activeTab" (ionChange)="switchTab($event)">
@@ -16,7 +19,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="admin-survey-page ion-padding">
   <!-- ========== SURVEY EDITOR ========== -->
   <ng-container *ngIf="activeTab === 'editor'">
     <!-- Loading -->
@@ -29,9 +32,12 @@
     <ng-container *ngIf="!loadingSurvey">
       <form [formGroup]="surveyForm" (ngSubmit)="saveSurvey()">
         <!-- Title & Description -->
-        <ion-card>
+        <ion-card class="form-card">
           <ion-card-header>
-            <ion-card-title>Survey Details</ion-card-title>
+            <ion-card-title>
+              <ion-icon name="information-circle-outline" class="card-icon"></ion-icon>
+              Survey Details
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="none">
@@ -74,9 +80,12 @@
         </ion-card>
 
         <!-- Questions -->
-        <ion-card>
+        <ion-card class="form-card">
           <ion-card-header>
-            <ion-card-title>Survey Questions</ion-card-title>
+            <ion-card-title>
+              <ion-icon name="help-circle-outline" class="card-icon"></ion-icon>
+              Survey Questions
+            </ion-card-title>
             <ion-card-subtitle>Add questions that respondents will answer</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
@@ -87,12 +96,11 @@
                     <ion-card-subtitle>Question {{ i + 1 }}</ion-card-subtitle>
                     <ion-button
                       fill="clear"
-                      color="danger"
                       size="small"
-                      slot="end"
                       (click)="removeQuestion(i)"
+                      class="remove-btn"
                     >
-                      <ion-icon name="trash-outline"></ion-icon>
+                      <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
                     </ion-button>
                   </ion-card-header>
                   <ion-card-content>
@@ -141,7 +149,6 @@
         <div class="save-container">
           <ion-button
             type="submit"
-            color="primary"
             expand="block"
             size="large"
             [disabled]="savingSurvey"
@@ -195,7 +202,7 @@
       </ion-card>
 
       <!-- Responses List -->
-      <ion-card>
+      <ion-card class="responses-card">
         <ion-card-header>
           <ion-card-title>All Responses</ion-card-title>
           <ion-card-subtitle>{{ summary.title }}</ion-card-subtitle>
@@ -243,15 +250,19 @@
 
       <ng-container *ngIf="!loadingDetail && selectedResponse">
         <!-- Respondent Info -->
-        <ion-card>
+        <ion-card class="detail-card">
           <ion-card-header>
-            <ion-card-title>Respondent Information</ion-card-title>
+            <ion-card-title>
+              <ion-icon name="person-outline" class="card-icon"></ion-icon>
+              Respondent Information
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="full">
               <ion-item>
                 <ion-label>
-                  <h3>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</h3>
+                  <h3>Contact</h3>
+                  <p>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</p>
                   <p>{{ selectedResponse.email }}</p>
                 </ion-label>
               </ion-item>
@@ -296,9 +307,12 @@
         </ion-card>
 
         <!-- Answers -->
-        <ion-card>
+        <ion-card class="detail-card">
           <ion-card-header>
-            <ion-card-title>Answers</ion-card-title>
+            <ion-card-title>
+              <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
+              Answers
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ng-container *ngIf="selectedResponse.answers && selectedResponse.answers.length > 0; else noAnswers">
