@@ -5,6 +5,7 @@ import { SurveyService } from 'src/app/services/survey.service';
 import { SurveyClientDto } from 'src/app/models/dtos/survey-client-dto.model';
 import { SurveyResponseSubmissionDto } from 'src/app/models/dtos/survey-response-submission-dto.model';
 import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-result-dto.model';
+import { QuestionCategory } from 'src/app/models/dtos/question-category.enum';
 
 @Component({
   selector: 'app-survey',
@@ -27,15 +28,6 @@ export class SurveyPage implements OnInit {
     private toastController: ToastController
   ) {
     this.surveyForm = this.fb.group({
-      respondent: this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        phone: [''],
-        company: [''],
-        job: [''],
-        industry: ['']
-      }),
       answers: this.fb.array([])
     });
   }
@@ -46,10 +38,6 @@ export class SurveyPage implements OnInit {
 
   get answersFormArray(): FormArray {
     return this.surveyForm.get('answers') as FormArray;
-  }
-
-  get respondentForm(): FormGroup {
-    return this.surveyForm.get('respondent') as FormGroup;
   }
 
   private loadSurvey(): void {
@@ -81,6 +69,12 @@ export class SurveyPage implements OnInit {
     for (let i = 0; i < count; i++) {
       const question = this.survey!.questions[i];
       const validators = question.isRequired ? [Validators.required] : [];
+
+      // For email fields, add email validator
+      if (question.text.toLowerCase().includes('email')) {
+        validators.push(Validators.email);
+      }
+
       this.answersFormArray.push(this.fb.control('', validators));
     }
   }
@@ -94,16 +88,7 @@ export class SurveyPage implements OnInit {
 
     const formValue = this.surveyForm.value;
     const submission: SurveyResponseSubmissionDto = {
-      respondent: {
-        email: formValue.respondent.email,
-        firstName: formValue.respondent.firstName,
-        lastName: formValue.respondent.lastName,
-        phone: formValue.respondent.phone || '',
-        company: formValue.respondent.company || '',
-        job: formValue.respondent.job || '',
-        industry: formValue.respondent.industry || ''
-      },
-      answers: formValue.answers.map((a: string) => a || '')
+      answers: formValue.answers.map((a: string) => a?.trim() || '')
     };
 
     this.submitting = true;
@@ -118,6 +103,8 @@ export class SurveyPage implements OnInit {
       error: (err) => {
         if (err.status === 404) {
           this.errorMessage = 'Survey not found. It may have been removed.';
+        } else if (err.status === 400) {
+          this.errorMessage = err.error?.message || 'Please check your answers and try again.';
         } else {
           this.errorMessage = 'Failed to submit your response. Please try again.';
         }
@@ -137,6 +124,17 @@ export class SurveyPage implements OnInit {
     this.errorMessage = '';
     this.surveyForm.reset();
     this.loadSurvey();
+  }
+
+  isContactQuestion(index: number): boolean {
+    return this.survey?.questions[index]?.category === QuestionCategory.Contact;
+  }
+
+  getInputType(questionText: string): string {
+    const lower = questionText.toLowerCase();
+    if (lower.includes('email')) return 'email';
+    if (lower.includes('phone')) return 'tel';
+    return 'text';
   }
 
   private async showToast(message: string, color: string) {

@@ -87,104 +87,7 @@
         </div>
 
         <form [formGroup]="surveyForm" (ngSubmit)="submit()">
-          <!-- Respondent Information -->
-          <ion-card class="form-card">
-            <ion-card-header>
-              <ion-card-title>
-                <ion-icon name="person-outline" class="card-icon"></ion-icon>
-                Your Information
-              </ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <ion-list lines="none">
-                <ion-item>
-                  <ion-label position="stacked">
-                    Email <span class="required-star">*</span>
-                  </ion-label>
-                  <ion-input
-                    formControlName="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    [class.ion-invalid]="respondentForm.get('email')?.invalid && respondentForm.get('email')?.touched"
-                  ></ion-input>
-                  <ion-note
-                    color="danger"
-                    *ngIf="respondentForm.get('email')?.invalid && respondentForm.get('email')?.touched"
-                  >
-                    <span *ngIf="respondentForm.get('email')?.errors?.['required']">Email is required</span>
-                    <span *ngIf="respondentForm.get('email')?.errors?.['email']">Please enter a valid email</span>
-                  </ion-note>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">
-                    First Name <span class="required-star">*</span>
-                  </ion-label>
-                  <ion-input
-                    formControlName="firstName"
-                    placeholder="John"
-                    [class.ion-invalid]="respondentForm.get('firstName')?.invalid && respondentForm.get('firstName')?.touched"
-                  ></ion-input>
-                  <ion-note
-                    color="danger"
-                    *ngIf="respondentForm.get('firstName')?.invalid && respondentForm.get('firstName')?.touched"
-                  >
-                    First name is required
-                  </ion-note>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">
-                    Last Name <span class="required-star">*</span>
-                  </ion-label>
-                  <ion-input
-                    formControlName="lastName"
-                    placeholder="Doe"
-                    [class.ion-invalid]="respondentForm.get('lastName')?.invalid && respondentForm.get('lastName')?.touched"
-                  ></ion-input>
-                  <ion-note
-                    color="danger"
-                    *ngIf="respondentForm.get('lastName')?.invalid && respondentForm.get('lastName')?.touched"
-                  >
-                    Last name is required
-                  </ion-note>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Phone</ion-label>
-                  <ion-input formControlName="phone" type="tel" placeholder="+1 555 123 4567"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Company</ion-label>
-                  <ion-input formControlName="company" placeholder="Acme Corp"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Job Title</ion-label>
-                  <ion-input formControlName="job" placeholder="CTO"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Industry</ion-label>
-                  <ion-select formControlName="industry" placeholder="Select your industry">
-                    <ion-select-option value="Technology">Technology</ion-select-option>
-                    <ion-select-option value="Healthcare">Healthcare</ion-select-option>
-                    <ion-select-option value="Finance">Finance</ion-select-option>
-                    <ion-select-option value="Education">Education</ion-select-option>
-                    <ion-select-option value="Manufacturing">Manufacturing</ion-select-option>
-                    <ion-select-option value="Retail">Retail</ion-select-option>
-                    <ion-select-option value="Real Estate">Real Estate</ion-select-option>
-                    <ion-select-option value="Energy">Energy</ion-select-option>
-                    <ion-select-option value="Consulting">Consulting</ion-select-option>
-                    <ion-select-option value="Other">Other</ion-select-option>
-                  </ion-select>
-                </ion-item>
-              </ion-list>
-            </ion-card-content>
-          </ion-card>
-
-          <!-- Survey Questions -->
+          <!-- All Questions (Contact + Business) rendered dynamically -->
           <ion-card class="form-card">
             <ion-card-header>
               <ion-card-title>
@@ -200,17 +103,45 @@
                       {{ question.text }}
                       <span class="required-star" *ngIf="question.isRequired"> *</span>
                     </ion-label>
-                    <ion-textarea
-                      [formControlName]="i"
-                      rows="3"
-                      placeholder="Your answer..."
-                      [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
-                    ></ion-textarea>
+
+                    <!-- Contact questions use input fields; business questions use textareas -->
+                    <ng-container [ngSwitch]="isContactQuestion(i)">
+                      <!-- Contact questions: email, tel, or text input -->
+                      <ng-container *ngSwitchCase="true">
+                        <ion-input
+                          *ngIf="getInputType(question.text) === 'email'; else telOrText"
+                          [formControlName]="i"
+                          type="email"
+                          placeholder="your@email.com"
+                          [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                        ></ion-input>
+                        <ng-template #telOrText>
+                          <ion-input
+                            [formControlName]="i"
+                            [type]="getInputType(question.text)"
+                            placeholder="Your answer..."
+                            [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                          ></ion-input>
+                        </ng-template>
+                      </ng-container>
+
+                      <!-- Business questions: textarea -->
+                      <ng-container *ngSwitchDefault>
+                        <ion-textarea
+                          [formControlName]="i"
+                          rows="3"
+                          placeholder="Your answer..."
+                          [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                        ></ion-textarea>
+                      </ng-container>
+                    </ng-container>
+
                     <ion-note
                       color="danger"
                       *ngIf="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
                     >
-                      This question requires an answer
+                      <span *ngIf="answersFormArray.at(i)?.errors?.['required']">This field is required</span>
+                      <span *ngIf="answersFormArray.at(i)?.errors?.['email']">Please enter a valid email</span>
                     </ion-note>
                   </ion-item>
                   <ion-item-divider *ngIf="i < (survey?.questions?.length ?? 0) - 1"></ion-item-divider>
