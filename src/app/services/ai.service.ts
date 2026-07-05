@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export interface AiMessage {
   role: 'user' | 'assistant';
@@ -9,17 +10,9 @@ export interface AiMessage {
   body?: string;
 }
 
-interface OllamaResponse {
-  model: string;
-  created_at: string;
-  response: string;
-  done: boolean;
-}
-
 @Injectable({ providedIn: 'root' })
 export class AiService {
-  // Using hosted LLM service
-  private readonly apiUrl = 'https://llm.processzero.xyz/api/generate';
+  private readonly apiUrl = `${environment.apiUrl}/LLM`;
 
   private readonly systemPrompt = `You are an AI assistant embedded in Process Zero, a business management and CRM platform for sales teams and agencies. You help admins compose professional bulk emails for their users and answer general questions about the business.
 
@@ -34,11 +27,9 @@ For all other questions, respond concisely and helpfully.`;
 
   generate(userPrompt: string): Observable<string> {
     const prompt = `${this.systemPrompt}\n\nUser: ${userPrompt}\nAssistant:`;
-    return this.http.post<OllamaResponse>(this.apiUrl, {
-      model: 'llama3',
-      prompt,
-      stream: false
-    }).pipe(map(r => r.response.trim()));
+    return this.http.post<{ text: string }>(`${this.apiUrl}/generate-text`, {
+      prompt
+    }).pipe(map(r => r.text));
   }
 
   generateBusinessPlan(surveyData: any, userPrompt: string): Observable<string> {
@@ -62,10 +53,8 @@ Make it professional, detailed, and actionable. Include specific data points fro
 
     const prompt = `${systemPrompt}\n\nSurvey Data:\n${JSON.stringify(surveyData, null, 2)}\n\nUser Instructions: ${userPrompt}\n\nAssistant: Generate the business plan report:`;
     
-    return this.http.post<OllamaResponse>(this.apiUrl, {
-      model: 'llama3',
-      prompt,
-      stream: false
-    }).pipe(map(r => r.response.trim()));
+    return this.http.post<{ text: string }>(`${this.apiUrl}/generate-text`, {
+      prompt
+    }).pipe(map(r => r.text));
   }
 }
