@@ -58,6 +58,10 @@ export class AdminSurveyPage implements OnInit {
     });
   }
 
+  onReportPromptCancelBound = (): void => this.onReportPromptCancel();
+  
+  onReportPromptConfirmBound = (data: any): void => this.onReportPromptConfirm(data);
+
   ngOnInit(): void {
     this.loadSurveys();
   }
