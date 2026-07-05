@@ -347,7 +347,7 @@ export class AdminSurveyPage implements OnInit {
       }
     };
 
-    this.aiService.generateBusinessPlan(surveyData, this.reportPromptText).subscribe({
+    this.aiService.generateBusinessReport(surveyData, this.reportPromptText).subscribe({
       next: (businessPlan) => {
         this.createPdfFromMarkdown(businessPlan);
         this.generatingReport = false;
