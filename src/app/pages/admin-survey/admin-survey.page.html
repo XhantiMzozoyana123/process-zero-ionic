@@ -305,6 +305,12 @@
 
       <!-- Responses Summary -->
       <ng-container *ngIf="summary && summary.totalResponses > 0 && !selectedResponse">
+        <!-- Generate PDF Report Button -->
+        <ion-button expand="block" (click)="openReportPrompt()" class="report-btn">
+          <ion-icon name="document-outline" slot="start"></ion-icon>
+          Generate PDF Report
+        </ion-button>
+
         <!-- Stats Card -->
         <ion-card class="stats-card">
           <ion-card-content>
@@ -472,4 +478,42 @@
       </ng-container>
     </ng-container>
   </ng-container>
+
+  <!-- Report Prompt Modal -->
+  <ion-alert
+    [isOpen]="showReportPrompt"
+    [header]="'Generate PDF Report'"
+    [inputs]="[
+      {
+        name: 'prompt',
+        type: 'textarea',
+        placeholder: 'Enter detailed instructions for the business plan...\n\nExample: Focus on revenue growth strategies, include market segmentation analysis, and provide actionable recommendations for Q1 2025.',
+        value: reportPromptText,
+        attributes: {
+          rows: 6,
+          cols: 50
+        }
+      }
+    ]"
+    [buttons]="[
+      {
+        text: 'Cancel',
+        role: 'cancel',
+        handler: onReportPromptCancel
+      },
+      {
+        text: 'Generate',
+        handler: onReportPromptConfirm
+      }
+    ]"
+  ></ion-alert>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="generatingReport">
+    <div class="loading-content">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Generating PDF report...</p>
+      <p class="loading-subtitle">This may take a moment</p>
+    </div>
+  </div>
 </ion-content>

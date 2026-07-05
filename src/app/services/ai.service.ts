@@ -41,4 +41,32 @@ For all other questions, respond concisely and helpfully.`;
       stream: false
     }).pipe(map(r => r.response.trim()));
   }
+
+  generateBusinessPlan(surveyData: any, userPrompt: string): Observable<string> {
+    const systemPrompt = `You are an AI business analyst embedded in Process Zero. Your task is to generate a comprehensive business plan PDF report based on survey response data.
+
+When generating the business plan, structure it with clear sections using markdown formatting:
+# [Section Title]
+
+[Content]
+
+Use the following structure:
+- Executive Summary
+- Market Analysis  
+- Business Objectives
+- Target Audience Insights
+- Challenges & Opportunities
+- Recommendations
+- Action Plan
+
+Make it professional, detailed, and actionable. Include specific data points from the survey responses where relevant.`;
+
+    const prompt = `${systemPrompt}\n\nSurvey Data:\n${JSON.stringify(surveyData, null, 2)}\n\nUser Instructions: ${userPrompt}\n\nAssistant: Generate the business plan report:`;
+    
+    return this.http.post<OllamaResponse>(this.apiUrl, {
+      model: 'llama3',
+      prompt,
+      stream: false
+    }).pipe(map(r => r.response.trim()));
+  }
 }

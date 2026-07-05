@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController, AlertController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
+import { AiService } from 'src/app/services/ai.service';
 import { SurveyDto } from 'src/app/models/dtos/survey-dto.model';
 import { SurveysListDto } from 'src/app/models/dtos/surveys-list-dto.model';
 import { SurveySummaryDto } from 'src/app/models/dtos/survey-summary-dto.model';
 import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-result-dto.model';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-admin-survey',
@@ -35,9 +37,15 @@ export class AdminSurveyPage implements OnInit {
   loadingDetail = false;
   selectedSurveyForResponses: number | null = null;
 
+  // ── PDF Report Generation ──────────────────────────────────────────────────
+  showReportPrompt = false;
+  reportPromptText = '';
+  generatingReport = false;
+
   constructor(
     private fb: FormBuilder,
     private surveyService: SurveyService,
+    private aiService: AiService,
     private toastController: ToastController,
     private alertController: AlertController
   ) {
@@ -293,6 +301,130 @@ export class AdminSurveyPage implements OnInit {
       case 'closed': return 'danger';
       default: return 'medium';
     }
+  }
+
+  // ── PDF Report Generation ──────────────────────────────────────────────────
+
+  openReportPrompt(): void {
+    this.showReportPrompt = true;
+    this.reportPromptText = '';
+  }
+
+  closeReportPrompt(): void {
+    this.showReportPrompt = false;
+    this.reportPromptText = '';
+  }
+
+  onReportPromptCancel(): void {
+    this.closeReportPrompt();
+  }
+
+  onReportPromptConfirm(data: any): void {
+    this.reportPromptText = data.prompt || '';
+    this.generatePdfReport();
+  }
+
+  generatePdfReport(): void {
+    if (!this.summary || !this.reportPromptText.trim()) {
+      this.showToast('Please enter instructions for the report.', 'warning');
+      return;
+    }
+
+    this.generatingReport = true;
+    this.closeReportPrompt();
+
+    const surveyData = {
+      survey: this.summary,
+      responses: this.summary.responses,
+      totalResponses: this.summary.totalResponses,
+      dateRange: {
+        from: this.summary.collectedFrom,
+        to: this.summary.collectedTo
+      }
+    };
+
+    this.aiService.generateBusinessPlan(surveyData, this.reportPromptText).subscribe({
+      next: (businessPlan) => {
+        this.createPdfFromMarkdown(businessPlan);
+        this.generatingReport = false;
+        this.showToast('PDF report generated successfully!', 'success');
+      },
+      error: () => {
+        this.showToast('Failed to generate business plan. Please try again.', 'danger');
+        this.generatingReport = false;
+      }
+    });
+  }
+
+  private createPdfFromMarkdown(markdown: string): void {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxLineWidth = pageWidth - margin * 2;
+    let yPosition = margin;
+
+    const lines = markdown.split('\n');
+
+    doc.setFont('helvetica');
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+
+      if (trimmedLine === '') {
+        yPosition += 5;
+        continue;
+      }
+
+      if (trimmedLine.startsWith('# ')) {
+        if (yPosition > 260) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        const title = trimmedLine.substring(2);
+        doc.text(title, margin, yPosition);
+        yPosition += 10;
+        continue;
+      }
+
+      if (trimmedLine.startsWith('## ')) {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        const subtitle = trimmedLine.substring(3);
+        doc.text(subtitle, margin, yPosition);
+        yPosition += 8;
+        continue;
+      }
+
+      if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        const bulletText = trimmedLine.substring(2);
+        const splitBullet = doc.splitTextToSize('• ' + bulletText, maxLineWidth - 5);
+        doc.text(splitBullet, margin + 5, yPosition);
+        yPosition += splitBullet.length * 5;
+        continue;
+      }
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      const splitText = doc.splitTextToSize(trimmedLine, maxLineWidth);
+      doc.text(splitText, margin, yPosition);
+      yPosition += splitText.length * 5;
+
+      if (yPosition > 280) {
+        doc.addPage();
+        yPosition = margin;
+      }
+    }
+
+    const fileName = `business-plan-${this.summary?.name || 'report'}-${new Date().getTime()}.pdf`;
+    doc.save(fileName);
   }
 
   private async showToast(message: string, color: string) {

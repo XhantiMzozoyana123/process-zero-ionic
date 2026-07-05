@@ -675,6 +675,75 @@ $coral: #c06c52;
     }
   }
 
+  // ── Report Button ─────────────────────────────
+  .report-btn {
+    --border-radius: 50px;
+    --background: linear-gradient(135deg, #{$gold}, #{darken($gold, 10%)});
+    --box-shadow: 0 4px 20px rgba($gold, 0.35);
+    font-weight: 700;
+    text-transform: none;
+    height: 52px;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    letter-spacing: 0.02em;
+    transition: transform 0.2s;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.02);
+    }
+
+    ion-icon {
+      font-size: 1.2rem;
+    }
+  }
+
+  // ── Loading Overlay ──────────────────────────
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(23, 33, 33, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeInUp 0.3s ease both;
+  }
+
+  .loading-content {
+    background: $paper;
+    padding: 48px 40px;
+    border-radius: 24px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90%;
+    animation: pulseGlow 2s ease-in-out infinite;
+
+    ion-spinner {
+      width: 56px;
+      height: 56px;
+      --color: #{$teal};
+      margin-bottom: 16px;
+    }
+
+    p {
+      color: $ink;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .loading-subtitle {
+      color: $muted;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+  }
+
   // ── Responsive ───────────────────────────────
   @media (max-width: 576px) {
     .stats-card .stats-grid {
