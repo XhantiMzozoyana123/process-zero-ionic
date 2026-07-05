@@ -268,6 +268,23 @@ export class AdminSurveyPage implements OnInit {
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
+  /**
+   * Copies the public survey link to clipboard.
+   * The survey is accessible at /survey/{id} for respondents.
+   */
+  copySurveyLink(surveyId: number): void {
+    const baseUrl = window.location.origin;
+    const surveyUrl = `${baseUrl}/survey/${surveyId}`;
+    navigator.clipboard.writeText(surveyUrl).then(
+      () => {
+        this.showToast('Survey link copied to clipboard!', 'success');
+      },
+      () => {
+        this.showToast('Failed to copy link.', 'danger');
+      }
+    );
+  }
+
   getStatusColor(status: string): string {
     switch (status?.toLowerCase()) {
       case 'active': return 'success';

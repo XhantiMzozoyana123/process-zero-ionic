@@ -80,6 +80,10 @@
                 <ion-icon name="create-outline" slot="start"></ion-icon>
                 Edit
               </ion-button>
+              <ion-button fill="clear" size="small" (click)="copySurveyLink(s.id)">
+                <ion-icon name="share-outline" slot="start"></ion-icon>
+                Share
+              </ion-button>
               <ion-button fill="clear" size="small" (click)="viewResponses(s.id)">
                 <ion-icon name="analytics-outline" slot="start"></ion-icon>
                 Responses
