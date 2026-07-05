@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
@@ -23,6 +24,8 @@ export class SurveyPage implements OnInit {
   errorMessage = '';
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder,
     private surveyService: SurveyService,
     private toastController: ToastController
@@ -33,17 +36,25 @@ export class SurveyPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadSurvey();
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.loadSurvey(+idParam);
+      } else {
+        this.errorMessage = 'Survey ID is required.';
+        this.loading = false;
+      }
+    });
   }
 
   get answersFormArray(): FormArray {
     return this.surveyForm.get('answers') as FormArray;
   }
 
-  private loadSurvey(): void {
+  private loadSurvey(id: number): void {
     this.loading = true;
     this.errorMessage = '';
-    this.surveyService.getSurvey().subscribe({
+    this.surveyService.getSurvey(id).subscribe({
       next: (survey) => {
         this.survey = survey;
         this.buildAnswersForm(survey.questions.length);
@@ -51,7 +62,7 @@ export class SurveyPage implements OnInit {
       },
       error: (err) => {
         if (err.status === 404) {
-          this.errorMessage = 'Market research survey has not been uploaded yet. Please check back later.';
+          this.errorMessage = 'Survey not found. It may be inactive or no longer available.';
         } else {
           this.errorMessage = 'Could not load the survey. Please try again later.';
         }
@@ -88,6 +99,7 @@ export class SurveyPage implements OnInit {
 
     const formValue = this.surveyForm.value;
     const submission: SurveyResponseSubmissionDto = {
+      surveyId: this.survey!.id,
       answers: formValue.answers.map((a: string) => a?.trim() || '')
     };
 
@@ -115,7 +127,9 @@ export class SurveyPage implements OnInit {
 
   retry(): void {
     this.errorMessage = '';
-    this.loadSurvey();
+    if (this.survey) {
+      this.loadSurvey(this.survey.id);
+    }
   }
 
   resetForm(): void {
@@ -123,7 +137,9 @@ export class SurveyPage implements OnInit {
     this.submissionResult = null;
     this.errorMessage = '';
     this.surveyForm.reset();
-    this.loadSurvey();
+    if (this.survey) {
+      this.loadSurvey(this.survey.id);
+    }
   }
 
   isContactQuestion(index: number): boolean {

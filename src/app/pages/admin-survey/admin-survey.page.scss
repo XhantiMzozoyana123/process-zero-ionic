@@ -1,3 +1,4 @@
+// ── Design tokens ────────────────────────────────────────
 $sand:  #f6f1e8;
 $paper: #fffdf9;
 $ink:   #172121;
@@ -7,6 +8,23 @@ $teal:  #1d7874;
 $blue:  #335c67;
 $coral: #c06c52;
 
+// ── Keyframes ────────────────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba($teal, 0.3); }
+  50%      { box-shadow: 0 0 0 12px rgba($teal, 0); }
+}
+
+// ── Page ─────────────────────────────────────────────────
 .admin-survey-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.12), transparent 32%),
     linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
@@ -23,11 +41,13 @@ $coral: #c06c52;
     ion-spinner {
       width: 40px;
       height: 40px;
+      --color: #{$teal};
     }
 
     p {
       color: $muted;
       font-size: 0.95rem;
+      font-weight: 500;
     }
   }
 
@@ -41,6 +61,7 @@ $coral: #c06c52;
     text-align: center;
     padding: 32px;
     gap: 12px;
+    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 
     .empty-icon {
       font-size: 56px;
@@ -51,12 +72,14 @@ $coral: #c06c52;
       color: $ink;
       margin: 0;
       font-size: 1.3rem;
+      font-weight: 800;
     }
 
     p {
       color: $muted;
       max-width: 400px;
       font-size: 0.92rem;
+      line-height: 1.5;
     }
   }
 
@@ -75,9 +98,11 @@ $coral: #c06c52;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
 
     ion-card-header {
-      padding-bottom: 8px;
+      padding: 18px 20px 8px;
+      border-bottom: 1px solid rgba($ink, 0.04);
 
       ion-card-title {
         font-size: 1.05rem;
@@ -97,7 +122,12 @@ $coral: #c06c52;
         font-size: 0.85rem;
         color: $muted;
         font-weight: 400;
+        margin-top: 4px;
       }
+    }
+
+    ion-card-content {
+      padding: 8px 20px 20px;
     }
 
     ion-item {
@@ -105,6 +135,7 @@ $coral: #c06c52;
       --inner-padding-end: 0;
       --background: transparent;
       --border-color: rgba($ink, 0.06);
+      --min-height: 72px;
 
       ion-label {
         font-size: 0.82rem;
@@ -118,36 +149,47 @@ $coral: #c06c52;
       ion-input,
       ion-textarea {
         --background: rgba($sand, 0.6);
-        --padding-start: 12px;
-        --padding-end: 12px;
-        --padding-top: 10px;
-        --padding-bottom: 10px;
+        --padding-start: 14px;
+        --padding-end: 14px;
+        --padding-top: 12px;
+        --padding-bottom: 12px;
         border-radius: 12px;
         --border-radius: 12px;
         font-size: 0.92rem;
         margin-top: 4px;
+        --placeholder-color: rgba($muted, 0.5);
+        --placeholder-opacity: 1;
+        --color: #{$ink};
+        transition: --background 0.2s;
+
+        &:focus-within {
+          --background: rgba($sand, 0.8);
+        }
       }
     }
 
     ion-note {
       font-size: 0.78rem;
       padding-left: 0;
+      margin-top: 4px;
     }
   }
 
   // ── Question Card ────────────────────────────
   .question-card {
-    margin: 12px 0;
+    margin: 14px 0;
     border-left: 3px solid $teal;
     background: rgba($paper, 0.6);
     border-radius: 14px;
     box-shadow: 0 2px 8px rgba(19, 31, 31, 0.04);
+    overflow: hidden;
 
     ion-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 0;
+      padding: 12px 16px 0;
+      border-bottom: none;
 
       ion-card-subtitle {
         font-weight: 700;
@@ -156,10 +198,15 @@ $coral: #c06c52;
       }
     }
 
+    ion-card-content {
+      padding: 4px 16px 16px;
+    }
+
     ion-item {
       --padding-start: 0;
       --inner-padding-end: 0;
       --background: transparent;
+      --min-height: 60px;
 
       ion-label {
         font-size: 0.82rem;
@@ -179,7 +226,25 @@ $coral: #c06c52;
         --border-radius: 12px;
         font-size: 0.92rem;
         margin-top: 4px;
+        --placeholder-color: rgba($muted, 0.5);
+        --placeholder-opacity: 1;
+        --color: #{$ink};
       }
+
+      ion-toggle {
+        --background: rgba($ink, 0.1);
+        --background-checked: rgba($teal, 0.3);
+        --handle-background: #{$paper};
+        --handle-background-checked: #{$teal};
+      }
+    }
+
+    .remove-btn {
+      --color: #{$coral};
+      --padding-start: 8px;
+      --padding-end: 8px;
+      margin: 0;
+      height: 36px;
     }
   }
 
@@ -187,9 +252,17 @@ $coral: #c06c52;
     margin-top: 16px;
     --border-style: dashed;
     --border-color: rgba($teal, 0.4);
-    --color: $teal;
+    --color: #{$teal};
     --border-radius: 14px;
     font-weight: 600;
+    text-transform: none;
+    height: 48px;
+    transition: --border-color 0.2s, --color 0.2s;
+
+    &:hover {
+      --border-color: #{$teal};
+      --color: #{darken($teal, 8%)};
+    }
   }
 
   .save-container {
@@ -203,6 +276,17 @@ $coral: #c06c52;
       font-weight: 600;
       letter-spacing: 0.02em;
       height: 52px;
+      font-size: 1rem;
+      text-transform: none;
+      transition: transform 0.2s;
+
+      &:hover:not(:disabled) {
+        transform: scale(1.02);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+      }
     }
   }
 
@@ -215,13 +299,17 @@ $coral: #c06c52;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
+
+    ion-card-content {
+      padding: 20px;
+    }
 
     .stats-grid {
       display: flex;
       justify-content: space-around;
       text-align: center;
       gap: 8px;
-      padding: 8px 0;
 
       .stat-item {
         display: flex;
@@ -230,7 +318,7 @@ $coral: #c06c52;
       }
 
       .stat-value {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         font-weight: 800;
         color: $teal;
       }
@@ -254,9 +342,11 @@ $coral: #c06c52;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
 
     ion-card-header {
-      padding-bottom: 8px;
+      padding: 18px 20px 8px;
+      border-bottom: 1px solid rgba($ink, 0.04);
 
       ion-card-title {
         font-size: 1.05rem;
@@ -267,13 +357,24 @@ $coral: #c06c52;
       ion-card-subtitle {
         font-size: 0.85rem;
         color: $muted;
+        margin-top: 2px;
       }
     }
 
+    ion-card-content {
+      padding: 4px 0;
+    }
+
     .response-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
+      --padding-start: 20px;
+      --inner-padding-end: 12px;
       --background: transparent;
+      --min-height: 64px;
+      transition: background 0.15s;
+
+      &:hover {
+        --background: rgba($teal, 0.03);
+      }
 
       h3 {
         font-size: 0.95rem;
@@ -303,8 +404,9 @@ $coral: #c06c52;
     margin: 0 auto 8px;
 
     ion-button {
-      --color: $teal;
+      --color: #{$teal};
       font-weight: 600;
+      text-transform: none;
     }
   }
 
@@ -316,9 +418,11 @@ $coral: #c06c52;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
 
     ion-card-header {
-      padding-bottom: 8px;
+      padding: 18px 20px 8px;
+      border-bottom: 1px solid rgba($ink, 0.04);
 
       ion-card-title {
         font-size: 1.05rem;
@@ -335,10 +439,15 @@ $coral: #c06c52;
       }
     }
 
+    ion-card-content {
+      padding: 4px 0;
+    }
+
     ion-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
+      --padding-start: 20px;
+      --inner-padding-end: 12px;
       --background: transparent;
+      --min-height: 56px;
 
       h3 {
         font-size: 0.82rem;
@@ -382,10 +491,201 @@ $coral: #c06c52;
     padding: 16px;
   }
 
+  // ── Surveys List ──────────────────────────────
+  .list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 720px;
+    margin: 0 auto 16px;
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: $ink;
+      margin: 0;
+    }
+  }
+
+  .create-btn-small {
+    --border-radius: 50px;
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+    --box-shadow: 0 4px 14px rgba($teal, 0.25);
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  .create-btn {
+    --border-radius: 50px;
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+    --box-shadow: 0 4px 16px rgba($teal, 0.3);
+    font-weight: 600;
+    text-transform: none;
+    margin-top: 8px;
+  }
+
+  .surveys-list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .survey-card {
+    background: rgba($paper, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
+    margin: 0;
+
+    ion-card-header {
+      padding: 16px 18px 4px;
+
+      ion-card-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        color: $ink;
+      }
+
+      ion-card-subtitle {
+        font-size: 0.82rem;
+        color: $muted;
+        font-weight: 500;
+        margin-top: 2px;
+      }
+    }
+
+    ion-card-content {
+      padding: 8px 18px 12px;
+    }
+
+    .survey-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+
+      ion-badge {
+        font-weight: 600;
+        font-size: 0.72rem;
+        padding: 4px 10px;
+        border-radius: 50px;
+      }
+
+      .response-count {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.82rem;
+        color: $muted;
+        font-weight: 500;
+
+        ion-icon {
+          font-size: 0.9rem;
+          color: $teal;
+        }
+      }
+    }
+
+    .survey-date {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: rgba($muted, 0.7);
+
+      ion-icon {
+        font-size: 0.8rem;
+      }
+    }
+
+    .survey-actions {
+      display: flex;
+      gap: 4px;
+      padding: 0 12px 8px;
+      border-top: 1px solid rgba($ink, 0.04);
+
+      ion-button {
+        --padding-start: 10px;
+        --padding-end: 10px;
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: none;
+      }
+    }
+  }
+
+  // ── Editor Header ─────────────────────────────
+  .editor-header {
+    max-width: 720px;
+    margin: 0 auto 16px;
+
+    ion-button {
+      --color: #{$teal};
+      font-weight: 600;
+      text-transform: none;
+      margin-bottom: 4px;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: $ink;
+      margin: 0 0 0 8px;
+    }
+  }
+
+  // ── Info Card ─────────────────────────────────
+  .info-card {
+    max-width: 720px;
+    margin: 0 auto 14px;
+    background: rgba($paper, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
+
+    ion-card-content {
+      padding: 16px 20px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 12px;
+      padding: 6px 0;
+
+      .info-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $muted;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        min-width: 80px;
+      }
+
+      .info-value {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: $ink;
+      }
+    }
+  }
+
+  // ── Responsive ───────────────────────────────
   @media (max-width: 576px) {
     .stats-card .stats-grid {
       flex-direction: column;
       gap: 16px;
+    }
+
+    .form-card,
+    .responses-card,
+    .detail-card {
+      border-radius: 16px;
     }
   }
 }

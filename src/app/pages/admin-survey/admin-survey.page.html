@@ -7,11 +7,15 @@
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment [value]="activeTab" (ionChange)="switchTab($event)">
+      <ion-segment-button value="surveys">
+        <ion-icon name="list-outline"></ion-icon>
+        <ion-label>All Surveys</ion-label>
+      </ion-segment-button>
       <ion-segment-button value="editor">
         <ion-icon name="create-outline"></ion-icon>
-        <ion-label>Survey Editor</ion-label>
+        <ion-label>Editor</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="responses">
+      <ion-segment-button value="responses" [disabled]="!selectedSurveyForResponses">
         <ion-icon name="analytics-outline"></ion-icon>
         <ion-label>Responses</ion-label>
       </ion-segment-button>
@@ -20,6 +24,77 @@
 </ion-header>
 
 <ion-content class="admin-survey-page ion-padding">
+  <!-- ========== ALL SURVEYS LIST ========== -->
+  <ng-container *ngIf="activeTab === 'surveys'">
+    <!-- Loading -->
+    <div class="loading-container" *ngIf="loadingSurveys">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading surveys...</p>
+    </div>
+
+    <ng-container *ngIf="!loadingSurveys">
+      <!-- Empty State -->
+      <ng-container *ngIf="surveys.length === 0">
+        <div class="empty-container">
+          <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+          <h2>No Surveys Yet</h2>
+          <p>Create your first market research survey to start collecting audience insights.</p>
+          <ion-button (click)="createNewSurvey()" class="create-btn">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Create Survey
+          </ion-button>
+        </div>
+      </ng-container>
+
+      <!-- Surveys List -->
+      <ng-container *ngIf="surveys.length > 0">
+        <div class="list-header">
+          <h2>All Surveys</h2>
+          <ion-button (click)="createNewSurvey()" size="small" class="create-btn-small">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            New Survey
+          </ion-button>
+        </div>
+
+        <div class="surveys-list">
+          <ion-card class="survey-card" *ngFor="let s of surveys">
+            <ion-card-header>
+              <ion-card-title>{{ s.title }}</ion-card-title>
+              <ion-card-subtitle>{{ s.name }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="survey-meta">
+                <ion-badge [color]="getStatusColor(s.status)">{{ s.status }}</ion-badge>
+                <span class="response-count">
+                  <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+                  {{ s.responseCount }} {{ s.responseCount === 1 ? 'response' : 'responses' }}
+                </span>
+              </div>
+              <div class="survey-date">
+                <ion-icon name="calendar-outline"></ion-icon>
+                Uploaded {{ s.uploadedAt | date:'mediumDate' }}
+              </div>
+            </ion-card-content>
+            <div class="survey-actions">
+              <ion-button fill="clear" size="small" (click)="editSurvey(s.id)">
+                <ion-icon name="create-outline" slot="start"></ion-icon>
+                Edit
+              </ion-button>
+              <ion-button fill="clear" size="small" (click)="viewResponses(s.id)">
+                <ion-icon name="analytics-outline" slot="start"></ion-icon>
+                Responses
+              </ion-button>
+              <ion-button fill="clear" size="small" color="danger" (click)="confirmDeleteSurvey(s.id, s.title)">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Delete
+              </ion-button>
+            </div>
+          </ion-card>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
   <!-- ========== SURVEY EDITOR ========== -->
   <ng-container *ngIf="activeTab === 'editor'">
     <!-- Loading -->
@@ -30,8 +105,16 @@
 
     <!-- Editor -->
     <ng-container *ngIf="!loadingSurvey">
+      <div class="editor-header">
+        <ion-button fill="clear" (click)="cancelEdit()">
+          <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+          Back to Surveys
+        </ion-button>
+        <h2>{{ isNewSurvey ? 'Create New Survey' : 'Edit Survey' }}</h2>
+      </div>
+
       <form [formGroup]="surveyForm" (ngSubmit)="saveSurvey()">
-        <!-- Title & Description -->
+        <!-- Survey Details -->
         <ion-card class="form-card">
           <ion-card-header>
             <ion-card-title>
@@ -41,6 +124,23 @@
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="none">
+              <ion-item>
+                <ion-label position="stacked">
+                  Survey Name <span class="required-star">*</span>
+                </ion-label>
+                <ion-input
+                  formControlName="name"
+                  placeholder="e.g., Q1 2025 Market Research"
+                  [class.ion-invalid]="surveyForm.get('name')?.invalid && surveyForm.get('name')?.touched"
+                ></ion-input>
+                <ion-note
+                  color="danger"
+                  *ngIf="surveyForm.get('name')?.invalid && surveyForm.get('name')?.touched"
+                >
+                  Name is required
+                </ion-note>
+              </ion-item>
+
               <ion-item>
                 <ion-label position="stacked">
                   Survey Title <span class="required-star">*</span>
@@ -75,6 +175,16 @@
                   Description is required
                 </ion-note>
               </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Status</ion-label>
+                <ion-select formControlName="status">
+                  <ion-select-option value="Active">Active</ion-select-option>
+                  <ion-select-option value="Draft">Draft</ion-select-option>
+                  <ion-select-option value="Archived">Archived</ion-select-option>
+                  <ion-select-option value="Closed">Closed</ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-list>
           </ion-card-content>
         </ion-card>
@@ -84,9 +194,11 @@
           <ion-card-header>
             <ion-card-title>
               <ion-icon name="help-circle-outline" class="card-icon"></ion-icon>
-              Survey Questions
+              Business Questions
             </ion-card-title>
-            <ion-card-subtitle>Add questions that respondents will answer</ion-card-subtitle>
+            <ion-card-subtitle>
+              Contact questions (email, name, phone, etc.) are automatically prepended. Add your custom pain point questions below.
+            </ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
             <div formArrayName="questions">
@@ -155,7 +267,7 @@
           >
             <ion-spinner *ngIf="savingSurvey" slot="start"></ion-spinner>
             <ion-icon *ngIf="!savingSurvey" name="save-outline" slot="start"></ion-icon>
-            {{ savingSurvey ? 'Saving...' : 'Save Survey' }}
+            {{ savingSurvey ? 'Saving...' : (isNewSurvey ? 'Create Survey' : 'Save Changes') }}
           </ion-button>
         </div>
       </form>
@@ -170,166 +282,189 @@
       <p>Loading responses...</p>
     </div>
 
-    <!-- No Responses -->
-    <ng-container *ngIf="!loadingResponses && (!summary || summary.totalResponses === 0)">
-      <div class="empty-container">
-        <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
-        <h2>No Responses Yet</h2>
-        <p>Survey responses will appear here once respondents start submitting.</p>
-      </div>
-    </ng-container>
-
-    <!-- Responses Summary -->
-    <ng-container *ngIf="!loadingResponses && summary && summary.totalResponses > 0 && !selectedResponse">
-      <!-- Stats Card -->
-      <ion-card class="stats-card">
-        <ion-card-content>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-value">{{ summary.totalResponses }}</span>
-              <span class="stat-label">Total Responses</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value">{{ summary.collectedFrom | date:'shortDate' }}</span>
-              <span class="stat-label">From</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value">{{ summary.collectedTo | date:'shortDate' }}</span>
-              <span class="stat-label">To</span>
-            </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- Responses List -->
-      <ion-card class="responses-card">
-        <ion-card-header>
-          <ion-card-title>All Responses</ion-card-title>
-          <ion-card-subtitle>{{ summary.title }}</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-list lines="full">
-            <ion-item
-              *ngFor="let response of summary.responses"
-              button
-              (click)="viewResponseDetail(response.id)"
-              class="response-item"
-            >
-              <ion-label>
-                <h3>{{ response.firstName }} {{ response.lastName }}</h3>
-                <p>{{ response.email }}</p>
-                <p class="response-meta">
-                  <ion-text color="medium">
-                    <small>{{ response.submittedAt | date:'medium' }}</small>
-                  </ion-text>
-                  <ion-text *ngIf="response.company" color="medium">
-                    <small> &middot; {{ response.company }}</small>
-                  </ion-text>
-                </p>
-              </ion-label>
-              <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </ng-container>
-
-    <!-- Response Detail -->
-    <ng-container *ngIf="selectedResponse">
+    <ng-container *ngIf="!loadingResponses">
       <div class="detail-header">
-        <ion-button fill="clear" (click)="closeDetail()">
+        <ion-button fill="clear" (click)="activeTab = 'surveys'; loadSurveys()">
           <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
-          Back to Responses
+          Back to Surveys
         </ion-button>
       </div>
 
-      <div *ngIf="loadingDetail" class="loading-container">
-        <ion-spinner name="crescent"></ion-spinner>
-        <p>Loading detail...</p>
-      </div>
+      <!-- No Responses -->
+      <ng-container *ngIf="!summary || summary.totalResponses === 0">
+        <div class="empty-container">
+          <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+          <h2>No Responses Yet</h2>
+          <p *ngIf="summary">Survey responses will appear here once respondents start submitting.</p>
+        </div>
+      </ng-container>
 
-      <ng-container *ngIf="!loadingDetail && selectedResponse">
-        <!-- Respondent Info -->
-        <ion-card class="detail-card">
+      <!-- Responses Summary -->
+      <ng-container *ngIf="summary && summary.totalResponses > 0 && !selectedResponse">
+        <!-- Stats Card -->
+        <ion-card class="stats-card">
+          <ion-card-content>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-value">{{ summary.totalResponses }}</span>
+                <span class="stat-label">Total Responses</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{ summary.collectedFrom | date:'shortDate' }}</span>
+                <span class="stat-label">From</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{ summary.collectedTo | date:'shortDate' }}</span>
+                <span class="stat-label">To</span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Survey Info -->
+        <ion-card class="info-card">
+          <ion-card-content>
+            <div class="info-row">
+              <span class="info-label">Survey</span>
+              <span class="info-value">{{ summary.title }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Name</span>
+              <span class="info-value">{{ summary.name }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Responses List -->
+        <ion-card class="responses-card">
           <ion-card-header>
-            <ion-card-title>
-              <ion-icon name="person-outline" class="card-icon"></ion-icon>
-              Respondent Information
-            </ion-card-title>
+            <ion-card-title>All Responses</ion-card-title>
+            <ion-card-subtitle>{{ summary.totalResponses }} total</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="full">
-              <ion-item>
+              <ion-item
+                *ngFor="let response of summary.responses"
+                button
+                (click)="viewResponseDetail(response.id)"
+                class="response-item"
+              >
                 <ion-label>
-                  <h3>Contact</h3>
-                  <p>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</p>
-                  <p>{{ selectedResponse.email }}</p>
+                  <h3>{{ response.firstName }} {{ response.lastName }}</h3>
+                  <p>{{ response.email }}</p>
+                  <p class="response-meta">
+                    <ion-text color="medium">
+                      <small>{{ response.submittedAt | date:'medium' }}</small>
+                    </ion-text>
+                    <ion-text *ngIf="response.company" color="medium">
+                      <small> &middot; {{ response.company }}</small>
+                    </ion-text>
+                  </p>
                 </ion-label>
-              </ion-item>
-              <ion-item *ngIf="selectedResponse.phone">
-                <ion-label>
-                  <h3>Phone</h3>
-                  <p>{{ selectedResponse.phone }}</p>
-                </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h3>Company</h3>
-                  <p>{{ selectedResponse.company || 'N/A' }}</p>
-                </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h3>Job Title</h3>
-                  <p>{{ selectedResponse.job || 'N/A' }}</p>
-                </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h3>Industry</h3>
-                  <p>{{ selectedResponse.industry || 'N/A' }}</p>
-                </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h3>Submitted At</h3>
-                  <p>{{ selectedResponse.submittedAt | date:'medium' }}</p>
-                </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h3>Response ID</h3>
-                  <p>{{ selectedResponse.id }}</p>
-                </ion-label>
+                <ion-icon name="chevron-forward-outline" slot="end" color="medium"></ion-icon>
               </ion-item>
             </ion-list>
           </ion-card-content>
         </ion-card>
+      </ng-container>
 
-        <!-- Answers -->
-        <ion-card class="detail-card">
-          <ion-card-header>
-            <ion-card-title>
-              <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
-              Answers
-            </ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ng-container *ngIf="selectedResponse.answers && selectedResponse.answers.length > 0; else noAnswers">
+      <!-- Response Detail -->
+      <ng-container *ngIf="selectedResponse">
+        <div class="detail-header">
+          <ion-button fill="clear" (click)="closeDetail()">
+            <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+            Back to Responses
+          </ion-button>
+        </div>
+
+        <div *ngIf="loadingDetail" class="loading-container">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Loading detail...</p>
+        </div>
+
+        <ng-container *ngIf="!loadingDetail && selectedResponse">
+          <!-- Respondent Info -->
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="person-outline" class="card-icon"></ion-icon>
+                Respondent Information
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
               <ion-list lines="full">
-                <ion-item *ngFor="let answer of selectedResponse.answers; let i = index">
-                  <ion-label class="answer-item">
-                    <h3>Question {{ i + 1 }}</h3>
-                    <p>{{ answer }}</p>
+                <ion-item>
+                  <ion-label>
+                    <h3>Contact</h3>
+                    <p>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</p>
+                    <p>{{ selectedResponse.email }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item *ngIf="selectedResponse.phone">
+                  <ion-label>
+                    <h3>Phone</h3>
+                    <p>{{ selectedResponse.phone }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <h3>Company</h3>
+                    <p>{{ selectedResponse.company || 'N/A' }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <h3>Job Title</h3>
+                    <p>{{ selectedResponse.job || 'N/A' }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <h3>Industry</h3>
+                    <p>{{ selectedResponse.industry || 'N/A' }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <h3>Submitted At</h3>
+                    <p>{{ selectedResponse.submittedAt | date:'medium' }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <h3>Response ID</h3>
+                    <p>{{ selectedResponse.id }}</p>
                   </ion-label>
                 </ion-item>
               </ion-list>
-            </ng-container>
-            <ng-template #noAnswers>
-              <p class="no-data">No answers provided.</p>
-            </ng-template>
-          </ion-card-content>
-        </ion-card>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Answers -->
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
+                Answers
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ng-container *ngIf="selectedResponse.answers && selectedResponse.answers.length > 0; else noAnswers">
+                <ion-list lines="full">
+                  <ion-item *ngFor="let answer of selectedResponse.answers; let i = index">
+                    <ion-label class="answer-item">
+                      <h3>Question {{ i + 1 }}</h3>
+                      <p>{{ answer }}</p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+              </ng-container>
+              <ng-template #noAnswers>
+                <p class="no-data">No answers provided.</p>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ng-container>
       </ng-container>
     </ng-container>
   </ng-container>

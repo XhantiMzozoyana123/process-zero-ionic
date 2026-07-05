@@ -1,3 +1,4 @@
+// ── Design tokens ────────────────────────────────────────
 $sand:  #f6f1e8;
 $paper: #fffdf9;
 $ink:   #172121;
@@ -7,6 +8,33 @@ $teal:  #1d7874;
 $blue:  #335c67;
 $coral: #c06c52;
 
+// ── Keyframes ────────────────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba($teal, 0.3); }
+  50%      { box-shadow: 0 0 0 12px rgba($teal, 0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Page ─────────────────────────────────────────────────
 .survey-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.12), transparent 32%),
     linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
@@ -23,11 +51,13 @@ $coral: #c06c52;
     ion-spinner {
       width: 40px;
       height: 40px;
+      --color: #{$teal};
     }
 
     p {
       color: $muted;
       font-size: 0.95rem;
+      font-weight: 500;
     }
   }
 
@@ -41,6 +71,7 @@ $coral: #c06c52;
     text-align: center;
     padding: 32px;
     gap: 12px;
+    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 
     .error-icon {
       font-size: 56px;
@@ -51,6 +82,7 @@ $coral: #c06c52;
       color: $ink;
       margin: 0;
       font-size: 1.4rem;
+      font-weight: 800;
     }
 
     p {
@@ -75,12 +107,14 @@ $coral: #c06c52;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 32px 16px;
+    padding: 40px 16px;
     gap: 12px;
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 
     .success-icon {
-      font-size: 64px;
+      font-size: 72px;
       color: $teal;
+      animation: fadeInScale 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     h2 {
@@ -102,10 +136,11 @@ $coral: #c06c52;
       background: rgba($paper, 0.92);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.7);
-      border-radius: 18px;
+      border-radius: 20px;
       box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
       margin: 12px 0;
       text-align: left;
+      animation: slideUp 0.5s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 
       ion-card-header {
         padding-bottom: 4px;
@@ -151,21 +186,23 @@ $coral: #c06c52;
   // ── Survey Header ────────────────────────────
   .survey-header {
     max-width: 640px;
-    margin: 0 auto 24px;
+    margin: 0 auto 28px;
     padding: 0 4px;
+    text-align: center;
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: $ink;
-      margin: 0 0 8px;
+      margin: 0 0 10px;
+      line-height: 1.2;
     }
 
     .survey-description {
       font-size: 0.95rem;
       color: $muted;
       line-height: 1.6;
-      margin: 0 0 8px;
+      margin: 0 0 10px;
     }
 
     .required-note {
@@ -184,9 +221,11 @@ $coral: #c06c52;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+    overflow: hidden;
 
     ion-card-header {
-      padding-bottom: 8px;
+      padding: 18px 20px 8px;
+      border-bottom: 1px solid rgba($ink, 0.04);
 
       ion-card-title {
         font-size: 1.05rem;
@@ -203,11 +242,16 @@ $coral: #c06c52;
       }
     }
 
+    ion-card-content {
+      padding: 8px 20px 20px;
+    }
+
     ion-item {
       --padding-start: 0;
       --inner-padding-end: 0;
       --background: transparent;
       --border-color: rgba($ink, 0.06);
+      --min-height: 72px;
 
       ion-label {
         font-size: 0.82rem;
@@ -221,51 +265,56 @@ $coral: #c06c52;
       ion-input,
       ion-textarea {
         --background: rgba($sand, 0.6);
-        --padding-start: 12px;
-        --padding-end: 12px;
-        --padding-top: 10px;
-        --padding-bottom: 10px;
+        --padding-start: 14px;
+        --padding-end: 14px;
+        --padding-top: 12px;
+        --padding-bottom: 12px;
         border-radius: 12px;
         --border-radius: 12px;
         font-size: 0.92rem;
         margin-top: 4px;
+        --placeholder-color: rgba($muted, 0.5);
+        --placeholder-opacity: 1;
+        --color: #{$ink};
+        transition: --background 0.2s;
+
+        &:focus-within {
+          --background: rgba($sand, 0.8);
+        }
+      }
+
+      &.question-item {
+        --min-height: 0;
+        padding: 14px 0;
+
+        ion-label {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: $ink;
+          text-transform: none;
+          letter-spacing: 0;
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+
+        ion-textarea {
+          --padding-top: 12px;
+          --padding-bottom: 12px;
+          min-height: 80px;
+        }
       }
     }
 
     ion-note {
       font-size: 0.78rem;
       padding-left: 0;
-    }
-  }
-
-  // ── Question Items ───────────────────────────
-  .question-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    --background: transparent;
-    margin-bottom: 4px;
-    align-items: flex-start;
-
-    ion-label {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: $ink;
-      text-transform: none;
-      letter-spacing: 0;
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-
-    ion-textarea {
-      --background: rgba($sand, 0.6);
-      --padding-start: 12px;
-      --padding-end: 12px;
-      --padding-top: 10px;
-      --padding-bottom: 10px;
-      border-radius: 12px;
-      --border-radius: 12px;
-      font-size: 0.92rem;
       margin-top: 4px;
+    }
+
+    ion-item-divider {
+      --background: transparent;
+      border-bottom: 1px solid rgba($ink, 0.04);
+      min-height: 0;
     }
   }
 
@@ -275,6 +324,7 @@ $coral: #c06c52;
     margin: 0 auto 20px;
     --background: rgba($sand, 0.5);
     border-radius: 16px;
+    box-shadow: none;
 
     ion-card-content {
       display: flex;
@@ -299,6 +349,10 @@ $coral: #c06c52;
         color: $teal;
         text-decoration: none;
         font-weight: 600;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -315,11 +369,34 @@ $coral: #c06c52;
       font-weight: 600;
       letter-spacing: 0.02em;
       height: 52px;
+      font-size: 1rem;
+      text-transform: none;
+      transition: transform 0.2s;
+
+      &:hover:not(:disabled) {
+        transform: scale(1.02);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+      }
     }
   }
 
+  // ── Required Star ────────────────────────────
   .required-star {
     color: $coral;
     font-weight: bold;
+  }
+
+  // ── Responsive ───────────────────────────────
+  @media (max-width: 576px) {
+    .survey-header h1 {
+      font-size: 1.3rem;
+    }
+
+    .form-card {
+      border-radius: 16px;
+    }
   }
 }

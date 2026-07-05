@@ -1,5 +1,6 @@
 export interface SurveyResponseResultDto {
   id: number;
+  surveyId: number;
   email: string;
   firstName: string;
   lastName: string;

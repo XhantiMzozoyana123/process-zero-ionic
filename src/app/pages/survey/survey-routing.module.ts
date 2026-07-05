@@ -4,6 +4,10 @@ import { SurveyPage } from './survey.page';
 
 const routes: Routes = [
   {
+    path: ':id',
+    component: SurveyPage
+  },
+  {
     path: '',
     component: SurveyPage
   }

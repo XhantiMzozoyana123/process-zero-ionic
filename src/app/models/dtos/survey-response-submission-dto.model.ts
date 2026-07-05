@@ -3,7 +3,7 @@
  *
  * CRITICAL: The answers array must have one entry per question in the survey's Questions array.
  * The backend prepends 7 contact questions (indices 0-6) to every survey, so the frontend
- * receives ALL questions (contact + business) from GET /api/survey.
+ * receives ALL questions (contact + business) from GET /api/survey/{id}.
  *
  * Answers array structure:
  *   answers[0]: Email address (REQUIRED)
@@ -16,5 +16,6 @@
  *   answers[7+]: Business/pain point question responses
  */
 export interface SurveyResponseSubmissionDto {
+  surveyId: number;
   answers: string[];
 }

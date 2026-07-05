@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController, AlertController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
 import { SurveyDto } from 'src/app/models/dtos/survey-dto.model';
+import { SurveysListDto } from 'src/app/models/dtos/surveys-list-dto.model';
 import { SurveySummaryDto } from 'src/app/models/dtos/survey-summary-dto.model';
 import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-result-dto.model';
 
@@ -14,19 +15,25 @@ import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-res
 })
 export class AdminSurveyPage implements OnInit {
   // Tab selection
-  activeTab: 'editor' | 'responses' = 'editor';
+  activeTab: 'surveys' | 'editor' | 'responses' = 'surveys';
+
+  // ── Survey List ────────────────────────────────────────────────────────────
+  surveys: SurveysListDto[] = [];
+  loadingSurveys = false;
 
   // ── Survey Editor ──────────────────────────────────────────────────────────
   surveyForm: FormGroup;
   loadingSurvey = false;
   savingSurvey = false;
-  surveyLoaded = false;
+  editingSurveyId: number | null = null;
+  isNewSurvey = false;
 
   // ── Responses ──────────────────────────────────────────────────────────────
   summary: SurveySummaryDto | null = null;
   loadingResponses = false;
   selectedResponse: SurveyResponseResultDto | null = null;
   loadingDetail = false;
+  selectedSurveyForResponses: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -35,14 +42,16 @@ export class AdminSurveyPage implements OnInit {
     private alertController: AlertController
   ) {
     this.surveyForm = this.fb.group({
+      name: ['', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
+      status: ['Active'],
       questions: this.fb.array([])
     });
   }
 
   ngOnInit(): void {
-    this.loadSurveyForAdmin();
+    this.loadSurveys();
   }
 
   // ── Form Getters ───────────────────────────────────────────────────────────
@@ -67,36 +76,67 @@ export class AdminSurveyPage implements OnInit {
     this.questionsFormArray.removeAt(index);
   }
 
+  // ── Survey List ────────────────────────────────────────────────────────────
+
+  loadSurveys(): void {
+    this.activeTab = 'surveys';
+    this.loadingSurveys = true;
+    this.surveyService.listSurveysForAdmin().subscribe({
+      next: (surveys) => {
+        this.surveys = surveys;
+        this.loadingSurveys = false;
+      },
+      error: () => {
+        this.showToast('Could not load surveys.', 'danger');
+        this.loadingSurveys = false;
+      }
+    });
+  }
+
   // ── Survey Editor ──────────────────────────────────────────────────────────
 
-  private loadSurveyForAdmin(): void {
+  createNewSurvey(): void {
+    this.editingSurveyId = null;
+    this.isNewSurvey = true;
+    this.surveyForm.reset({
+      name: '',
+      title: '',
+      description: '',
+      status: 'Active'
+    });
+    // Clear questions
+    while (this.questionsFormArray.length > 0) {
+      this.questionsFormArray.removeAt(0);
+    }
+    this.activeTab = 'editor';
+  }
+
+  editSurvey(surveyId: number): void {
+    this.editingSurveyId = surveyId;
+    this.isNewSurvey = false;
     this.loadingSurvey = true;
-    this.surveyService.getSurveyForAdmin().subscribe({
+    this.activeTab = 'editor';
+
+    this.surveyService.getSurveyForAdmin(surveyId).subscribe({
       next: (survey) => {
-        if (survey) {
-          this.surveyForm.patchValue({
-            title: survey.title,
-            description: survey.description
-          });
-          // Clear existing questions
-          while (this.questionsFormArray.length > 0) {
-            this.questionsFormArray.removeAt(0);
-          }
-          // Add questions from server
-          survey.questions.forEach(q => {
-            this.questionsFormArray.push(this.createQuestionFormGroup(q));
-          });
-          this.surveyLoaded = true;
+        this.surveyForm.patchValue({
+          name: survey.name,
+          title: survey.title,
+          description: survey.description,
+          status: survey.status || 'Active'
+        });
+        // Clear existing questions
+        while (this.questionsFormArray.length > 0) {
+          this.questionsFormArray.removeAt(0);
         }
+        // Add questions from server
+        survey.questions.forEach(q => {
+          this.questionsFormArray.push(this.createQuestionFormGroup(q));
+        });
         this.loadingSurvey = false;
       },
-      error: (err) => {
-        if (err.status === 404) {
-          // No survey exists yet - that's fine, start fresh
-          this.surveyLoaded = true;
-        } else {
-          this.showToast('Could not load survey for editing.', 'danger');
-        }
+      error: () => {
+        this.showToast('Could not load survey for editing.', 'danger');
         this.loadingSurvey = false;
       }
     });
@@ -111,8 +151,10 @@ export class AdminSurveyPage implements OnInit {
 
     const formValue = this.surveyForm.value;
     const survey: SurveyDto = {
+      name: formValue.name,
       title: formValue.title,
       description: formValue.description,
+      status: formValue.status,
       questions: formValue.questions.map((q: any) => ({
         id: q.id,
         text: q.text,
@@ -121,35 +163,78 @@ export class AdminSurveyPage implements OnInit {
     };
 
     this.savingSurvey = true;
-    this.surveyService.uploadSurvey(survey).subscribe({
+
+    const operation = this.isNewSurvey
+      ? this.surveyService.createSurvey(survey)
+      : this.surveyService.updateSurvey(this.editingSurveyId!, survey);
+
+    operation.subscribe({
       next: () => {
-        this.showToast('Survey saved successfully!', 'success');
+        this.showToast(
+          this.isNewSurvey ? 'Survey created successfully!' : 'Survey updated successfully!',
+          'success'
+        );
         this.savingSurvey = false;
+        this.loadSurveys();
+      },
+      error: (err) => {
+        this.showToast(
+          err.error?.message || 'Failed to save survey. Please try again.',
+          'danger'
+        );
+        this.savingSurvey = false;
+      }
+    });
+  }
+
+  cancelEdit(): void {
+    this.loadSurveys();
+  }
+
+  async confirmDeleteSurvey(surveyId: number, surveyName: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Delete Survey',
+      message: `Are you sure you want to delete "${surveyName}"? This will permanently delete all responses and respondent data associated with this survey.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.deleteSurvey(surveyId);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private deleteSurvey(surveyId: number): void {
+    this.surveyService.deleteSurvey(surveyId).subscribe({
+      next: () => {
+        this.showToast('Survey deleted successfully.', 'success');
+        this.loadSurveys();
       },
       error: () => {
-        this.showToast('Failed to save survey. Please try again.', 'danger');
-        this.savingSurvey = false;
+        this.showToast('Failed to delete survey.', 'danger');
       }
     });
   }
 
   // ── Responses ──────────────────────────────────────────────────────────────
 
-  loadResponses(): void {
+  viewResponses(surveyId: number): void {
+    this.selectedSurveyForResponses = surveyId;
     this.activeTab = 'responses';
     this.loadingResponses = true;
     this.selectedResponse = null;
-    this.surveyService.getAllResponses().subscribe({
+    this.surveyService.getAllResponses(surveyId).subscribe({
       next: (summary) => {
         this.summary = summary;
         this.loadingResponses = false;
       },
-      error: (err) => {
-        if (err.status === 404) {
-          this.summary = null;
-        } else {
-          this.showToast('Could not load survey responses.', 'danger');
-        }
+      error: () => {
+        this.showToast('Could not load survey responses.', 'danger');
         this.loadingResponses = false;
       }
     });
@@ -174,14 +259,24 @@ export class AdminSurveyPage implements OnInit {
   }
 
   switchTab(event: CustomEvent): void {
-    const tab = event.detail.value as 'editor' | 'responses';
+    const tab = event.detail.value as 'surveys' | 'editor' | 'responses';
     this.activeTab = tab;
-    if (tab === 'responses') {
-      this.loadResponses();
+    if (tab === 'surveys') {
+      this.loadSurveys();
     }
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
+
+  getStatusColor(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'active': return 'success';
+      case 'draft': return 'warning';
+      case 'archived': return 'medium';
+      case 'closed': return 'danger';
+      default: return 'medium';
+    }
+  }
 
   private async showToast(message: string, color: string) {
     const toast = await this.toastController.create({ message, color, duration: 3000, position: 'top' });
