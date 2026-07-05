@@ -79,6 +79,21 @@ $muted: #607078;
     line-height: 1.5;
   }
 
+  .form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  .form-group-half {
+    flex: 1;
+    min-width: 0;
+  }
+
   .form-group {
     margin-bottom: 20px;
   }

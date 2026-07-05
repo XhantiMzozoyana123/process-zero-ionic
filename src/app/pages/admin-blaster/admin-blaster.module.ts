@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { AdminEmailBlasterPageRoutingModule } from './admin-email-blaster-routing.module';
-import { AdminEmailBlasterPage } from './admin-email-blaster.page';
+import { AdminBlasterPageRoutingModule } from './admin-blaster-routing.module';
+import { AdminBlasterPage } from './admin-blaster.page';
 
 @NgModule({
   imports: [
@@ -12,8 +12,8 @@ import { AdminEmailBlasterPage } from './admin-email-blaster.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    AdminEmailBlasterPageRoutingModule
+    AdminBlasterPageRoutingModule
   ],
-  declarations: [AdminEmailBlasterPage]
+  declarations: [AdminBlasterPage]
 })
-export class AdminEmailBlasterPageModule {}
+export class AdminBlasterPageModule {}

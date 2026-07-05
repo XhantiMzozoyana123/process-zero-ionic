@@ -13,10 +13,29 @@
                  [(ngModel)]="registerData.userName" />
         </div>
 
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" placeholder="First name"
+                   [(ngModel)]="registerData.firstName" />
+          </div>
+          <div class="form-group form-group-half">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" placeholder="Last name"
+                   [(ngModel)]="registerData.lastName" />
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Email</label>
           <input type="email" class="form-input" placeholder="you@example.com"
                  [(ngModel)]="registerData.email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="e.g. +27 12 345 6789"
+                 [(ngModel)]="registerData.phoneNumber" />
         </div>
 
         <div class="form-group">

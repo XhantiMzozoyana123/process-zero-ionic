@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AdminEmailBlasterPage } from './admin-email-blaster.page';
+import { AdminBlasterPage } from './admin-blaster.page';
 
 const routes: Routes = [
-  { path: '', component: AdminEmailBlasterPage }
+  { path: '', component: AdminBlasterPage }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminEmailBlasterPageRoutingModule {}
+export class AdminBlasterPageRoutingModule {}

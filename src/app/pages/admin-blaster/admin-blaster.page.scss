@@ -7,7 +7,7 @@ $teal:  #1d7874;
 $blue:  #335c67;
 $coral: #c06c52;
 
-.admin-email-blaster-page {
+.admin-blaster-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
     linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
 
@@ -136,7 +136,7 @@ $coral: #c06c52;
       margin-bottom: 4px;
     }
 
-    ion-input, ion-textarea {
+    ion-input, ion-textarea, ion-select {
       --background: rgba($sand, 0.6);
       --padding-start: 12px;
       --padding-end: 12px;
@@ -146,6 +146,21 @@ $coral: #c06c52;
       --border-radius: 12px;
       font-size: 0.92rem;
       margin-top: 4px;
+    }
+  }
+
+  .channel-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 12px;
+    color: $muted;
+    font-size: 0.83rem;
+
+    ion-icon {
+      color: $teal;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
   }
 
@@ -465,6 +480,10 @@ $coral: #c06c52;
       font-size: 0.82rem;
       color: $teal;
       font-weight: 500;
+
+      &.missing-recipient {
+        color: $coral;
+      }
     }
   }
 
@@ -651,5 +670,11 @@ $coral: #c06c52;
     --background: linear-gradient(135deg, #1d7874, #335c67);
     --border-radius: 50px;
     --box-shadow: 0 4px 16px rgba(29, 120, 116, 0.3);
+  }
+
+  .send-warning {
+    font-size: 0.82rem;
+    color: #c06c52;
+    text-align: center;
   }
 }

@@ -4,6 +4,9 @@ export interface ApplicationUser {
   email: string;
   emailConfirmed: boolean;
   phoneNumber?: string;
+  facebookRecipientId?: string;
+  messengerRecipientId?: string;
+  recipientId?: string;
   lockoutEnabled?: boolean;
   lockoutEnd?: string;
   isBanned?: boolean;

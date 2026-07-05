@@ -17,7 +17,7 @@ export class AiService {
   private readonly systemPrompt = `You are an AI assistant embedded in Process Zero, a business management and CRM platform for sales teams and agencies.
 
 You help administrators:
-- Compose professional bulk emails.
+- Compose professional bulk messages across email, SMS, WhatsApp, and Facebook.
 - Answer general business questions.
 - Assist with business operations.
 
@@ -28,6 +28,8 @@ Subject: [One concise subject]
 [Professional email body]
 
 Do not include any additional labels or explanations.
+
+When asked to draft SMS, WhatsApp, or Facebook messages, return only the message body with no labels.
 
 For all other questions, respond clearly, professionally, and concisely.`;
 
@@ -40,6 +42,40 @@ User:
 ${userPrompt}
 
 Assistant:`;
+
+    return this.http
+      .post<{ text: string }>(`${this.apiUrl}/generate-text`, {
+        prompt
+      })
+      .pipe(map(response => response.text));
+  }
+
+  generateBlasterDraft(channel: 'email' | 'sms' | 'whatsapp' | 'facebook', userPrompt: string): Observable<string> {
+    const channelLabel = channel === 'sms' ? 'SMS' : channel === 'whatsapp' ? 'WhatsApp' : channel === 'facebook' ? 'Facebook' : 'email';
+
+    const prompt = `You are writing a finished outbound ${channelLabel} message for an admin using Process Zero.
+
+Your job is to return a completed message draft only.
+Do not give advice.
+Do not explain your reasoning.
+Do not ask follow-up questions.
+Do not suggest workflows or automation.
+Do not include intro text, outro text, bullets, or notes.
+
+${channel === 'email'
+? `Return the response EXACTLY in this format:
+
+Subject: [One concise subject line]
+
+[Complete email body]`
+: `Return only the final ${channelLabel} message text with no labels.`}
+
+If the user asks for strategy, recommendations, or follow-up ideas, convert that request into the best possible ${channelLabel} re-engagement message draft instead of answering conversationally.
+
+User request:
+${userPrompt}
+
+Final draft:`;
 
     return this.http
       .post<{ text: string }>(`${this.apiUrl}/generate-text`, {

@@ -1,4 +1,4 @@
-<ion-content class="admin-email-blaster-page">
+<ion-content class="admin-blaster-page">
 
   <!-- Header -->
   <section class="page-header">
@@ -6,9 +6,9 @@
       <div>
         <h1>
           <ion-icon name="megaphone-outline" class="header-icon"></ion-icon>
-          Email Blaster
+          Admin Blaster
         </h1>
-        <p>Compose and send bulk emails to registered app users.</p>
+        <p>Compose and send bulk messages to registered app users using the channel you choose.</p>
       </div>
       <div class="header-badge">
         <span *ngIf="selectedUsers.length > 0" class="recipient-badge">
@@ -31,19 +31,32 @@
         </ion-button>
       </div>
       <form [formGroup]="composeForm">
-        <ion-item class="form-item">
+        <ion-item class="form-item channel-item">
+          <ion-label position="stacked">Channel <span class="required">*</span></ion-label>
+          <ion-select formControlName="channel" interface="popover">
+            <ion-select-option *ngFor="let option of channelOptions" [value]="option.value">
+              {{ option.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="channel-note">
+          <ion-icon [name]="channelIcon"></ion-icon>
+          <span>{{ channelDescription }}</span>
+        </div>
+
+        <ion-item class="form-item" *ngIf="requiresSubject">
           <ion-label position="stacked">Subject <span class="required">*</span></ion-label>
           <ion-input formControlName="subject" placeholder="Enter email subject line..."></ion-input>
         </ion-item>
-        <div *ngIf="composeForm.get('subject')?.invalid && composeForm.get('subject')?.touched" class="field-error">
-          Subject is required.
+        <div *ngIf="requiresSubject && composeForm.get('subject')?.invalid && composeForm.get('subject')?.touched" class="field-error">
+          Subject is required for email messages.
         </div>
 
         <ion-item class="form-item body-item">
-          <ion-label position="stacked">Message Body <span class="required">*</span></ion-label>
+          <ion-label position="stacked">{{ requiresSubject ? 'Message Body' : 'Message' }} <span class="required">*</span></ion-label>
           <ion-textarea
             formControlName="body"
-            placeholder="Write your message here..."
+            [placeholder]="messagePrompt"
             rows="10"
             autoGrow="true">
           </ion-textarea>
@@ -66,11 +79,11 @@
             <strong>Preview</strong>
           </div>
           <div class="preview-body">
-            <div class="preview-field">
+            <div class="preview-field" *ngIf="requiresSubject">
               <span class="preview-label">Subject:</span>
               <span class="preview-value">{{ composeForm.get('subject')?.value || '(no subject)' }}</span>
             </div>
-            <div class="preview-divider"></div>
+            <div class="preview-divider" *ngIf="requiresSubject"></div>
             <div class="preview-content">{{ composeForm.get('body')?.value }}</div>
           </div>
         </div>
@@ -81,12 +94,12 @@
         <div class="ai-panel-header">
           <ion-icon name="sparkles-outline" class="ai-spark-icon"></ion-icon>
           <span class="ai-panel-title">AI Assistant</span>
-          <span class="ai-panel-hint">Ask me to draft an email or answer questions about the business</span>
+          <span class="ai-panel-hint">This assistant returns a ready-to-send draft for the selected channel.</span>
         </div>
 
         <div class="ai-messages" #aiMsgContainer>
           <div *ngIf="aiMessages.length === 0" class="ai-empty">
-            <p>Try: <em>&ldquo;Write a welcome email for new users&rdquo;</em> or <em>&ldquo;Draft a renewal reminder&rdquo;</em></p>
+              <p>Try: <em>&ldquo;Write a welcome email for new users&rdquo;</em> or <em>&ldquo;Draft a short WhatsApp renewal reminder&rdquo;</em></p>
           </div>
 
           <div
@@ -123,7 +136,7 @@
           <ion-input
             [(ngModel)]="aiInput"
             [ngModelOptions]="{ standalone: true }"
-            placeholder="Ask AI to draft an email or ask a question..."
+            placeholder="Describe the message you want drafted..."
             (keyup.enter)="sendAiMessage()"
             class="ai-input">
           </ion-input>
@@ -188,7 +201,7 @@
             </ion-avatar>
             <ion-label>
               <h3>{{ u.userName }}</h3>
-              <p>{{ u.email }}</p>
+              <p [class.missing-recipient]="!getRecipientDisplay(u) || getRecipientDisplay(u).startsWith('Missing')">{{ getRecipientDisplay(u) }}</p>
             </ion-label>
             <ion-icon
               slot="end"
@@ -236,19 +249,22 @@
 <ion-footer class="send-footer">
   <div class="send-bar-inner">
     <div class="send-summary" *ngIf="selectedUsers.length > 0">
-      <ion-icon name="mail-outline"></ion-icon>
-      <span>Sending to <strong>{{ selectedUsers.length }}</strong> user{{ selectedUsers.length !== 1 ? 's' : '' }}</span>
+      <ion-icon [name]="channelIcon"></ion-icon>
+      <span>{{ summaryLabel }} <strong>{{ selectedUsers.length }}</strong> user{{ selectedUsers.length !== 1 ? 's' : '' }}</span>
+    </div>
+    <div class="send-warning" *ngIf="missingChannelTargetCount > 0">
+      {{ missingChannelTargetCount }} selected user{{ missingChannelTargetCount !== 1 ? 's are' : ' is' }} missing {{ selectedChannel === 'facebook' ? 'a Messenger recipient ID' : selectedChannel === 'email' ? 'an email address' : 'a phone number' }}.
     </div>
     <ion-button
       shape="round"
       color="primary"
       size="large"
-      [disabled]="composeForm.invalid || selectedUsers.length === 0 || sending"
+      [disabled]="composeForm.invalid || selectedUsers.length === 0 || sending || missingChannelTargetCount > 0"
       (click)="send()"
       class="send-btn">
       <ion-spinner *ngIf="sending" name="crescent" slot="start"></ion-spinner>
-      <ion-icon *ngIf="!sending" slot="start" name="send-outline"></ion-icon>
-      {{ sending ? 'Sending...' : 'Send Blast' }}
+      <ion-icon *ngIf="!sending" slot="start" [name]="channelIcon"></ion-icon>
+      {{ sendButtonLabel }}
     </ion-button>
   </div>
 </ion-footer>

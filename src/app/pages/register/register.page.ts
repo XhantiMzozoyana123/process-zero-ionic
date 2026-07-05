@@ -13,7 +13,7 @@ import { AuthResponse } from 'src/app/models/dtos/auth-response.model';
 })
 export class RegisterPage implements OnInit {
 
-  registerData: RegisterDto = { userName: '', email: '', password: '' };
+  registerData: RegisterDto = { userName: '', firstName: '', lastName: '', email: '', phoneNumber: '', password: '' };
   loading = false;
 
   constructor(

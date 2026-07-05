@@ -1,0 +1,193 @@
+<ion-content class="scheduler-page">
+  <div class="scheduler-wrapper">
+    <div class="scheduler-card">
+      <div class="scheduler-header">
+        <h1 class="brand"><ion-icon name="calendar-outline"></ion-icon> Scheduler</h1>
+        <p class="subtitle">Schedule messages across channels</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-button" [class.active]="activeTab === 'schedule'" (click)="setTab('schedule')">Schedule</button>
+        <button class="tab-button" [class.active]="activeTab === 'pending'" (click)="setTab('pending')">Pending</button>
+      </div>
+
+      <div class="tab-content" *ngIf="activeTab === 'schedule'">
+        <div class="calendar">
+          <div class="calendar-header">
+            <button class="icon-button" (click)="prevMonth()"><ion-icon name="chevron-back-outline"></ion-icon></button>
+            <h3>{{ monthLabel }}</h3>
+            <button class="icon-button" (click)="nextMonth()"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+          </div>
+          <div class="calendar-grid">
+            <div class="weekday" *ngFor="let wd of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">{{ wd }}</div>
+            <div *ngFor="let day of calendarDays"
+                 class="day"
+                 [class.other]="!day.isCurrentMonth"
+                 [class.today]="day.isToday"
+                 [class.selected]="day.isSelected"
+                 (click)="selectDate(day)">
+              <span>{{ day.dayNumber }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="channels">
+            <button class="channel-button" [class.active]="activeChannel === 'sms'" (click)="setChannel('sms')">SMS</button>
+            <button class="channel-button" [class.active]="activeChannel === 'whatsapp'" (click)="setChannel('whatsapp')">WhatsApp</button>
+            <button class="channel-button" [class.active]="activeChannel === 'facebook'" (click)="setChannel('facebook')">Facebook</button>
+            <button class="channel-button" [class.active]="activeChannel === 'email'" (click)="setChannel('email')">Email</button>
+          </div>
+
+          <form class="message-form" (ngSubmit)="submitSms()" *ngIf="activeChannel === 'sms'">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" [(ngModel)]="smsForm.phoneNumber" name="phoneNumber" placeholder="+27 12 345 6789" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-input" rows="4" [(ngModel)]="smsForm.message" name="message" placeholder="Type your message"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Date</label>
+              <input type="date" class="form-input" [(ngModel)]="smsForm.scheduledAt" name="scheduledAt" />
+            </div>
+            <button class="btn-primary" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
+              {{ submitting ? 'Scheduling...' : 'Schedule SMS' }}
+            </button>
+          </form>
+
+          <form class="message-form" (ngSubmit)="submitWhatsApp()" *ngIf="activeChannel === 'whatsapp'">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" [(ngModel)]="whatsappForm.phoneNumber" name="phoneNumber" placeholder="+27 12 345 6789" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-input" rows="4" [(ngModel)]="whatsappForm.message" name="message" placeholder="Type your message"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Date</label>
+              <input type="date" class="form-input" [(ngModel)]="whatsappForm.scheduledAt" name="scheduledAt" />
+            </div>
+            <button class="btn-primary" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
+              {{ submitting ? 'Scheduling...' : 'Schedule WhatsApp' }}
+            </button>
+          </form>
+
+          <form class="message-form" (ngSubmit)="submitFacebook()" *ngIf="activeChannel === 'facebook'">
+            <div class="form-group">
+              <label class="form-label">Recipient ID</label>
+              <input type="text" class="form-input" [(ngModel)]="facebookForm.recipientId" name="recipientId" placeholder="Facebook recipient ID" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-input" rows="4" [(ngModel)]="facebookForm.message" name="message" placeholder="Type your message"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Date</label>
+              <input type="date" class="form-input" [(ngModel)]="facebookForm.scheduledAt" name="scheduledAt" />
+            </div>
+            <button class="btn-primary" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
+              {{ submitting ? 'Scheduling...' : 'Schedule Facebook' }}
+            </button>
+          </form>
+
+          <form class="message-form" (ngSubmit)="submitEmail()" *ngIf="activeChannel === 'email'">
+            <div class="form-group">
+              <label class="form-label">Recipient Email</label>
+              <input type="email" class="form-input" [(ngModel)]="emailForm.recipientEmail" name="recipientEmail" placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Recipient Name</label>
+              <input type="text" class="form-input" [(ngModel)]="emailForm.recipientName" name="recipientName" placeholder="Display name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <input type="text" class="form-input" [(ngModel)]="emailForm.subject" name="subject" placeholder="Subject" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Body</label>
+              <textarea class="form-input" rows="4" [(ngModel)]="emailForm.body" name="body" placeholder="Email content"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Date</label>
+              <input type="date" class="form-input" [(ngModel)]="emailForm.scheduledAt" name="scheduledAt" />
+            </div>
+            <button class="btn-primary" type="submit" [disabled]="submitting">
+              <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
+              {{ submitting ? 'Scheduling...' : 'Schedule Email' }}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="tab-content" *ngIf="activeTab === 'pending'">
+        <div class="pending-section">
+          <h3>SMS</h3>
+          <div class="message-list">
+            <div class="message-item" *ngFor="let item of pendingSms">
+              <div class="message-meta">
+                <strong>{{ item.phoneNumber }}</strong>
+                <span>{{ item.scheduledAt }}</span>
+              </div>
+              <p>{{ item.message }}</p>
+              <div class="message-actions">
+                <button class="btn-small" (click)="reschedule(item.id, 'sms')">Reschedule</button>
+                <button class="btn-small danger" (click)="cancel(item.id, 'sms')">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <h3>WhatsApp</h3>
+          <div class="message-list">
+            <div class="message-item" *ngFor="let item of pendingWhatsApp">
+              <div class="message-meta">
+                <strong>{{ item.phoneNumber }}</strong>
+                <span>{{ item.scheduledAt }}</span>
+              </div>
+              <p>{{ item.message }}</p>
+              <div class="message-actions">
+                <button class="btn-small" (click)="reschedule(item.id, 'whatsapp')">Reschedule</button>
+                <button class="btn-small danger" (click)="cancel(item.id, 'whatsapp')">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <h3>Facebook</h3>
+          <div class="message-list">
+            <div class="message-item" *ngFor="let item of pendingFacebook">
+              <div class="message-meta">
+                <strong>{{ item.recipientId }}</strong>
+                <span>{{ item.scheduledAt }}</span>
+              </div>
+              <p>{{ item.message }}</p>
+              <div class="message-actions">
+                <button class="btn-small" (click)="reschedule(item.id, 'facebook')">Reschedule</button>
+                <button class="btn-small danger" (click)="cancel(item.id, 'facebook')">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <h3>Email</h3>
+          <div class="message-list">
+            <div class="message-item" *ngFor="let item of pendingEmails">
+              <div class="message-meta">
+                <strong>{{ item.recipientEmail }} - {{ item.subject }}</strong>
+                <span>{{ item.scheduledAt }}</span>
+              </div>
+              <p>{{ item.body }}</p>
+              <div class="message-actions">
+                <button class="btn-small" (click)="reschedule(item.id, 'email')">Reschedule</button>
+                <button class="btn-small danger" (click)="cancel(item.id, 'email')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
