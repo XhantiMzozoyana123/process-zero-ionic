@@ -306,10 +306,12 @@
       <!-- Responses Summary -->
       <ng-container *ngIf="summary && summary.totalResponses > 0 && !selectedResponse">
         <!-- Generate PDF Report Button -->
-        <ion-button expand="block" (click)="openReportPrompt()" class="report-btn">
-          <ion-icon name="document-outline" slot="start"></ion-icon>
-          Generate PDF Report
-        </ion-button>
+        <div class="report-container">
+          <ion-button expand="block" (click)="openReportPrompt()" class="report-btn">
+            <ion-icon name="document-outline" slot="start"></ion-icon>
+            Generate PDF Report
+          </ion-button>
+        </div>
 
         <!-- Stats Card -->
         <ion-card class="stats-card">

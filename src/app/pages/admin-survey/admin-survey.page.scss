@@ -675,6 +675,12 @@ $coral: #c06c52;
     }
   }
 
+  // ── Report Container ──────────────────────────
+  .report-container {
+    max-width: 720px;
+    margin: 0 auto 16px;
+  }
+
   // ── Report Button ─────────────────────────────
   .report-btn {
     --border-radius: 50px;
@@ -683,7 +689,6 @@ $coral: #c06c52;
     font-weight: 700;
     text-transform: none;
     height: 52px;
-    margin-bottom: 16px;
     animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     letter-spacing: 0.02em;
     transition: transform 0.2s;
