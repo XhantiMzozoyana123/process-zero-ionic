@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { RegisterDto } from '../models/dtos/register-dto.model';
 import { LoginDto } from '../models/dtos/login-dto.model';
 import { UserDto } from '../models/dtos/user-dto.model';
@@ -111,5 +111,13 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.getUserRole() === 'Admin';
+  }
+
+  refreshToken(): Observable<ApiMessageResponse> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error('No token available'));
+    }
+    return this.http.post<ApiMessageResponse>(`${this.apiUrl}/refresh`, { token });
   }
 }

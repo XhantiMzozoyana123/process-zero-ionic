@@ -6,13 +6,16 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
+  private refreshTokenSubject$ = new BehaviorSubject<string | null>(null);
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -33,8 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && !isAuthEndpoint) {
-          this.authService.clearSession();
-          void this.router.navigate(['/login']);
+          return this.handle401Error(request, next);
         }
 
         if (error.status === 403 && error.error?.error === 'Account is banned') {
@@ -45,5 +47,46 @@ export class AuthInterceptor implements HttpInterceptor {
         return throwError(() => error);
       })
     );
+  }
+
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject$.next(null);
+
+      return this.authService.refreshToken().pipe(
+        switchMap((response) => {
+          this.isRefreshing = false;
+          const newToken = this.authService.getToken();
+          this.refreshTokenSubject$.next(newToken);
+          return next.handle(this.addToken(request, newToken));
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.authService.clearSession();
+          void this.router.navigate(['/login']);
+          return throwError(() => err);
+        })
+      );
+    } else {
+      return this.refreshTokenSubject$.pipe(
+        filter((token) => token != null),
+        take(1),
+        switchMap((token) => {
+          return next.handle(this.addToken(request, token as string));
+        })
+      );
+    }
+  }
+
+  private addToken(request: HttpRequest<any>, token: string | null): HttpRequest<any> {
+    if (!token) {
+      return request;
+    }
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 }
