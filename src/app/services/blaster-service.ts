@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminBlasterService {
+export class BlasterService {
   private apiUrl = `${environment.apiUrl}/blaster`;
 
   constructor(private http: HttpClient) {}

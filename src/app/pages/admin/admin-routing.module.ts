@@ -10,9 +10,9 @@ const routes: Routes = [
     canActivateChild: [AdminGuard],
     children: [
       {
-        path: 'dashboard',
-        loadChildren: () => import('../admin-dashboard/admin-dashboard.module')
-          .then(m => m.AdminDashboardPageModule),
+        path: 'blaster',
+        loadChildren: () => import('../blaster/blaster.module')
+          .then(m => m.BlasterPageModule),
         canActivate: [AdminGuard]
       },
       {
@@ -100,23 +100,23 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
-        path: 'admin-blaster',
-        loadChildren: () => import('../admin-blaster/admin-blaster.module')
-          .then(m => m.AdminBlasterPageModule),
+        path: 'blaster',
+        loadChildren: () => import('../blaster/blaster.module')
+          .then(m => m.BlasterPageModule),
         canActivate: [AdminGuard]
       },
       {
         path: 'message-blaster',
-        redirectTo: 'admin-blaster',
+        redirectTo: 'blaster',
         pathMatch: 'full'
       },
       {
         path: 'email-blaster',
-        redirectTo: 'admin-blaster',
+        redirectTo: 'blaster',
         pathMatch: 'full'
       },
       {
-        path: 'scheduler',
+        path: 'admin-scheduler',
         loadChildren: () => import('../scheduler/scheduler.module')
           .then(m => m.SchedulerPageModule),
         canActivate: [AdminGuard]

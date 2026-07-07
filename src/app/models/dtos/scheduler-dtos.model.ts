@@ -1,18 +1,24 @@
 export interface ScheduleSmsDto {
   phoneNumber: string;
   message: string;
+  scheduledDate?: string;
+  scheduledTime?: string;
   scheduledAt: string;
 }
 
 export interface ScheduleWhatsAppDto {
   phoneNumber: string;
   message: string;
+  scheduledDate?: string;
+  scheduledTime?: string;
   scheduledAt: string;
 }
 
 export interface ScheduleFacebookDto {
   recipientId: string;
   message: string;
+  scheduledDate?: string;
+  scheduledTime?: string;
   scheduledAt: string;
 }
 
@@ -21,6 +27,8 @@ export interface ScheduleEmailDto {
   recipientName: string;
   subject: string;
   body: string;
+  scheduledDate?: string;
+  scheduledTime?: string;
   scheduledAt: string;
 }
 

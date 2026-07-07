@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
-import { AdminBlasterService } from 'src/app/services/admin-blaster-service';
+import { BlasterService } from 'src/app/services/blaster-service';
 import { AdminUserService } from 'src/app/services/admin-user-service';
 import { AiService, AiMessage } from 'src/app/services/ai.service';
 import { ApplicationUser } from 'src/app/models/entities/application-user.model';
@@ -20,12 +20,12 @@ interface ChannelOption {
 }
 
 @Component({
-  selector: 'app-admin-blaster',
-  templateUrl: './admin-blaster.page.html',
-  styleUrls: ['./admin-blaster.page.scss'],
+  selector: 'app-blaster',
+  templateUrl: './blaster.page.html',
+  styleUrls: ['./blaster.page.scss'],
   standalone: false
 })
-export class AdminBlasterPage implements OnInit {
+export class BlasterPage implements OnInit {
   @ViewChild('aiMsgContainer') aiMsgContainer!: ElementRef;
 
   readonly channelOptions: ChannelOption[] = [
@@ -54,7 +54,7 @@ export class AdminBlasterPage implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messagingService: AdminBlasterService,
+    private messagingService: BlasterService,
     private userService: AdminUserService,
     private aiService: AiService,
     private toastController: ToastController

@@ -50,7 +50,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Scheduled Date</label>
-              <input type="date" class="form-input" [(ngModel)]="smsForm.scheduledAt" name="scheduledAt" />
+              <input type="date" class="form-input" [(ngModel)]="smsForm.scheduledDate" name="scheduledDate" (change)="updateScheduledAt('sms')" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Time</label>
+              <input type="time" class="form-input" [(ngModel)]="smsForm.scheduledTime" name="scheduledTime" (change)="updateScheduledAt('sms')" />
             </div>
             <button class="btn-primary" type="submit" [disabled]="submitting">
               <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
@@ -69,7 +73,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Scheduled Date</label>
-              <input type="date" class="form-input" [(ngModel)]="whatsappForm.scheduledAt" name="scheduledAt" />
+              <input type="date" class="form-input" [(ngModel)]="whatsappForm.scheduledDate" name="scheduledDate" (change)="updateScheduledAt('whatsapp')" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Time</label>
+              <input type="time" class="form-input" [(ngModel)]="whatsappForm.scheduledTime" name="scheduledTime" (change)="updateScheduledAt('whatsapp')" />
             </div>
             <button class="btn-primary" type="submit" [disabled]="submitting">
               <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
@@ -88,7 +96,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Scheduled Date</label>
-              <input type="date" class="form-input" [(ngModel)]="facebookForm.scheduledAt" name="scheduledAt" />
+              <input type="date" class="form-input" [(ngModel)]="facebookForm.scheduledDate" name="scheduledDate" (change)="updateScheduledAt('facebook')" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Time</label>
+              <input type="time" class="form-input" [(ngModel)]="facebookForm.scheduledTime" name="scheduledTime" (change)="updateScheduledAt('facebook')" />
             </div>
             <button class="btn-primary" type="submit" [disabled]="submitting">
               <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>
@@ -115,7 +127,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Scheduled Date</label>
-              <input type="date" class="form-input" [(ngModel)]="emailForm.scheduledAt" name="scheduledAt" />
+              <input type="date" class="form-input" [(ngModel)]="emailForm.scheduledDate" name="scheduledDate" (change)="updateScheduledAt('email')" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Time</label>
+              <input type="time" class="form-input" [(ngModel)]="emailForm.scheduledTime" name="scheduledTime" (change)="updateScheduledAt('email')" />
             </div>
             <button class="btn-primary" type="submit" [disabled]="submitting">
               <ion-spinner *ngIf="submitting" name="crescent"></ion-spinner>

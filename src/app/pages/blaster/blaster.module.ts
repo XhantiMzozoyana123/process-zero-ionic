@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { AdminBlasterPageRoutingModule } from './admin-blaster-routing.module';
-import { AdminBlasterPage } from './admin-blaster.page';
+import { BlasterPageRoutingModule } from './blaster-routing.module';
+import { BlasterPage } from './blaster.page';
 
 @NgModule({
   imports: [
@@ -12,8 +12,8 @@ import { AdminBlasterPage } from './admin-blaster.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    AdminBlasterPageRoutingModule
+    BlasterPageRoutingModule
   ],
-  declarations: [AdminBlasterPage]
+  declarations: [BlasterPage]
 })
-export class AdminBlasterPageModule {}
+export class BlasterPageModule {}

@@ -44,10 +44,10 @@ export class SchedulerPage implements OnInit, OnDestroy {
   activeChannel: Channel = 'sms';
 
   // Form models
-  smsForm: ScheduleSmsDto = { phoneNumber: '', message: '', scheduledAt: '' };
-  whatsappForm: ScheduleWhatsAppDto = { phoneNumber: '', message: '', scheduledAt: '' };
-  facebookForm: ScheduleFacebookDto = { recipientId: '', message: '', scheduledAt: '' };
-  emailForm: ScheduleEmailDto = { recipientEmail: '', recipientName: '', subject: '', body: '', scheduledAt: '' };
+  smsForm: ScheduleSmsDto = { phoneNumber: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
+  whatsappForm: ScheduleWhatsAppDto = { phoneNumber: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
+  facebookForm: ScheduleFacebookDto = { recipientId: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
+  emailForm: ScheduleEmailDto = { recipientEmail: '', recipientName: '', subject: '', body: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
 
   loading = false;
   submitting = false;
@@ -96,10 +96,14 @@ export class SchedulerPage implements OnInit, OnDestroy {
     this.selectedDate = day.date;
     this.generateCalendar();
     const iso = this.toLocalIsoDate(day.date);
-    this.smsForm.scheduledAt = iso;
-    this.whatsappForm.scheduledAt = iso;
-    this.facebookForm.scheduledAt = iso;
-    this.emailForm.scheduledAt = iso;
+    this.smsForm.scheduledDate = iso;
+    this.whatsappForm.scheduledDate = iso;
+    this.facebookForm.scheduledDate = iso;
+    this.emailForm.scheduledDate = iso;
+    this.updateScheduledAt('sms');
+    this.updateScheduledAt('whatsapp');
+    this.updateScheduledAt('facebook');
+    this.updateScheduledAt('email');
   }
 
   private generateCalendar(): void {
@@ -150,6 +154,39 @@ export class SchedulerPage implements OnInit, OnDestroy {
   private toLocalIsoDate(d: Date): string {
     const pad = (n: number) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  updateScheduledAt(channel: Channel): void {
+    let dateStr: string;
+    let timeStr: string;
+    switch (channel) {
+      case 'sms':
+        dateStr = this.smsForm.scheduledDate || '';
+        timeStr = this.smsForm.scheduledTime || '';
+        break;
+      case 'whatsapp':
+        dateStr = this.whatsappForm.scheduledDate || '';
+        timeStr = this.whatsappForm.scheduledTime || '';
+        break;
+      case 'facebook':
+        dateStr = this.facebookForm.scheduledDate || '';
+        timeStr = this.facebookForm.scheduledTime || '';
+        break;
+      case 'email':
+        dateStr = this.emailForm.scheduledDate || '';
+        timeStr = this.emailForm.scheduledTime || '';
+        break;
+    }
+    if (dateStr) {
+      const localDateTime = timeStr ? `${dateStr}T${timeStr}:00` : dateStr;
+      const iso = new Date(localDateTime).toISOString();
+      switch (channel) {
+        case 'sms': this.smsForm.scheduledAt = iso; break;
+        case 'whatsapp': this.whatsappForm.scheduledAt = iso; break;
+        case 'facebook': this.facebookForm.scheduledAt = iso; break;
+        case 'email': this.emailForm.scheduledAt = iso; break;
+      }
+    }
   }
 
   // Tab/channel helpers
@@ -301,16 +338,16 @@ export class SchedulerPage implements OnInit, OnDestroy {
   private resetChannelForm(channel: Channel): void {
     switch (channel) {
       case 'sms':
-        this.smsForm = { phoneNumber: '', message: '', scheduledAt: this.smsForm.scheduledAt };
+        this.smsForm = { phoneNumber: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
         break;
       case 'whatsapp':
-        this.whatsappForm = { phoneNumber: '', message: '', scheduledAt: this.whatsappForm.scheduledAt };
+        this.whatsappForm = { phoneNumber: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
         break;
       case 'facebook':
-        this.facebookForm = { recipientId: '', message: '', scheduledAt: this.facebookForm.scheduledAt };
+        this.facebookForm = { recipientId: '', message: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
         break;
       case 'email':
-        this.emailForm = { recipientEmail: '', recipientName: '', subject: '', body: '', scheduledAt: this.emailForm.scheduledAt };
+        this.emailForm = { recipientEmail: '', recipientName: '', subject: '', body: '', scheduledDate: '', scheduledTime: '', scheduledAt: '' };
         break;
     }
   }
