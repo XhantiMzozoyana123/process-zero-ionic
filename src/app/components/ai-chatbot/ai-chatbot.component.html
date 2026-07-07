@@ -1,0 +1,44 @@
+<!-- Floating Chat Button -->
+<ion-fab *ngIf="!isOpen" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="toggleChat()" class="chat-fab">
+    <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<!-- Chat Widget -->
+<ion-card *ngIf="isOpen" class="chatbot-widget">
+  <ion-card-header class="chatbot-header">
+    <ion-card-title>
+      <ion-icon name="pulse-outline" class="header-icon"></ion-icon>
+      Process Zero Assistant
+    </ion-card-title>
+    <ion-button fill="clear" (click)="closeChat()" class="close-btn">
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </ion-button>
+  </ion-card-header>
+
+  <ion-card-content class="chatbot-content">
+    <div class="messages-container">
+      <div *ngFor="let msg of messages" [class]="'message ' + msg.sender">
+        <div class="message-bubble">
+          {{ msg.text }}
+        </div>
+      </div>
+    </div>
+  </ion-card-content>
+
+  <div class="chatbot-input">
+    <ion-item class="input-item" lines="none">
+      <ion-textarea
+        [(ngModel)]="userMessage"
+        placeholder="Type your question..."
+        rows="1"
+        class="chat-textarea"
+        (keydown.enter)="sendMessage()"
+      ></ion-textarea>
+      <ion-button (click)="sendMessage()" class="send-btn" [disabled]="userMessage.trim() === ''">
+        <ion-icon name="send-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </div>
+</ion-card>
