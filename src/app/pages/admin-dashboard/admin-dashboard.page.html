@@ -6,103 +6,207 @@
     </div>
   </section>
 
-  <section class="quick-nav">
-    <div class="nav-grid">
-      <div class="nav-card" routerLink="/admin/products">
-        <div class="nav-icon-wrap">
-          <ion-icon name="pricetag-outline"></ion-icon>
+  <section class="analytics-section" *ngIf="!loading">
+    <h2 class="section-title">Platform Analytics</h2>
+
+    <div class="charts-container">
+      <div class="chart-panel bar-panel">
+        <h3>Overview</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">Users</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="usersPercent"></div></div>
+            <div class="bar-value">{{ totalUsers }}</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Clients</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="clientsPercent"></div></div>
+            <div class="bar-value">{{ totalClients }}</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Meetings</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="meetingsPercent"></div></div>
+            <div class="bar-value">{{ totalMeetings }}</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Invoices</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="invoicesPercent"></div></div>
+            <div class="bar-value">{{ totalInvoices }}</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Leads</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="leadsPercent"></div></div>
+            <div class="bar-value">{{ totalLeads }}</div>
+          </div>
         </div>
-        <h3>Products</h3>
-        <p>Create, update, and manage digital products.</p>
       </div>
 
-      <div class="nav-card" routerLink="/admin/kpi-policies">
-        <div class="nav-icon-wrap">
-          <ion-icon name="shield-checkmark-outline"></ion-icon>
-        </div>
-        <h3>KPI Policies</h3>
-        <p>Define performance thresholds and governance rules.</p>
-      </div>
-
-      <div class="nav-card" routerLink="/admin/users">
-        <div class="nav-icon-wrap">
-          <ion-icon name="people-outline"></ion-icon>
-        </div>
-        <h3>Users</h3>
-        <p>View and manage registered sales representatives.</p>
-      </div>
-
-      <div class="nav-card" routerLink="/admin/invoices">
-        <div class="nav-icon-wrap">
-          <ion-icon name="receipt-outline"></ion-icon>
-        </div>
+      <div class="chart-panel donut-panel">
         <h3>Invoices</h3>
-        <p>Create, track, and manage invoices and payment statuses.</p>
+        <div class="donut-wrap">
+          <div class="donut" [style.background]="donutBackground" [class.has-zero]="totalInvoices === 0">
+            <div class="donut-inner">
+              <div class="donut-total">{{ totalInvoices }}</div>
+              <div class="donut-caption">Total</div>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <div class="legend-item"><span class="legend-dot paid"></span><span class="legend-text">Paid: {{ paidInvoices }}</span></div>
+            <div class="legend-item"><span class="legend-dot unpaid"></span><span class="legend-text">Unpaid: {{ unpaidInvoices }}</span></div>
+          </div>
+        </div>
       </div>
 
-      <div class="nav-card" routerLink="/admin/meetings">
-        <div class="nav-icon-wrap">
-          <ion-icon name="calendar-outline"></ion-icon>
+      <div class="chart-panel revenue-panel">
+        <h3>Revenue</h3>
+        <div class="revenue-card">
+          <div class="revenue-amount">{{ formatCurrency(totalRevenue) }}</div>
+          <div class="revenue-caption">Total Revenue</div>
+          <div class="revenue-bar" *ngIf="totalInvoices > 0"><div class="revenue-fill" [style.width.%]="revenuePercent"></div></div>
+          <div class="revenue-sub">From {{ paidInvoices }} paid invoices</div>
         </div>
+      </div>
+
+      <div class="chart-panel">
+        <h3>Users</h3>
+        <div class="kv-rows">
+          <div class="kv-row"><span class="kv-label">Active</span><span class="kv-value">{{ activeUsers }}</span></div>
+          <div class="kv-row"><span class="kv-label">Banned</span><span class="kv-value">{{ bannedUsers }}</span></div>
+          <div class="kv-row"><span class="kv-label">Total</span><span class="kv-value">{{ totalUsers }}</span></div>
+        </div>
+      </div>
+
+      <div class="chart-panel">
         <h3>Meetings</h3>
-        <p>View and manage all scheduled meetings across users.</p>
+        <div class="kv-rows" *ngIf="meetingTypeBreakdown.length; else noMeetingData">
+          <div class="kv-row" *ngFor="let item of meetingTypeBreakdown">
+            <span class="kv-label">{{ item.label }}</span>
+            <span class="kv-value">{{ item.value }}</span>
+          </div>
+        </div>
+        <ng-template #noMeetingData><p class="muted">No meeting data available</p></ng-template>
       </div>
 
-      <div class="nav-card" routerLink="/admin/payroll">
-        <div class="nav-icon-wrap">
-          <ion-icon name="calculator-outline"></ion-icon>
+      <div class="chart-panel">
+        <h3>Invoices by Month</h3>
+        <div class="kv-rows" *ngIf="invoiceMonthSeries.length; else noInvoiceSeries">
+          <div class="kv-row" *ngFor="let item of invoiceMonthSeries">
+            <span class="kv-label">{{ item.month }}</span>
+            <span class="kv-value">P:{{ item.paid }} U:{{ item.unpaid }}</span>
+          </div>
         </div>
-        <h3>Payroll</h3>
-        <p>Generate monthly commission reports and notify the team.</p>
+        <ng-template #noInvoiceSeries><p class="muted">No invoice trend data</p></ng-template>
       </div>
 
-      <div class="nav-card" routerLink="/admin/clients">
-        <div class="nav-icon-wrap">
-          <ion-icon name="person-outline"></ion-icon>
+      <div class="chart-panel">
+        <h3>LeadLake Industries</h3>
+        <div class="bar-chart" *ngIf="leadIndustryBreakdown.length; else noLeadData">
+          <div class="bar-row" *ngFor="let item of leadIndustryBreakdown; let i = index">
+            <div class="bar-label">{{ item.label }}</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="getLeadPercent(item.value, leadIndustryBreakdown)"></div></div>
+            <div class="bar-value">{{ item.value }}</div>
+          </div>
         </div>
-        <h3>Clients</h3>
-        <p>Manage all contacts and track closed amounts across the platform.</p>
+        <ng-template #noLeadData><p class="muted">No lead data available</p></ng-template>
       </div>
 
-      <div class="nav-card" routerLink="/admin/leadlake">
-        <div class="nav-icon-wrap">
-          <ion-icon name="globe-outline"></ion-icon>
+      <div class="chart-panel">
+        <h3>LeadLake Intents</h3>
+        <div class="bar-chart" *ngIf="leadIntentBreakdown.length; else noIntentData">
+          <div class="bar-row" *ngFor="let item of leadIntentBreakdown; let i = index">
+            <div class="bar-label">{{ item.label }}</div>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="getLeadPercent(item.value, leadIntentBreakdown)"></div></div>
+            <div class="bar-value">{{ item.value }}</div>
+          </div>
         </div>
-        <h3>LeadLake</h3>
-        <p>Import, manage, and convert leads into contacts.</p>
+        <ng-template #noIntentData><p class="muted">No intent data available</p></ng-template>
       </div>
 
-      <div class="nav-card" routerLink="/admin/assessments">
-        <div class="nav-icon-wrap">
-          <ion-icon name="school-outline"></ion-icon>
+      <div class="chart-panel wide-panel">
+        <h3>Invoice Trends (Last 6 Months)</h3>
+        <div class="trend-chart" *ngIf="invoiceMonthSeries.length; else noInvoiceSeries">
+          <div class="trend-row" *ngFor="let item of invoiceMonthSeries">
+            <div class="trend-label">{{ item.month }}</div>
+            <div class="trend-bars">
+              <div class="trend-bar-group">
+                <div class="trend-bar paid" [style.height.%]="getMonthPercent(item.paid, invoiceMonthSeries)"></div>
+                <div class="trend-bar unpaid" [style.height.%]="getMonthPercent(item.unpaid, invoiceMonthSeries)"></div>
+              </div>
+            </div>
+            <div class="trend-value">{{ item.total }}</div>
+          </div>
+          <div class="trend-legend">
+            <span class="legend-dot paid"></span> Paid
+            <span class="legend-dot unpaid"></span> Unpaid
+          </div>
         </div>
-        <h3>Assessments</h3>
-        <p>Upload and manage partner assessments for platform and products.</p>
+        <ng-template #noInvoiceSeries><p class="muted">No invoice trend data</p></ng-template>
       </div>
 
-      <div class="nav-card" routerLink="/admin/inboxes">
-        <div class="nav-icon-wrap">
-          <ion-icon name="mail-outline"></ion-icon>
+      <div class="chart-panel">
+        <h3>Surveys</h3>
+        <div class="kv-rows">
+          <div class="kv-row"><span class="kv-label">Surveys</span><span class="kv-value">{{ totalSurveys }}</span></div>
+          <div class="kv-row"><span class="kv-label">Responses</span><span class="kv-value">{{ totalSurveyResponses }}</span></div>
         </div>
-        <h3>Inboxes</h3>
-        <p>Configure and manage inbox connections used across the platform.</p>
+        <div class="gauge-wrap">
+          <div class="gauge-ring" [style.background]="getGaugeBackground(surveyResponseRate)"><div class="gauge-fill"></div></div>
+          <div class="gauge-text">{{ surveyResponseRate }}%</div>
+        </div>
+        <div class="muted" style="text-align: center; font-size: 0.8rem; margin-top: 8px;">Response Rate</div>
       </div>
 
-      <div class="nav-card" routerLink="/admin/relay-inbox">
-        <div class="nav-icon-wrap">
-          <ion-icon name="rocket-outline"></ion-icon>
-        </div>
+      <div class="chart-panel">
         <h3>Relay AI</h3>
-        <p>Manage relay campaigns, sending flows, and outreach performance from one workspace.</p>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Sent</span><div class="bar-track"><div class="bar-fill" [style.width.%]="getEmailPercent(totalEmailsSent)"></div></div><span class="bar-value">{{ totalEmailsSent }}</span></div>
+          <div class="bar-row"><span class="bar-label">Opened</span><div class="bar-track"><div class="bar-fill open" [style.width.%]="getEmailPercent(totalEmailsOpened)"></div></div><span class="bar-value">{{ totalEmailsOpened }}</span></div>
+          <div class="bar-row"><span class="bar-label">Clicked</span><div class="bar-track"><div class="bar-fill click" [style.width.%]="getEmailPercent(totalEmailsClicked)"></div></div><span class="bar-value">{{ totalEmailsClicked }}</span></div>
+          <div class="bar-row"><span class="bar-label">Replied</span><div class="bar-track"><div class="bar-fill reply" [style.width.%]="getEmailPercent(totalEmailsReplied)"></div></div><span class="bar-value">{{ totalEmailsReplied }}</span></div>
+        </div>
+        <div class="kv-rows" style="margin-top: 12px;">
+          <div class="kv-row"><span class="kv-label">Open Rate</span><span class="kv-value">{{ relayOpenRate }}%</span></div>
+          <div class="kv-row"><span class="kv-label">Click Rate</span><span class="kv-value">{{ relayClickRate }}%</span></div>
+          <div class="kv-row"><span class="kv-label">Reply Rate</span><span class="kv-value">{{ relayReplyRate }}%</span></div>
+        </div>
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div class="mini-label">Campaigns</div>
+            <div class="mini-value">{{ totalRelayCampaigns }}</div>
+            <div class="mini-bar"><div class="mini-fill" [style.width.%]="getCampaignPercent(activeRelayCampaigns)"></div></div>
+            <div class="mini-sub">{{ activeRelayCampaigns }} active</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Accounts</div>
+            <div class="mini-value">{{ totalRelayAccounts }}</div>
+            <div class="mini-bar"><div class="mini-fill health" [style.width.%]="getAccountHealthPercent()"></div></div>
+            <div class="mini-sub">{{ healthyRelayAccounts }} healthy</div>
+          </div>
+        </div>
       </div>
 
-      <div class="nav-card" routerLink="/admin/extract-leads">
-        <div class="nav-icon-wrap">
-          <ion-icon name="download-outline"></ion-icon>
+      <div class="chart-panel">
+        <h3>Surveys</h3>
+        <div class="kv-rows">
+          <div class="kv-row"><span class="kv-label">Surveys</span><span class="kv-value">{{ totalSurveys }}</span></div>
+          <div class="kv-row"><span class="kv-label">Responses</span><span class="kv-value">{{ totalSurveyResponses }}</span></div>
         </div>
-        <h3>Extract Leads</h3>
-        <p>Scrape business leads by keyword and location, then save new results directly into LeadLake.</p>
+        <div class="gauge-wrap">
+          <div class="gauge-ring" [style.background]="getGaugeBackground(surveyResponseRate)"><div class="gauge-fill"></div></div>
+          <div class="gauge-text">{{ surveyResponseRate }}%</div>
+        </div>
+        <div class="muted" style="text-align: center; font-size: 0.8rem; margin-top: 8px;">Response Rate</div>
       </div>
     </div>
+  </section>
+
+  <section class="analytics-loading" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading analytics...</p>
+        <div class="loading-bars">
+          <div class="loading-bar"></div>
+          <div class="loading-bar"></div>
+          <div class="loading-bar"></div>
+        </div>
   </section>
 </ion-content>

@@ -10,6 +10,12 @@ const routes: Routes = [
     canActivateChild: [AdminGuard],
     children: [
       {
+        path: 'dashboard',
+        loadChildren: () => import('../admin-dashboard/admin-dashboard.module')
+          .then(m => m.AdminDashboardPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'blaster',
         loadChildren: () => import('../blaster/blaster.module')
           .then(m => m.BlasterPageModule),
