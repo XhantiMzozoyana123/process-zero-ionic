@@ -167,11 +167,18 @@ export class AdminSurveyPage implements OnInit {
       title: formValue.title,
       description: formValue.description,
       status: formValue.status,
-      questions: formValue.questions.map((q: any) => ({
-        id: q.id,
-        text: q.text,
-        isRequired: q.isRequired
-      }))
+      questions: formValue.questions.map((q: any) => {
+        // For new surveys, omit the client-generated id so the backend can
+        // assign proper IDs. On update, preserve server-assigned IDs.
+        const question: any = {
+          text: q.text,
+          isRequired: q.isRequired
+        };
+        if (!this.isNewSurvey && q.id != null) {
+          question.id = q.id;
+        }
+        return question;
+      })
     };
 
     this.savingSurvey = true;
