@@ -104,28 +104,55 @@
                       <span class="required-star" *ngIf="question.isRequired"> *</span>
                     </ion-label>
 
-                    <!-- Contact questions use input fields; business questions use textareas -->
-                    <ng-container [ngSwitch]="isContactQuestion(i)">
-                      <!-- Contact questions: email, tel, or text input -->
-                      <ng-container *ngSwitchCase="true">
-                        <ion-input
-                          *ngIf="getInputType(question.text) === 'email'; else telOrText"
-                          [formControlName]="i"
-                          type="email"
-                          placeholder="your@email.com"
-                          [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
-                        ></ion-input>
-                        <ng-template #telOrText>
+                    <!-- Determine renderer based on question type -->
+                    <ng-container [ngSwitch]="question.type">
+                      <!-- Contact / OpenEnded questions: input fields or textareas -->
+                      <ng-container *ngSwitchCase="'OpenEnded'">
+                        <!-- Contact questions use input fields -->
+                        <ng-container *ngIf="isContactQuestion(i); else openEndedTextarea">
                           <ion-input
+                            *ngIf="getInputType(question.text) === 'email'; else telOrText"
                             [formControlName]="i"
-                            [type]="getInputType(question.text)"
-                            placeholder="Your answer..."
+                            type="email"
+                            placeholder="your@email.com"
                             [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
                           ></ion-input>
+                          <ng-template #telOrText>
+                            <ion-input
+                              [formControlName]="i"
+                              [type]="getInputType(question.text)"
+                              placeholder="Your answer..."
+                              [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                            ></ion-input>
+                          </ng-template>
+                        </ng-container>
+                        <ng-template #openEndedTextarea>
+                          <ion-textarea
+                            [formControlName]="i"
+                            rows="3"
+                            placeholder="Your answer..."
+                            [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                          ></ion-textarea>
                         </ng-template>
                       </ng-container>
 
-                      <!-- Business questions: textarea -->
+                      <!-- MultipleChoice questions: radio buttons -->
+                      <ng-container *ngSwitchCase="'MultipleChoice'">
+                        <div class="mcq-options">
+                          <ion-radio-group [formControlName]="i">
+                            <ion-item
+                              *ngFor="let option of question.options"
+                              lines="none"
+                              class="mcq-option"
+                            >
+                              <ion-radio slot="start" [value]="option"></ion-radio>
+                              <ion-label>{{ option }}</ion-label>
+                            </ion-item>
+                          </ion-radio-group>
+                        </div>
+                      </ng-container>
+
+                      <!-- Fallback: textarea for unknown types -->
                       <ng-container *ngSwitchDefault>
                         <ion-textarea
                           [formControlName]="i"

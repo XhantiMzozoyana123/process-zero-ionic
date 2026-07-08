@@ -234,6 +234,53 @@
                       </ion-item>
 
                       <ion-item>
+                        <ion-label position="stacked">Question Type</ion-label>
+                        <ion-select formControlName="type" interface="popover">
+                          <ion-select-option value="OpenEnded">Open-Ended (Text)</ion-select-option>
+                          <ion-select-option value="MultipleChoice">Multiple Choice</ion-select-option>
+                        </ion-select>
+                      </ion-item>
+
+                      <!-- Options editor for MultipleChoice questions -->
+                      <ng-container *ngIf="question.get('type')?.value === 'MultipleChoice'">
+                        <ion-item class="options-label-item">
+                          <ion-label position="stacked">
+                            Answer Options <span class="required-star">*</span>
+                          </ion-label>
+                        </ion-item>
+                        <div formArrayName="options" class="options-list">
+                          <ion-item
+                            *ngFor="let opt of getQuestionOptionsFormArray(i).controls; let j = index"
+                            class="option-item"
+                          >
+                            <ion-input
+                              [formControlName]="j"
+                              placeholder="Option {{ j + 1 }}"
+                              class="option-input"
+                            ></ion-input>
+                            <ion-button
+                              fill="clear"
+                              size="small"
+                              color="danger"
+                              (click)="removeOption(i, j)"
+                              class="remove-option-btn"
+                            >
+                              <ion-icon name="close-circle-outline" slot="icon-only"></ion-icon>
+                            </ion-button>
+                          </ion-item>
+                        </div>
+                        <ion-button
+                          fill="outline"
+                          size="small"
+                          (click)="addOption(i)"
+                          class="add-option-btn"
+                        >
+                          <ion-icon name="add-outline" slot="start"></ion-icon>
+                          Add Option
+                        </ion-button>
+                      </ng-container>
+
+                      <ion-item>
                         <ion-label>Required</ion-label>
                         <ion-toggle formControlName="isRequired" slot="end"></ion-toggle>
                       </ion-item>

@@ -72,11 +72,13 @@ export class AdminSurveyPage implements OnInit {
     return this.surveyForm.get('questions') as FormArray;
   }
 
-  createQuestionFormGroup(question?: { id: number; text: string; isRequired: boolean }): FormGroup {
+  createQuestionFormGroup(question?: { id: number; text: string; isRequired: boolean; type?: string; options?: string[] }): FormGroup {
     return this.fb.group({
       id: [question?.id ?? Date.now() + Math.floor(Math.random() * 1000)],
       text: [question?.text ?? '', Validators.required],
-      isRequired: [question?.isRequired ?? false]
+      isRequired: [question?.isRequired ?? false],
+      type: [question?.type ?? 'OpenEnded'],
+      options: [question?.options ?? []]
     });
   }
 
@@ -86,6 +88,20 @@ export class AdminSurveyPage implements OnInit {
 
   removeQuestion(index: number): void {
     this.questionsFormArray.removeAt(index);
+  }
+
+  getQuestionOptionsFormArray(questionIndex: number): FormArray {
+    return this.questionsFormArray.at(questionIndex).get('options') as FormArray;
+  }
+
+  addOption(questionIndex: number): void {
+    this.getQuestionOptionsFormArray(questionIndex).push(
+      this.fb.control('', Validators.required)
+    );
+  }
+
+  removeOption(questionIndex: number, optionIndex: number): void {
+    this.getQuestionOptionsFormArray(questionIndex).removeAt(optionIndex);
   }
 
   // ── Survey List ────────────────────────────────────────────────────────────
@@ -179,8 +195,13 @@ export class AdminSurveyPage implements OnInit {
         // assign proper IDs. On update, preserve server-assigned IDs.
         const question: any = {
           text: q.text,
-          isRequired: q.isRequired
+          isRequired: q.isRequired,
+          type: q.type || 'OpenEnded'
         };
+        // Only include options for MultipleChoice questions
+        if (question.type === 'MultipleChoice' && q.options?.length) {
+          question.options = q.options;
+        }
         if (!this.isNewSurvey && q.id != null) {
           question.id = q.id;
         }
