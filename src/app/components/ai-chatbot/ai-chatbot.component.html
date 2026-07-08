@@ -5,16 +5,34 @@
   </ion-fab-button>
 </ion-fab>
 
+<!-- Minimized Chat Button -->
+<ion-fab *ngIf="isOpen && isMinimized" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="maximizeChat()" class="chat-fab-minimized">
+    <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
 <!-- Chat Widget -->
-<ion-card *ngIf="isOpen" class="chatbot-widget">
+<ion-card *ngIf="isOpen && !isMinimized" [class]="'chatbot-widget' + (isMaximized ? ' maximized' : '')">
   <ion-card-header class="chatbot-header">
     <ion-card-title>
       <ion-icon name="pulse-outline" class="header-icon"></ion-icon>
       Process Zero Assistant
     </ion-card-title>
-    <ion-button fill="clear" (click)="closeChat()" class="close-btn">
-      <ion-icon name="close-circle-outline"></ion-icon>
-    </ion-button>
+    <div class="header-actions">
+      <ion-button *ngIf="!isMaximized" fill="clear" (click)="maximizeChat()" class="action-btn" title="Maximize">
+        <ion-icon name="expand-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isMaximized" fill="clear" (click)="restoreChat()" class="action-btn" title="Restore">
+        <ion-icon name="contract-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="minimizeChat()" class="action-btn" title="Minimize">
+        <ion-icon name="remove-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="closeChat()" class="close-btn" title="Close">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
   </ion-card-header>
 
   <ion-card-content class="chatbot-content">
