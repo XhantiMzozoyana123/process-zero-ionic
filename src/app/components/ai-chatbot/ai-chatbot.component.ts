@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonButton, IonIcon, IonTextarea, IonItem, IonLabel, IonFab, IonFabButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
+import { IonButton, IonIcon, IonTextarea, IonItem, IonFab, IonFabButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 import { AiService } from 'src/app/services/ai.service';
 import { AdminUserService } from 'src/app/services/admin-user-service';
 import { AdminInvoiceService } from 'src/app/services/admin-invoice-service';
@@ -30,7 +30,7 @@ interface Message {
   templateUrl: './ai-chatbot.component.html',
   styleUrls: ['./ai-chatbot.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonButton, IonIcon, IonTextarea, IonItem, IonLabel, IonFab, IonFabButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent]
+  imports: [CommonModule, FormsModule, IonButton, IonIcon, IonTextarea, IonItem, IonFab, IonFabButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent]
 })
 export class AiChatbotComponent implements OnInit {
   isOpen = false;

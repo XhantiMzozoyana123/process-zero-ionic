@@ -32,26 +32,6 @@
   }
 }
 
-.chat-fab-minimized {
-  --background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  --background-hover: var(--gold);
-  --box-shadow: 0 4px 20px rgba(29, 120, 116, 0.4);
-  width: 60px;
-  height: 60px;
-  margin-right: 16px;
-  margin-bottom: 16px;
-
-  ion-icon {
-    font-size: 28px;
-    color: #fff;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
-  }
-}
-
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
