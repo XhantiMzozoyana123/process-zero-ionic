@@ -72,13 +72,23 @@ export class AdminSurveyPage implements OnInit {
     return this.surveyForm.get('questions') as FormArray;
   }
 
+  /** Normalize a type value that may come as a number (e.g. 1 = OpenEnded, 2 = MultipleChoice) to a string */
+  private normalizeType(type: any): string {
+    if (type === 'OpenEnded' || type === 'MultipleChoice') return type;
+    // Numeric enum: 1 = OpenEnded, 2 = MultipleChoice
+    if (type === 1 || type === '1') return 'OpenEnded';
+    if (type === 2 || type === '2') return 'MultipleChoice';
+    return 'OpenEnded';
+  }
+
   createQuestionFormGroup(question?: { id: number; text: string; isRequired: boolean; type?: string; options?: string[] }): FormGroup {
+    const normalizedType = this.normalizeType(question?.type);
     return this.fb.group({
       id: [question?.id ?? Date.now() + Math.floor(Math.random() * 1000)],
       text: [question?.text ?? '', Validators.required],
       isRequired: [question?.isRequired ?? false],
-      type: [question?.type ?? 'OpenEnded'],
-      options: [question?.options ?? []]
+      type: [normalizedType],
+      options: this.fb.array((question?.options ?? []).map(o => this.fb.control(o, Validators.required)))
     });
   }
 
@@ -157,12 +167,12 @@ export class AdminSurveyPage implements OnInit {
         while (this.questionsFormArray.length > 0) {
           this.questionsFormArray.removeAt(0);
         }
-        // IMPORTANT: Filter out the 7 contact questions (indices 0-6) that the
+        // IMPORTANT: Filter out the 7 contact questions (ids 1-7) that the
         // backend prepends automatically. We only want to show and edit the
         // admin's business/pain point questions. The backend will re-prepend
         // the contact questions when the survey is saved.
         const businessQuestions = survey.questions.filter(q =>
-          q.category !== 'Contact'
+          q.id == null || q.id > 7
         );
         // Add business questions from server
         businessQuestions.forEach(q => {
@@ -196,7 +206,7 @@ export class AdminSurveyPage implements OnInit {
         const question: any = {
           text: q.text,
           isRequired: q.isRequired,
-          type: q.type || 'OpenEnded'
+          type: this.normalizeType(q.type)
         };
         // Only include options for MultipleChoice questions
         if (question.type === 'MultipleChoice' && q.options?.length) {
@@ -208,6 +218,8 @@ export class AdminSurveyPage implements OnInit {
         return question;
       })
     };
+
+    console.log('[saveSurvey] Payload:', JSON.stringify(survey, null, 2));
 
     this.savingSurvey = true;
 
@@ -225,10 +237,10 @@ export class AdminSurveyPage implements OnInit {
         this.loadSurveys();
       },
       error: (err) => {
-        this.showToast(
-          err.error?.message || 'Failed to save survey. Please try again.',
-          'danger'
-        );
+        console.error('[saveSurvey] Full error:', err);
+        console.error('[saveSurvey] Error response body:', err.error);
+        const message = err.error?.message || err.error?.title || (typeof err.error === 'string' ? err.error : null) || 'Failed to save survey. Please try again.';
+        this.showToast(message, 'danger');
         this.savingSurvey = false;
       }
     });
