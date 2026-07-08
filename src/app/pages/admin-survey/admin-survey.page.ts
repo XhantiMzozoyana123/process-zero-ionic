@@ -141,8 +141,15 @@ export class AdminSurveyPage implements OnInit {
         while (this.questionsFormArray.length > 0) {
           this.questionsFormArray.removeAt(0);
         }
-        // Add questions from server
-        survey.questions.forEach(q => {
+        // IMPORTANT: Filter out the 7 contact questions (indices 0-6) that the
+        // backend prepends automatically. We only want to show and edit the
+        // admin's business/pain point questions. The backend will re-prepend
+        // the contact questions when the survey is saved.
+        const businessQuestions = survey.questions.filter(q =>
+          q.category !== 'Contact'
+        );
+        // Add business questions from server
+        businessQuestions.forEach(q => {
           this.questionsFormArray.push(this.createQuestionFormGroup(q));
         });
         this.loadingSurvey = false;
