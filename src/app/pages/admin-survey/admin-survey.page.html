@@ -31,7 +31,7 @@
           <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
           <h2>No Surveys Yet</h2>
           <p>Create your first market research survey to start collecting audience insights.</p>
-          <ion-button (click)="createNewSurvey()" class="create-btn">
+          <ion-button (click)="createNewSurvey()" class="create-btn pz-button">
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
             Create Survey
           </ion-button>
@@ -41,7 +41,7 @@
       <ng-container *ngIf="surveys.length > 0">
         <div class="list-header">
           <h2>All Surveys</h2>
-          <ion-button (click)="createNewSurvey()" size="small" class="create-btn-small">
+          <ion-button (click)="createNewSurvey()" size="small" class="create-btn-small pz-button-small">
             <ion-icon name="add-outline" slot="start"></ion-icon>
             New Survey
           </ion-button>

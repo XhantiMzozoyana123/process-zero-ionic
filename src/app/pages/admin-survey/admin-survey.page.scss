@@ -31,6 +31,18 @@
       color: #607078;
       margin-bottom: 24px;
     }
+
+    .pz-button {
+      --background: linear-gradient(135deg, #1d7874, #335c67);
+      --border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
+      --padding-start: 24px;
+      --padding-end: 24px;
+      --padding-top: 16px;
+      --padding-bottom: 16px;
+    }
   }
 
   .list-header {
@@ -44,6 +56,18 @@
       font-size: 20px;
       font-weight: 700;
       color: #172121;
+    }
+
+    .pz-button-small {
+      --background: linear-gradient(135deg, #1d7874, #335c67);
+      --border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(29, 120, 116, 0.25);
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
     }
   }
 
