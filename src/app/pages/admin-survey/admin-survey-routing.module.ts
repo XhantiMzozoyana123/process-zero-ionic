@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { AdminSurveyPage } from './admin-survey.page';
+import { AdminGuard } from 'src/app/guards/admin.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: AdminSurveyPage
+    component: AdminSurveyPage,
+    canActivate: [AdminGuard]
   }
 ];
 

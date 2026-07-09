@@ -4,11 +4,11 @@ import { SurveyPage } from './survey.page';
 
 const routes: Routes = [
   {
-    path: ':id',
+    path: '',
     component: SurveyPage
   },
   {
-    path: '',
+    path: ':id',
     component: SurveyPage
   }
 ];

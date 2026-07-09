@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { SurveyClientDto } from '../models/dtos/survey-client-dto.model';
-import { SurveyResponseSubmissionDto } from '../models/dtos/survey-response-submission-dto.model';
-import { SurveyResponseResultDto } from '../models/dtos/survey-response-result-dto.model';
-import { SurveySummaryDto } from '../models/dtos/survey-summary-dto.model';
-import { SurveyDto } from '../models/dtos/survey-dto.model';
-import { SurveysListDto } from '../models/dtos/surveys-list-dto.model';
+import {
+  Survey,
+  SurveyQuestion,
+  SurveyResponseResult,
+  SurveySummary,
+  SurveysList
+} from '../models/dtos/survey.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,30 +21,55 @@ export class SurveyService {
   // ── PUBLIC ──────────────────────────────────────────────────────────────────
 
   /** GET /api/survey/{id} — Retrieves a specific survey by ID for respondents */
-  getSurvey(id: number): Observable<SurveyClientDto> {
-    return this.http.get<SurveyClientDto>(`${this.apiUrl}/${id}`);
+  getSurvey(id: number): Observable<Survey> {
+    return this.http.get<Survey>(`${this.apiUrl}/${id}`);
   }
 
-  /** POST /api/survey/submit — Submits a response to a survey (AI-gated lead qualification) */
-  submitResponse(submission: SurveyResponseSubmissionDto): Observable<SurveyResponseResultDto> {
-    return this.http.post<SurveyResponseResultDto>(`${this.apiUrl}/submit`, submission);
+  /** POST /api/survey/submit — Submits a response to a survey */
+  submitResponse(surveyId: number, answers: string[]): Observable<SurveyResponseResult> {
+    return this.http.post<SurveyResponseResult>(`${this.apiUrl}/submit`, { surveyId, answers });
   }
 
   // ── ADMIN ───────────────────────────────────────────────────────────────────
 
   /** GET /api/survey — Lists all surveys for admin */
-  listSurveysForAdmin(): Observable<SurveysListDto[]> {
-    return this.http.get<SurveysListDto[]>(this.apiUrl);
+  listSurveysForAdmin(): Observable<SurveysList[]> {
+    return this.http.get<SurveysList[]>(this.apiUrl);
   }
 
   /** POST /api/survey — Creates a new survey */
-  createSurvey(survey: SurveyDto): Observable<SurveyDto> {
-    return this.http.post<SurveyDto>(this.apiUrl, survey);
+  createSurvey(survey: Omit<Survey, 'id' | 'createdAt' | 'updatedAt'>): Observable<Survey> {
+    const backendPayload = {
+      Name: survey.name,
+      Title: survey.title,
+      Description: survey.description,
+      Status: survey.status,
+      Questions: survey.questions.map(q => ({
+        Text: q.text,
+        Type: q.type === 'multiple_choice' ? 'MultipleChoice' : 'OpenEnded',
+        IsRequired: q.required,
+        Options: q.options
+      }))
+    };
+    return this.http.post<Survey>(this.apiUrl, backendPayload);
   }
 
   /** PUT /api/survey/{id} — Updates an existing survey */
-  updateSurvey(id: number, survey: SurveyDto): Observable<SurveyDto> {
-    return this.http.put<SurveyDto>(`${this.apiUrl}/${id}`, survey);
+  updateSurvey(id: number, survey: Partial<Survey>): Observable<Survey> {
+    const backendPayload: any = { id };
+    if (survey.name !== undefined) backendPayload.Name = survey.name;
+    if (survey.title !== undefined) backendPayload.Title = survey.title;
+    if (survey.description !== undefined) backendPayload.Description = survey.description;
+    if (survey.status !== undefined) backendPayload.Status = survey.status;
+    if (survey.questions) {
+      backendPayload.Questions = survey.questions.map(q => ({
+        Text: q.text,
+        Type: q.type === 'multiple_choice' ? 'MultipleChoice' : 'OpenEnded',
+        IsRequired: q.required,
+        Options: q.options
+      }));
+    }
+    return this.http.put<Survey>(`${this.apiUrl}/${id}`, backendPayload);
   }
 
   /** DELETE /api/survey/{id} — Deletes a survey (hard delete with cascade) */
@@ -52,17 +78,17 @@ export class SurveyService {
   }
 
   /** GET /api/survey/{id}/admin — Gets a specific survey for admin editing */
-  getSurveyForAdmin(id: number): Observable<SurveyDto> {
-    return this.http.get<SurveyDto>(`${this.apiUrl}/${id}/admin`);
+  getSurveyForAdmin(id: number): Observable<Survey> {
+    return this.http.get<Survey>(`${this.apiUrl}/${id}/admin`);
   }
 
   /** GET /api/survey/{id}/responses — Gets aggregated responses for a specific survey */
-  getAllResponses(surveyId: number): Observable<SurveySummaryDto> {
-    return this.http.get<SurveySummaryDto>(`${this.apiUrl}/${surveyId}/responses`);
+  getAllResponses(surveyId: number): Observable<SurveySummary> {
+    return this.http.get<SurveySummary>(`${this.apiUrl}/${surveyId}/responses`);
   }
 
   /** GET /api/survey/response/{responseId} — Gets a single response by ID */
-  getResponseById(responseId: number): Observable<SurveyResponseResultDto> {
-    return this.http.get<SurveyResponseResultDto>(`${this.apiUrl}/response/${responseId}`);
+  getResponseById(responseId: number): Observable<SurveyResponseResult> {
+    return this.http.get<SurveyResponseResult>(`${this.apiUrl}/response/${responseId}`);
   }
 }

@@ -4,7 +4,6 @@ import { AdminInvoiceService } from 'src/app/services/admin-invoice-service';
 import { AdminClientService } from 'src/app/services/admin-client-service';
 import { MeetingService } from 'src/app/services/meeting-service';
 import { LeadlakeService } from 'src/app/services/leadlake-service';
-import { SurveyService } from 'src/app/services/survey.service';
 import { RelayService } from 'src/app/services/relay-service';
 import { AdminPayrollService } from 'src/app/services/admin-payroll-service';
 import { LeadLake, LeadLakeIndustry } from 'src/app/models/entities/leadlake.model';
@@ -13,7 +12,6 @@ import { MeetingDto } from 'src/app/models/dtos/meeting-dto.model';
 import { Contact } from 'src/app/models/entities/contact.model';
 import { ApplicationUser } from 'src/app/models/entities/application-user.model';
 import { OverallStatisticsDto } from 'src/app/models/dtos/relay-dto.model';
-import { SurveysListDto } from 'src/app/models/dtos/surveys-list-dto.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -48,11 +46,6 @@ export class AdminDashboardPage implements OnInit {
   leadIndustryBreakdown: { label: string; value: number }[] = [];
   leadIntentBreakdown: { label: string; value: number }[] = [];
 
-  // Survey
-  totalSurveys: number = 0;
-  totalSurveyResponses: number = 0;
-  surveyResponseRate: number = 0;
-
   // Relay
   totalRelayCampaigns: number = 0;
   activeRelayCampaigns: number = 0;
@@ -76,7 +69,6 @@ export class AdminDashboardPage implements OnInit {
     private clientService: AdminClientService,
     private meetingService: MeetingService,
     private leadlakeService: LeadlakeService,
-    private surveyService: SurveyService,
     private relayService: RelayService,
     private payrollService: AdminPayrollService
   ) {}
@@ -158,15 +150,6 @@ export class AdminDashboardPage implements OnInit {
       error: (err) => console.error('Error loading leads:', err)
     });
 
-    this.surveyService.listSurveysForAdmin().subscribe({
-      next: (surveys: SurveysListDto[]) => {
-        this.totalSurveys = surveys.length;
-        this.totalSurveyResponses = surveys.reduce((sum, s) => sum + (s.responseCount || 0), 0);
-        this.surveyResponseRate = this.totalSurveys > 0 ? Number(((this.totalSurveyResponses / this.totalSurveys) * 100).toFixed(2)) : 0;
-      },
-      error: (err) => console.error('Error loading surveys:', err)
-    });
-
     this.relayService.getOverallStatistics().subscribe({
       next: (stats: OverallStatisticsDto) => {
         this.totalRelayCampaigns = stats.totalCampaigns || 0;
@@ -223,12 +206,6 @@ export class AdminDashboardPage implements OnInit {
   get meetingsPercent(): number { return this.totalMeetings ? 100 : 0; }
   get invoicesPercent(): number { return this.totalInvoices ? 100 : 0; }
   get leadsPercent(): number { return this.totalLeads ? 100 : 0; }
-
-  get revenuePercent(): number {
-    if (this.totalInvoices <= 0) return 0;
-    const max = Math.max(this.totalRevenue, 1);
-    return Number(((this.totalRevenue / max) * 100).toFixed(2));
-  }
 
   get donutBackground(): string {
     if (this.totalInvoices <= 0) {

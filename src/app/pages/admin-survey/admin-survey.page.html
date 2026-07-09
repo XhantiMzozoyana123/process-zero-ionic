@@ -20,14 +20,12 @@
 <ion-content class="admin-survey-page ion-padding">
   <!-- ========== ALL SURVEYS LIST ========== -->
   <ng-container *ngIf="activeTab === 'surveys'">
-    <!-- Loading -->
     <div class="loading-container" *ngIf="loadingSurveys">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Loading surveys...</p>
     </div>
 
     <ng-container *ngIf="!loadingSurveys">
-      <!-- Empty State -->
       <ng-container *ngIf="surveys.length === 0">
         <div class="empty-container">
           <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
@@ -40,7 +38,6 @@
         </div>
       </ng-container>
 
-      <!-- Surveys List -->
       <ng-container *ngIf="surveys.length > 0">
         <div class="list-header">
           <h2>All Surveys</h2>
@@ -95,13 +92,11 @@
 
   <!-- ========== SURVEY EDITOR ========== -->
   <ng-container *ngIf="activeTab === 'editor'">
-    <!-- Loading -->
     <div class="loading-container" *ngIf="loadingSurvey">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Loading survey...</p>
     </div>
 
-    <!-- Editor -->
     <ng-container *ngIf="!loadingSurvey">
       <div class="editor-header">
         <ion-button fill="clear" (click)="cancelEdit()">
@@ -112,7 +107,6 @@
       </div>
 
       <form [formGroup]="surveyForm" (ngSubmit)="saveSurvey()">
-        <!-- Survey Details -->
         <ion-card class="form-card">
           <ion-card-header>
             <ion-card-title>
@@ -187,15 +181,60 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Questions -->
+        <!-- Contact Questions -->
+        <ion-card class="form-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="person-outline" class="card-icon"></ion-icon>
+              Contact Information Fields
+            </ion-card-title>
+            <ion-card-subtitle>
+              These fields are automatically included in every survey to collect respondent contact details.
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list lines="none">
+              <ion-item>
+                <ion-label position="stacked">Email Address <span class="required-star">*</span></ion-label>
+                <ion-input type="email" placeholder="respondent email"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">First Name <span class="required-star">*</span></ion-label>
+                <ion-input type="text" placeholder="first name"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Last Name <span class="required-star">*</span></ion-label>
+                <ion-input type="text" placeholder="last name"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Phone Number <span class="required-star">*</span></ion-label>
+                <ion-input type="tel" placeholder="phone number"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Company</ion-label>
+                <ion-input type="text" placeholder="company (optional)"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Job Title</ion-label>
+                <ion-input type="text" placeholder="job title (optional)"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Industry</ion-label>
+                <ion-input type="text" placeholder="industry (optional)"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Business Questions -->
         <ion-card class="form-card">
           <ion-card-header>
             <ion-card-title>
               <ion-icon name="help-circle-outline" class="card-icon"></ion-icon>
-              Business Questions
+              Business / Pain Point Questions
             </ion-card-title>
             <ion-card-subtitle>
-              Contact questions (email, name, phone, etc.) are automatically prepended. Add your custom pain point questions below.
+              Add your custom questions below to gather insights about your audience's business challenges.
             </ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
@@ -236,13 +275,13 @@
                       <ion-item>
                         <ion-label position="stacked">Question Type</ion-label>
                         <ion-select formControlName="type" interface="popover">
-                          <ion-select-option value="OpenEnded">Open-Ended (Text)</ion-select-option>
-                          <ion-select-option value="MultipleChoice">Multiple Choice</ion-select-option>
+                          <ion-select-option value="open_ended">Open-Ended (Text)</ion-select-option>
+                          <ion-select-option value="multiple_choice">Multiple Choice</ion-select-option>
                         </ion-select>
                       </ion-item>
 
                       <!-- Options editor for MultipleChoice questions -->
-                      <ng-container *ngIf="question.get('type')?.value === 'MultipleChoice'">
+                      <ng-container *ngIf="question.get('type')?.value === 'multiple_choice'">
                         <ion-item class="options-label-item">
                           <ion-label position="stacked">
                             Answer Options <span class="required-star">*</span>
@@ -282,7 +321,7 @@
 
                       <ion-item>
                         <ion-label>Required</ion-label>
-                        <ion-toggle formControlName="isRequired" slot="end"></ion-toggle>
+                        <ion-toggle formControlName="required" slot="end"></ion-toggle>
                       </ion-item>
                     </ion-list>
                   </ion-card-content>
@@ -321,7 +360,6 @@
 
   <!-- ========== RESPONSES ========== -->
   <ng-container *ngIf="activeTab === 'responses'">
-    <!-- Loading -->
     <div class="loading-container" *ngIf="loadingResponses">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Loading responses...</p>
@@ -335,7 +373,6 @@
         </ion-button>
       </div>
 
-      <!-- No Responses -->
       <ng-container *ngIf="!summary || summary.totalResponses === 0">
         <div class="empty-container">
           <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
@@ -344,16 +381,7 @@
         </div>
       </ng-container>
 
-      <!-- Responses Summary -->
       <ng-container *ngIf="summary && summary.totalResponses > 0 && !selectedResponse">
-        <!-- Generate PDF Report Button -->
-        <div class="report-container">
-          <ion-button expand="block" (click)="openReportPrompt()" class="report-btn">
-            <ion-icon name="document-outline" slot="start"></ion-icon>
-            Generate PDF Report
-          </ion-button>
-        </div>
-
         <!-- Stats Card -->
         <ion-card class="stats-card">
           <ion-card-content>
@@ -373,6 +401,39 @@
             </div>
           </ion-card-content>
         </ion-card>
+
+        <!-- Generate Business Report Button -->
+        <ion-button
+          expand="block"
+          size="large"
+          (click)="generateBusinessReport()"
+          [disabled]="generatingReport"
+          class="report-button"
+        >
+          <ion-icon *ngIf="!generatingReport" name="document-text-outline" slot="start"></ion-icon>
+          <ion-spinner *ngIf="generatingReport" slot="start"></ion-spinner>
+          {{ generatingReport ? 'Generating Report...' : 'Generate Business Report' }}
+        </ion-button>
+
+        <!-- Generated Report Display -->
+        <ng-container *ngIf="generatedReport">
+          <ion-card class="report-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="document-outline" class="card-icon"></ion-icon>
+                AI Business Report
+              </ion-card-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="generatedReport = null">
+                  <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="report-content">{{ generatedReport }}</div>
+            </ion-card-content>
+          </ion-card>
+        </ng-container>
 
         <!-- Survey Info -->
         <ion-card class="info-card">
@@ -403,14 +464,10 @@
                 class="response-item"
               >
                 <ion-label>
-                  <h3>{{ response.firstName }} {{ response.lastName }}</h3>
-                  <p>{{ response.email }}</p>
+                  <h3>Response #{{ response.id }}</h3>
                   <p class="response-meta">
                     <ion-text color="medium">
                       <small>{{ response.submittedAt | date:'medium' }}</small>
-                    </ion-text>
-                    <ion-text *ngIf="response.company" color="medium">
-                      <small> &middot; {{ response.company }}</small>
                     </ion-text>
                   </p>
                 </ion-label>
@@ -436,57 +493,50 @@
         </div>
 
         <ng-container *ngIf="!loadingDetail && selectedResponse">
-          <!-- Respondent Info -->
+          <!-- Contact Information -->
           <ion-card class="detail-card">
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="person-outline" class="card-icon"></ion-icon>
-                Respondent Information
+                Contact Information
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="full">
                 <ion-item>
                   <ion-label>
-                    <h3>Contact</h3>
-                    <p>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</p>
+                    <h3>Email</h3>
                     <p>{{ selectedResponse.email }}</p>
                   </ion-label>
                 </ion-item>
-                <ion-item *ngIf="selectedResponse.phone">
+                <ion-item>
+                  <ion-label>
+                    <h3>Name</h3>
+                    <p>{{ selectedResponse.firstName }} {{ selectedResponse.lastName }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
                   <ion-label>
                     <h3>Phone</h3>
                     <p>{{ selectedResponse.phone }}</p>
                   </ion-label>
                 </ion-item>
-                <ion-item>
+                <ion-item *ngIf="selectedResponse.company">
                   <ion-label>
                     <h3>Company</h3>
-                    <p>{{ selectedResponse.company || 'N/A' }}</p>
+                    <p>{{ selectedResponse.company }}</p>
                   </ion-label>
                 </ion-item>
-                <ion-item>
+                <ion-item *ngIf="selectedResponse.job">
                   <ion-label>
                     <h3>Job Title</h3>
-                    <p>{{ selectedResponse.job || 'N/A' }}</p>
+                    <p>{{ selectedResponse.job }}</p>
                   </ion-label>
                 </ion-item>
-                <ion-item>
+                <ion-item *ngIf="selectedResponse.industry">
                   <ion-label>
                     <h3>Industry</h3>
-                    <p>{{ selectedResponse.industry || 'N/A' }}</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h3>Submitted At</h3>
-                    <p>{{ selectedResponse.submittedAt | date:'medium' }}</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h3>Response ID</h3>
-                    <p>{{ selectedResponse.id }}</p>
+                    <p>{{ selectedResponse.industry }}</p>
                   </ion-label>
                 </ion-item>
               </ion-list>
@@ -498,22 +548,23 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
-                Answers
+                Business Answers
               </ion-card-title>
+              <ion-card-subtitle>Questions 7+ (pain points, challenges, etc.)</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
               <ng-container *ngIf="selectedResponse.answers && selectedResponse.answers.length > 0; else noAnswers">
                 <ion-list lines="full">
                   <ion-item *ngFor="let answer of selectedResponse.answers; let i = index">
                     <ion-label class="answer-item">
-                      <h3>Question {{ i + 1 }}</h3>
+                      <h3>Question {{ i + 7 }}</h3>
                       <p>{{ answer }}</p>
                     </ion-label>
                   </ion-item>
                 </ion-list>
               </ng-container>
               <ng-template #noAnswers>
-                <p class="no-data">No answers provided.</p>
+                <p class="no-data">No business answers provided.</p>
               </ng-template>
             </ion-card-content>
           </ion-card>
@@ -521,42 +572,4 @@
       </ng-container>
     </ng-container>
   </ng-container>
-
-  <!-- Report Prompt Modal -->
-  <ion-alert
-    [isOpen]="showReportPrompt"
-    [header]="'Generate PDF Report'"
-    [inputs]="[
-      {
-        name: 'prompt',
-        type: 'textarea',
-        placeholder: 'Enter detailed instructions for the business plan...\n\nExample: Focus on revenue growth strategies, include market segmentation analysis, and provide actionable recommendations for Q1 2025.',
-        value: reportPromptText,
-        attributes: {
-          rows: 6,
-          cols: 50
-        }
-      }
-    ]"
-    [buttons]="[
-      {
-        text: 'Cancel',
-        role: 'cancel',
-        handler: onReportPromptCancelBound
-      },
-      {
-        text: 'Generate',
-        handler: onReportPromptConfirmBound
-      }
-    ]"
-  ></ion-alert>
-
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="generatingReport">
-    <div class="loading-content">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Generating PDF report...</p>
-      <p class="loading-subtitle">This may take a moment</p>
-    </div>
-  </div>
 </ion-content>

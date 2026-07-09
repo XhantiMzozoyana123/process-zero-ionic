@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
-import { SurveyClientDto } from 'src/app/models/dtos/survey-client-dto.model';
-import { SurveyResponseSubmissionDto } from 'src/app/models/dtos/survey-response-submission-dto.model';
-import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-result-dto.model';
-import { QuestionCategory } from 'src/app/models/dtos/question-category.enum';
+import { Survey, SurveyResponseResult } from 'src/app/models/dtos/survey.model';
 
 @Component({
   selector: 'app-survey',
@@ -15,17 +12,16 @@ import { QuestionCategory } from 'src/app/models/dtos/question-category.enum';
   standalone: false
 })
 export class SurveyPage implements OnInit {
-  survey: SurveyClientDto | null = null;
+  survey: Survey | null = null;
   surveyForm: FormGroup;
   loading = true;
   submitting = false;
   submitted = false;
-  submissionResult: SurveyResponseResultDto | null = null;
+  submissionResult: SurveyResponseResult | null = null;
   errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private fb: FormBuilder,
     private surveyService: SurveyService,
     private toastController: ToastController
@@ -51,7 +47,7 @@ export class SurveyPage implements OnInit {
     return this.surveyForm.get('answers') as FormArray;
   }
 
-  private loadSurvey(id: number): void {
+  loadSurvey(id: number): void {
     this.loading = true;
     this.errorMessage = '';
     this.surveyService.getSurvey(id).subscribe({
@@ -61,31 +57,22 @@ export class SurveyPage implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        if (err.status === 404) {
-          this.errorMessage = 'Survey not found. It may be inactive or no longer available.';
-        } else {
-          this.errorMessage = 'Could not load the survey. Please try again later.';
-        }
+        this.errorMessage = 'Survey not found or is not available.';
         this.loading = false;
       }
     });
   }
 
   private buildAnswersForm(count: number): void {
-    // Clear existing
     while (this.answersFormArray.length > 0) {
       this.answersFormArray.removeAt(0);
     }
-    // Add form controls for each question
     for (let i = 0; i < count; i++) {
       const question = this.survey!.questions[i];
-      const validators = question.isRequired ? [Validators.required] : [];
-
-      // For email fields, add email validator
+      const validators = question.required ? [Validators.required] : [];
       if (question.text.toLowerCase().includes('email')) {
         validators.push(Validators.email);
       }
-
       this.answersFormArray.push(this.fb.control('', validators));
     }
   }
@@ -98,14 +85,11 @@ export class SurveyPage implements OnInit {
     }
 
     const formValue = this.surveyForm.value;
-    const submission: SurveyResponseSubmissionDto = {
-      surveyId: this.survey!.id,
-      answers: formValue.answers.map((a: string) => a?.trim() || '')
-    };
+    const answers = formValue.answers.map((a: string) => a?.trim() || '');
 
     this.submitting = true;
     this.errorMessage = '';
-    this.surveyService.submitResponse(submission).subscribe({
+    this.surveyService.submitResponse(this.survey!.id, answers).subscribe({
       next: (result) => {
         this.submissionResult = result;
         this.submitted = true;
@@ -113,13 +97,7 @@ export class SurveyPage implements OnInit {
         this.showToast('Your response has been submitted successfully!', 'success');
       },
       error: (err) => {
-        if (err.status === 404) {
-          this.errorMessage = 'Survey not found. It may have been removed.';
-        } else if (err.status === 400) {
-          this.errorMessage = err.error?.message || 'Please check your answers and try again.';
-        } else {
-          this.errorMessage = 'Failed to submit your response. Please try again.';
-        }
+        this.errorMessage = 'Failed to submit your response. Please try again.';
         this.submitting = false;
       }
     });
@@ -142,8 +120,16 @@ export class SurveyPage implements OnInit {
     }
   }
 
-  isContactQuestion(index: number): boolean {
-    return this.survey?.questions[index]?.category === QuestionCategory.Contact;
+  isContactField(questionText: string): boolean {
+    const lower = questionText.toLowerCase();
+    return lower.includes('email') || 
+           lower.includes('phone') || 
+           lower.includes('name') || 
+           lower.includes('company') || 
+           lower.includes('job') || 
+           lower.includes('industry') ||
+           lower.includes('first') ||
+           lower.includes('last');
   }
 
   getInputType(questionText: string): string {

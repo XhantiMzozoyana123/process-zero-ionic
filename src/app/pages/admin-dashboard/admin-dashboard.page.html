@@ -62,7 +62,7 @@
         <div class="revenue-card">
           <div class="revenue-amount">{{ formatCurrency(totalRevenue) }}</div>
           <div class="revenue-caption">Total Revenue</div>
-          <div class="revenue-bar" *ngIf="totalInvoices > 0"><div class="revenue-fill" [style.width.%]="revenuePercent"></div></div>
+          <div class="revenue-bar" *ngIf="totalInvoices > 0"><div class="revenue-fill" [style.width.%]="100"></div></div>
           <div class="revenue-sub">From {{ paidInvoices }} paid invoices</div>
         </div>
       </div>
@@ -144,19 +144,6 @@
       </div>
 
       <div class="chart-panel">
-        <h3>Surveys</h3>
-        <div class="kv-rows">
-          <div class="kv-row"><span class="kv-label">Surveys</span><span class="kv-value">{{ totalSurveys }}</span></div>
-          <div class="kv-row"><span class="kv-label">Responses</span><span class="kv-value">{{ totalSurveyResponses }}</span></div>
-        </div>
-        <div class="gauge-wrap">
-          <div class="gauge-ring" [style.background]="getGaugeBackground(surveyResponseRate)"><div class="gauge-fill"></div></div>
-          <div class="gauge-text">{{ surveyResponseRate }}%</div>
-        </div>
-        <div class="muted" style="text-align: center; font-size: 0.8rem; margin-top: 8px;">Response Rate</div>
-      </div>
-
-      <div class="chart-panel">
         <h3>Relay AI</h3>
         <div class="bar-chart">
           <div class="bar-row"><span class="bar-label">Sent</span><div class="bar-track"><div class="bar-fill" [style.width.%]="getEmailPercent(totalEmailsSent)"></div></div><span class="bar-value">{{ totalEmailsSent }}</span></div>
@@ -185,18 +172,6 @@
         </div>
       </div>
 
-      <div class="chart-panel">
-        <h3>Surveys</h3>
-        <div class="kv-rows">
-          <div class="kv-row"><span class="kv-label">Surveys</span><span class="kv-value">{{ totalSurveys }}</span></div>
-          <div class="kv-row"><span class="kv-label">Responses</span><span class="kv-value">{{ totalSurveyResponses }}</span></div>
-        </div>
-        <div class="gauge-wrap">
-          <div class="gauge-ring" [style.background]="getGaugeBackground(surveyResponseRate)"><div class="gauge-fill"></div></div>
-          <div class="gauge-text">{{ surveyResponseRate }}%</div>
-        </div>
-        <div class="muted" style="text-align: center; font-size: 0.8rem; margin-top: 8px;">Response Rate</div>
-      </div>
     </div>
   </section>
 

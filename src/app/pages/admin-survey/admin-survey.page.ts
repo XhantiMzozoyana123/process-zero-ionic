@@ -3,11 +3,13 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController, AlertController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
 import { AiService } from 'src/app/services/ai.service';
-import { SurveyDto } from 'src/app/models/dtos/survey-dto.model';
-import { SurveysListDto } from 'src/app/models/dtos/surveys-list-dto.model';
-import { SurveySummaryDto } from 'src/app/models/dtos/survey-summary-dto.model';
-import { SurveyResponseResultDto } from 'src/app/models/dtos/survey-response-result-dto.model';
-import jsPDF from 'jspdf';
+import {
+  Survey,
+  SurveyQuestion,
+  SurveysList,
+  SurveySummary,
+  SurveyResponseResult
+} from 'src/app/models/dtos/survey.model';
 
 @Component({
   selector: 'app-admin-survey',
@@ -16,31 +18,24 @@ import jsPDF from 'jspdf';
   standalone: false
 })
 export class AdminSurveyPage implements OnInit {
-  // Tab selection
   activeTab: 'surveys' | 'editor' | 'responses' = 'surveys';
 
-  // ── Survey List ────────────────────────────────────────────────────────────
-  surveys: SurveysListDto[] = [];
+  surveys: SurveysList[] = [];
   loadingSurveys = false;
 
-  // ── Survey Editor ──────────────────────────────────────────────────────────
   surveyForm: FormGroup;
   loadingSurvey = false;
   savingSurvey = false;
   editingSurveyId: number | null = null;
   isNewSurvey = false;
 
-  // ── Responses ──────────────────────────────────────────────────────────────
-  summary: SurveySummaryDto | null = null;
+  summary: SurveySummary | null = null;
   loadingResponses = false;
-  selectedResponse: SurveyResponseResultDto | null = null;
+  selectedResponse: SurveyResponseResult | null = null;
   loadingDetail = false;
   selectedSurveyForResponses: number | null = null;
-
-  // ── PDF Report Generation ──────────────────────────────────────────────────
-  showReportPrompt = false;
-  reportPromptText = '';
   generatingReport = false;
+  generatedReport: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -58,37 +53,21 @@ export class AdminSurveyPage implements OnInit {
     });
   }
 
-  onReportPromptCancelBound = (): void => this.onReportPromptCancel();
-  
-  onReportPromptConfirmBound = (data: any): void => this.onReportPromptConfirm(data);
-
   ngOnInit(): void {
     this.loadSurveys();
   }
-
-  // ── Form Getters ───────────────────────────────────────────────────────────
 
   get questionsFormArray(): FormArray {
     return this.surveyForm.get('questions') as FormArray;
   }
 
-  /** Normalize a type value that may come as a number (e.g. 1 = OpenEnded, 2 = MultipleChoice) to a string */
-  private normalizeType(type: any): string {
-    if (type === 'OpenEnded' || type === 'MultipleChoice') return type;
-    // Numeric enum: 1 = OpenEnded, 2 = MultipleChoice
-    if (type === 1 || type === '1') return 'OpenEnded';
-    if (type === 2 || type === '2') return 'MultipleChoice';
-    return 'OpenEnded';
-  }
-
-  createQuestionFormGroup(question?: { id: number; text: string; isRequired: boolean; type?: string; options?: string[] }): FormGroup {
-    const normalizedType = this.normalizeType(question?.type);
+  createQuestionFormGroup(question?: Partial<SurveyQuestion>): FormGroup {
     return this.fb.group({
       id: [question?.id ?? Date.now() + Math.floor(Math.random() * 1000)],
       text: [question?.text ?? '', Validators.required],
-      isRequired: [question?.isRequired ?? false],
-      type: [normalizedType],
-      options: this.fb.array((question?.options ?? []).map(o => this.fb.control(o, Validators.required)))
+      type: [question?.type ?? 'open_ended'],
+      required: [question?.required ?? false],
+      options: this.fb.array((question?.options ?? []).map(o => this.fb.control(o)))
     });
   }
 
@@ -106,15 +85,13 @@ export class AdminSurveyPage implements OnInit {
 
   addOption(questionIndex: number): void {
     this.getQuestionOptionsFormArray(questionIndex).push(
-      this.fb.control('', Validators.required)
+      this.fb.control('')
     );
   }
 
   removeOption(questionIndex: number, optionIndex: number): void {
     this.getQuestionOptionsFormArray(questionIndex).removeAt(optionIndex);
   }
-
-  // ── Survey List ────────────────────────────────────────────────────────────
 
   loadSurveys(): void {
     this.activeTab = 'surveys';
@@ -131,8 +108,6 @@ export class AdminSurveyPage implements OnInit {
     });
   }
 
-  // ── Survey Editor ──────────────────────────────────────────────────────────
-
   createNewSurvey(): void {
     this.editingSurveyId = null;
     this.isNewSurvey = true;
@@ -142,7 +117,6 @@ export class AdminSurveyPage implements OnInit {
       description: '',
       status: 'Active'
     });
-    // Clear questions
     while (this.questionsFormArray.length > 0) {
       this.questionsFormArray.removeAt(0);
     }
@@ -163,19 +137,10 @@ export class AdminSurveyPage implements OnInit {
           description: survey.description,
           status: survey.status || 'Active'
         });
-        // Clear existing questions
         while (this.questionsFormArray.length > 0) {
           this.questionsFormArray.removeAt(0);
         }
-        // IMPORTANT: Filter out the 7 contact questions (ids 1-7) that the
-        // backend prepends automatically. We only want to show and edit the
-        // admin's business/pain point questions. The backend will re-prepend
-        // the contact questions when the survey is saved.
-        const businessQuestions = survey.questions.filter(q =>
-          q.id == null || q.id > 7
-        );
-        // Add business questions from server
-        businessQuestions.forEach(q => {
+        survey.questions.forEach(q => {
           this.questionsFormArray.push(this.createQuestionFormGroup(q));
         });
         this.loadingSurvey = false;
@@ -195,31 +160,18 @@ export class AdminSurveyPage implements OnInit {
     }
 
     const formValue = this.surveyForm.value;
-    const survey: SurveyDto = {
+    const survey = {
       name: formValue.name,
       title: formValue.title,
       description: formValue.description,
       status: formValue.status,
-      questions: formValue.questions.map((q: any) => {
-        // For new surveys, omit the client-generated id so the backend can
-        // assign proper IDs. On update, preserve server-assigned IDs.
-        const question: any = {
-          text: q.text,
-          isRequired: q.isRequired,
-          type: this.normalizeType(q.type)
-        };
-        // Only include options for MultipleChoice questions
-        if (question.type === 'MultipleChoice' && q.options?.length) {
-          question.options = q.options;
-        }
-        if (!this.isNewSurvey && q.id != null) {
-          question.id = q.id;
-        }
-        return question;
-      })
+      questions: formValue.questions.map((q: any) => ({
+        text: q.text,
+        type: q.type,
+        required: q.required,
+        options: q.type === 'multiple_choice' ? q.options : undefined
+      }))
     };
-
-    console.log('[saveSurvey] Payload:', JSON.stringify(survey, null, 2));
 
     this.savingSurvey = true;
 
@@ -237,9 +189,7 @@ export class AdminSurveyPage implements OnInit {
         this.loadSurveys();
       },
       error: (err) => {
-        console.error('[saveSurvey] Full error:', err);
-        console.error('[saveSurvey] Error response body:', err.error);
-        const message = err.error?.message || err.error?.title || (typeof err.error === 'string' ? err.error : null) || 'Failed to save survey. Please try again.';
+        const message = err.error?.message || 'Failed to save survey. Please try again.';
         this.showToast(message, 'danger');
         this.savingSurvey = false;
       }
@@ -280,8 +230,6 @@ export class AdminSurveyPage implements OnInit {
     });
   }
 
-  // ── Responses ──────────────────────────────────────────────────────────────
-
   viewResponses(surveyId: number): void {
     this.selectedSurveyForResponses = surveyId;
     this.activeTab = 'responses';
@@ -315,6 +263,47 @@ export class AdminSurveyPage implements OnInit {
 
   closeDetail(): void {
     this.selectedResponse = null;
+    this.generatedReport = null;
+  }
+
+  async generateBusinessReport(): Promise<void> {
+    if (!this.summary) return;
+
+    this.generatingReport = true;
+    this.generatedReport = null;
+
+    try {
+      const surveyData = {
+        title: this.summary.title,
+        name: this.summary.name,
+        totalResponses: this.summary.totalResponses,
+        responses: this.summary.responses.map(r => ({
+          email: r.email,
+          firstName: r.firstName,
+          lastName: r.lastName,
+          phone: r.phone,
+          company: r.company,
+          job: r.job,
+          industry: r.industry,
+          answers: r.answers
+        }))
+      };
+
+      this.aiService.generateBusinessReport(surveyData, '').subscribe({
+        next: (report) => {
+          this.generatedReport = report;
+          this.generatingReport = false;
+          this.showToast('Business report generated successfully!', 'success');
+        },
+        error: (err) => {
+          this.showToast('Failed to generate report. Please try again.', 'danger');
+          this.generatingReport = false;
+        }
+      });
+    } catch (error) {
+      this.showToast('Failed to generate report. Please try again.', 'danger');
+      this.generatingReport = false;
+    }
   }
 
   switchTab(event: CustomEvent): void {
@@ -325,12 +314,6 @@ export class AdminSurveyPage implements OnInit {
     }
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
-  /**
-   * Copies the public survey link to clipboard.
-   * The survey is accessible at /survey/{id} for respondents.
-   */
   copySurveyLink(surveyId: number): void {
     const baseUrl = window.location.origin;
     const surveyUrl = `${baseUrl}/survey/${surveyId}`;
@@ -352,130 +335,6 @@ export class AdminSurveyPage implements OnInit {
       case 'closed': return 'danger';
       default: return 'medium';
     }
-  }
-
-  // ── PDF Report Generation ──────────────────────────────────────────────────
-
-  openReportPrompt(): void {
-    this.showReportPrompt = true;
-    this.reportPromptText = '';
-  }
-
-  closeReportPrompt(): void {
-    this.showReportPrompt = false;
-    this.reportPromptText = '';
-  }
-
-  onReportPromptCancel(): void {
-    this.closeReportPrompt();
-  }
-
-  onReportPromptConfirm(data: any): void {
-    this.reportPromptText = data.prompt || '';
-    this.generatePdfReport();
-  }
-
-  generatePdfReport(): void {
-    if (!this.summary || !this.reportPromptText.trim()) {
-      this.showToast('Please enter instructions for the report.', 'warning');
-      return;
-    }
-
-    this.generatingReport = true;
-    this.closeReportPrompt();
-
-    const surveyData = {
-      survey: this.summary,
-      responses: this.summary.responses,
-      totalResponses: this.summary.totalResponses,
-      dateRange: {
-        from: this.summary.collectedFrom,
-        to: this.summary.collectedTo
-      }
-    };
-
-    this.aiService.generateBusinessReport(surveyData, this.reportPromptText).subscribe({
-      next: (businessPlan) => {
-        this.createPdfFromMarkdown(businessPlan);
-        this.generatingReport = false;
-        this.showToast('PDF report generated successfully!', 'success');
-      },
-      error: () => {
-        this.showToast('Failed to generate business plan. Please try again.', 'danger');
-        this.generatingReport = false;
-      }
-    });
-  }
-
-  private createPdfFromMarkdown(markdown: string): void {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
-    const maxLineWidth = pageWidth - margin * 2;
-    let yPosition = margin;
-
-    const lines = markdown.split('\n');
-
-    doc.setFont('helvetica');
-
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-
-      if (trimmedLine === '') {
-        yPosition += 5;
-        continue;
-      }
-
-      if (trimmedLine.startsWith('# ')) {
-        if (yPosition > 260) {
-          doc.addPage();
-          yPosition = margin;
-        }
-        doc.setFontSize(18);
-        doc.setFont('helvetica', 'bold');
-        const title = trimmedLine.substring(2);
-        doc.text(title, margin, yPosition);
-        yPosition += 10;
-        continue;
-      }
-
-      if (trimmedLine.startsWith('## ')) {
-        if (yPosition > 270) {
-          doc.addPage();
-          yPosition = margin;
-        }
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        const subtitle = trimmedLine.substring(3);
-        doc.text(subtitle, margin, yPosition);
-        yPosition += 8;
-        continue;
-      }
-
-      if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        const bulletText = trimmedLine.substring(2);
-        const splitBullet = doc.splitTextToSize('• ' + bulletText, maxLineWidth - 5);
-        doc.text(splitBullet, margin + 5, yPosition);
-        yPosition += splitBullet.length * 5;
-        continue;
-      }
-
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      const splitText = doc.splitTextToSize(trimmedLine, maxLineWidth);
-      doc.text(splitText, margin, yPosition);
-      yPosition += splitText.length * 5;
-
-      if (yPosition > 280) {
-        doc.addPage();
-        yPosition = margin;
-      }
-    }
-
-    const fileName = `business-plan-${this.summary?.name || 'report'}-${new Date().getTime()}.pdf`;
-    doc.save(fileName);
   }
 
   private async showToast(message: string, color: string) {

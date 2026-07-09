@@ -1,818 +1,422 @@
-// ── Design tokens ────────────────────────────────────────
-$sand:  #f6f1e8;
-$paper: #fffdf9;
-$ink:   #172121;
-$muted: #607078;
-$gold:  #d7a449;
-$teal:  #1d7874;
-$blue:  #335c67;
-$coral: #c06c52;
-
-// ── Keyframes ────────────────────────────────────────────
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba($teal, 0.3); }
-  50%      { box-shadow: 0 0 0 12px rgba($teal, 0); }
-}
-
-// ── Page ─────────────────────────────────────────────────
 .admin-survey-page {
-  --background: radial-gradient(circle at top left, rgba($gold, 0.12), transparent 32%),
-    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+  --background: #fffdf9;
 
-  // ── Content Grid ─────────────────────────────
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    padding: 24px 18px;
-    max-width: 960px;
-    margin: 0 auto;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  // ── Panel ───────────────────────────────────
-  .panel {
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    padding: 22px 20px;
-    display: flex;
-    flex-direction: column;
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba($ink, 0.06);
-
-      ion-icon {
-        font-size: 1.3rem;
-        color: $coral;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: $ink;
-        margin: 0;
-      }
-    }
-  }
-
-  .list-panel,
-  .editor-panel,
-  .responses-panel {
-    margin-bottom: 20px;
-  }
-
-  // ── Loading ──────────────────────────────────
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 40vh;
-    gap: 16px;
-
-    ion-spinner {
-      width: 40px;
-      height: 40px;
-      --color: #{$teal};
-    }
-
-    p {
-      color: $muted;
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-  }
-
-  // ── Empty ────────────────────────────────────
+  .loading-container,
   .empty-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 40vh;
+    min-height: 300px;
     text-align: center;
     padding: 32px;
-    gap: 12px;
-    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    ion-spinner {
+      margin-bottom: 16px;
+      color: #1d7874;
+    }
 
     .empty-icon {
-      font-size: 56px;
-      color: $muted;
+      font-size: 64px;
+      color: #d7a449;
+      margin-bottom: 16px;
     }
 
     h2 {
-      color: $ink;
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 800;
+      color: #172121;
+      margin-bottom: 8px;
     }
 
     p {
-      color: $muted;
-      max-width: 400px;
-      font-size: 0.92rem;
-      line-height: 1.5;
+      color: #607078;
+      margin-bottom: 24px;
     }
   }
 
-  // ── Required Star ────────────────────────────
-  .required-star {
-    color: $coral;
-    font-weight: bold;
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #172121;
+    }
   }
 
-  // ── Form Cards ───────────────────────────────
+  .surveys-list {
+    .survey-card {
+      margin-bottom: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+      border: 1px solid rgba(55, 92, 103, 0.08);
+      background: #fffdf9;
+
+      ion-card-content {
+        .survey-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+
+          .response-count {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: #607078;
+          }
+        }
+
+        .survey-date {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 13px;
+          color: #607078;
+        }
+      }
+
+      .survey-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 8px 16px;
+        border-top: 1px solid rgba(55, 92, 103, 0.08);
+      }
+    }
+  }
+
+  .editor-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #172121;
+    }
+  }
+
   .form-card {
-    max-width: 720px;
-    margin: 0 auto 20px;
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
 
     ion-card-header {
-      padding: 18px 20px 8px;
-      border-bottom: 1px solid rgba($ink, 0.04);
-
       ion-card-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: $ink;
         display: flex;
         align-items: center;
         gap: 8px;
 
         .card-icon {
-          font-size: 1.2rem;
-          color: $coral;
+          font-size: 24px;
+          color: #1d7874;
         }
       }
 
       ion-card-subtitle {
-        font-size: 0.85rem;
-        color: $muted;
-        font-weight: 400;
         margin-top: 4px;
+        font-size: 13px;
+        color: #607078;
       }
-    }
-
-    ion-card-content {
-      padding: 8px 20px 20px;
     }
 
     ion-item {
       --padding-start: 0;
-      --inner-padding-end: 0;
-      --background: transparent;
-      --border-color: rgba($ink, 0.06);
-      --min-height: 72px;
-
-      ion-label {
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: $muted;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 4px;
-      }
-
-      ion-input,
-      ion-textarea {
-        --background: rgba($sand, 0.6);
-        --padding-start: 14px;
-        --padding-end: 14px;
-        --padding-top: 12px;
-        --padding-bottom: 12px;
-        border-radius: 12px;
-        --border-radius: 12px;
-        font-size: 0.92rem;
-        margin-top: 4px;
-        --placeholder-color: rgba($muted, 0.5);
-        --placeholder-opacity: 1;
-        --color: #{$ink};
-        transition: --background 0.2s;
-
-        &:focus-within {
-          --background: rgba($sand, 0.8);
-        }
-      }
+      margin-bottom: 16px;
     }
 
-    ion-note {
-      font-size: 0.78rem;
-      padding-left: 0;
-      margin-top: 4px;
+    ion-label {
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #172121;
+    }
+
+    ion-input,
+    ion-textarea {
+      --background: #f6f1e8;
+      --border-radius: 8px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      border: 1px solid rgba(55, 92, 103, 0.15);
+    }
+
+    ion-textarea {
+      --padding-top: 12px;
+      --padding-bottom: 12px;
     }
   }
 
-  // ── Question Card ────────────────────────────
   .question-card {
-    margin: 14px 0;
-    border-left: 3px solid $teal;
-    background: rgba($paper, 0.6);
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(19, 31, 31, 0.04);
-    overflow: hidden;
+    background: #f6f1e8;
+    border: 1px solid rgba(55, 92, 103, 0.15);
+    border-radius: 8px;
+    margin-bottom: 16px;
 
     ion-card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 12px 16px 0;
-      border-bottom: none;
+      align-items: center;
 
       ion-card-subtitle {
-        font-weight: 700;
-        color: $teal;
-        font-size: 0.85rem;
-      }
-    }
-
-    ion-card-content {
-      padding: 4px 16px 16px;
-    }
-
-    ion-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
-      --background: transparent;
-      --min-height: 60px;
-
-      ion-label {
-        font-size: 0.82rem;
+        color: #1d7874;
         font-weight: 600;
-        color: $muted;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
       }
 
-      ion-textarea {
-        --background: rgba($sand, 0.6);
-        --padding-start: 12px;
-        --padding-end: 12px;
-        --padding-top: 10px;
-        --padding-bottom: 10px;
-        border-radius: 12px;
-        --border-radius: 12px;
-        font-size: 0.92rem;
-        margin-top: 4px;
-        --placeholder-color: rgba($muted, 0.5);
-        --placeholder-opacity: 1;
-        --color: #{$ink};
-      }
-
-      ion-toggle {
-        --background: rgba($ink, 0.1);
-        --background-checked: rgba($teal, 0.3);
-        --handle-background: #{$paper};
-        --handle-background-checked: #{$teal};
+      .remove-btn {
+        --padding-start: 0;
+        --padding-end: 0;
+        --color: #c06c52;
       }
     }
 
-    .remove-btn {
-      --color: #{$coral};
-      --padding-start: 8px;
-      --padding-end: 8px;
-      margin: 0;
-      height: 36px;
+    .options-list {
+      .option-item {
+        --padding-start: 0;
+        margin-bottom: 8px;
+
+        .option-input {
+          flex: 1;
+          --background: #fffdf9;
+        }
+
+        .remove-option-btn {
+          --padding-start: 4px;
+          --padding-end: 4px;
+          --color: #c06c52;
+        }
+      }
+    }
+
+    .add-option-btn {
+      margin-top: 8px;
+      margin-left: 0;
+      --color: #1d7874;
+      --border-color: #1d7874;
     }
   }
 
   .add-question-btn {
-    margin-top: 16px;
-    --border-style: dashed;
-    --border-color: rgba($teal, 0.4);
-    --color: #{$teal};
-    --border-radius: 14px;
-    font-weight: 600;
-    text-transform: none;
-    height: 48px;
-    transition: --border-color 0.2s, --color 0.2s;
-
-    &:hover {
-      --border-color: #{$teal};
-      --color: #{darken($teal, 8%)};
-    }
+    margin-top: 8px;
+    --color: #1d7874;
+    --border-color: #1d7874;
   }
 
   .save-container {
-    max-width: 720px;
-    margin: 0 auto 32px;
+    margin-top: 24px;
+    margin-bottom: 32px;
 
     ion-button {
-      --border-radius: 50px;
-      --background: linear-gradient(135deg, #{$teal}, #{$blue});
-      --box-shadow: 0 4px 20px rgba($teal, 0.3);
+      --background: linear-gradient(135deg, #1d7874, #335c67);
+      --border-radius: 12px;
       font-weight: 600;
-      letter-spacing: 0.02em;
-      height: 52px;
-      font-size: 1rem;
-      text-transform: none;
-      transition: transform 0.2s;
-
-      &:hover:not(:disabled) {
-        transform: scale(1.02);
-      }
-
-      &:disabled {
-        opacity: 0.6;
-      }
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
     }
   }
 
-  // ── Stats Card ───────────────────────────────
-  .stats-card {
-    max-width: 720px;
-    margin: 0 auto 20px;
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
+  .report-button {
+    margin-bottom: 16px;
+    --background: linear-gradient(135deg, #335c67, #1d7874);
+    --border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
+  }
 
-    ion-card-content {
-      padding: 20px;
-    }
+  .report-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
 
-    .stats-grid {
+    ion-card-header {
       display: flex;
-      justify-content: space-around;
-      text-align: center;
-      gap: 8px;
-
-      .stat-item {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .stat-value {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: $teal;
-      }
-
-      .stat-label {
-        font-size: 0.78rem;
-        color: $muted;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-weight: 600;
-      }
-    }
-  }
-
-  // ── Responses List ───────────────────────────
-  .responses-card {
-    max-width: 720px;
-    margin: 0 auto 20px;
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
-
-    ion-card-header {
-      padding: 18px 20px 8px;
-      border-bottom: 1px solid rgba($ink, 0.04);
+      justify-content: space-between;
+      align-items: center;
 
       ion-card-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: $ink;
-      }
-
-      ion-card-subtitle {
-        font-size: 0.85rem;
-        color: $muted;
-        margin-top: 2px;
-      }
-    }
-
-    ion-card-content {
-      padding: 4px 0;
-    }
-
-    .response-item {
-      --padding-start: 20px;
-      --inner-padding-end: 12px;
-      --background: transparent;
-      --min-height: 64px;
-      transition: background 0.15s;
-
-      &:hover {
-        --background: rgba($teal, 0.03);
-      }
-
-      h3 {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: $ink;
-        margin-bottom: 2px;
-      }
-
-      p {
-        font-size: 0.85rem;
-        color: $teal;
-        font-weight: 500;
-      }
-
-      .response-meta {
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-        margin-top: 2px;
-      }
-    }
-  }
-
-  // ── Detail ───────────────────────────────────
-  .detail-header {
-    max-width: 720px;
-    margin: 0 auto 8px;
-
-    ion-button {
-      --color: #{$teal};
-      font-weight: 600;
-      text-transform: none;
-    }
-  }
-
-  .detail-card {
-    max-width: 720px;
-    margin: 0 auto 20px;
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
-
-    ion-card-header {
-      padding: 18px 20px 8px;
-      border-bottom: 1px solid rgba($ink, 0.04);
-
-      ion-card-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: $ink;
         display: flex;
         align-items: center;
         gap: 8px;
 
         .card-icon {
-          font-size: 1.2rem;
-          color: $coral;
+          font-size: 24px;
+          color: #1d7874;
+        }
+      }
+
+      ion-buttons {
+        --color: #607078;
+      }
+    }
+
+    .report-content {
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #172121;
+      background: #f6f1e8;
+      padding: 16px;
+      border-radius: 8px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+  }
+
+  .detail-header {
+    margin-bottom: 16px;
+  }
+
+  .stats-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+      text-align: center;
+
+      .stat-item {
+        .stat-value {
+          display: block;
+          font-size: 20px;
+          font-weight: 700;
+          color: #1d7874;
+          margin-bottom: 4px;
+        }
+
+        .stat-label {
+          font-size: 13px;
+          color: #607078;
         }
       }
     }
-
-    ion-card-content {
-      padding: 4px 0;
-    }
-
-    ion-item {
-      --padding-start: 20px;
-      --inner-padding-end: 12px;
-      --background: transparent;
-      --min-height: 56px;
-
-      h3 {
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: $teal;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 4px;
-      }
-
-      p {
-        font-size: 0.92rem;
-        color: $ink;
-        margin: 2px 0;
-      }
-    }
-
-    .answer-item {
-      h3 {
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: $teal;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 4px;
-      }
-
-      p {
-        white-space: pre-wrap;
-        line-height: 1.6;
-        font-size: 0.92rem;
-        color: $ink;
-      }
-    }
   }
 
-  .no-data {
-    color: $muted;
-    font-style: italic;
-    text-align: center;
-    padding: 16px;
-  }
-
-  // ── Surveys List ──────────────────────────────
-  .list-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 720px;
-    margin: 0 auto 16px;
-
-    h2 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: $ink;
-      margin: 0;
-    }
-  }
-
-  .create-btn-small {
-    --border-radius: 50px;
-    --background: linear-gradient(135deg, #{$teal}, #{$blue});
-    --box-shadow: 0 4px 14px rgba($teal, 0.25);
-    font-weight: 600;
-    text-transform: none;
-  }
-
-  .create-btn {
-    --border-radius: 50px;
-    --background: linear-gradient(135deg, #{$teal}, #{$blue});
-    --box-shadow: 0 4px 16px rgba($teal, 0.3);
-    font-weight: 600;
-    text-transform: none;
-    margin-top: 8px;
-  }
-
-  .surveys-list {
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .survey-card {
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
-    margin: 0;
-
-    ion-card-header {
-      padding: 16px 18px 4px;
-
-      ion-card-title {
-        font-size: 1.02rem;
-        font-weight: 700;
-        color: $ink;
-      }
-
-      ion-card-subtitle {
-        font-size: 0.82rem;
-        color: $muted;
-        font-weight: 500;
-        margin-top: 2px;
-      }
-    }
-
-    ion-card-content {
-      padding: 8px 18px 12px;
-    }
-
-    .survey-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 6px;
-
-      ion-badge {
-        font-weight: 600;
-        font-size: 0.72rem;
-        padding: 4px 10px;
-        border-radius: 50px;
-      }
-
-      .response-count {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 0.82rem;
-        color: $muted;
-        font-weight: 500;
-
-        ion-icon {
-          font-size: 0.9rem;
-          color: $teal;
-        }
-      }
-    }
-
-    .survey-date {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.75rem;
-      color: rgba($muted, 0.7);
-
-      ion-icon {
-        font-size: 0.8rem;
-      }
-    }
-
-    .survey-actions {
-      display: flex;
-      gap: 4px;
-      padding: 0 12px 8px;
-      border-top: 1px solid rgba($ink, 0.04);
-
-      ion-button {
-        --padding-start: 10px;
-        --padding-end: 10px;
-        font-weight: 600;
-        font-size: 0.82rem;
-        text-transform: none;
-      }
-    }
-  }
-
-  // ── Editor Header ─────────────────────────────
-  .editor-header {
-    max-width: 720px;
-    margin: 0 auto 16px;
-
-    ion-button {
-      --color: #{$teal};
-      font-weight: 600;
-      text-transform: none;
-      margin-bottom: 4px;
-    }
-
-    h2 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: $ink;
-      margin: 0 0 0 8px;
-    }
-  }
-
-  // ── Info Card ─────────────────────────────────
   .info-card {
-    max-width: 720px;
-    margin: 0 auto 14px;
-    background: rgba($paper, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
-    overflow: hidden;
-
-    ion-card-content {
-      padding: 16px 20px;
-    }
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
 
     .info-row {
       display: flex;
-      gap: 12px;
-      padding: 6px 0;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(55, 92, 103, 0.08);
+
+      &:last-child {
+        border-bottom: none;
+      }
 
       .info-label {
-        font-size: 0.8rem;
         font-weight: 600;
-        color: $muted;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        min-width: 80px;
+        color: #607078;
+        font-size: 14px;
       }
 
       .info-value {
-        font-size: 0.92rem;
-        font-weight: 600;
-        color: $ink;
+        color: #172121;
+        font-size: 14px;
+        text-align: right;
+        font-weight: 500;
       }
     }
   }
 
-  // ── Report Container ──────────────────────────
-  .report-container {
-    max-width: 720px;
-    margin: 0 auto 16px;
-  }
+  .responses-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
 
-  // ── Report Button ─────────────────────────────
-  .report-btn {
-    --border-radius: 50px;
-    --background: linear-gradient(135deg, #{$gold}, #{darken($gold, 10%)});
-    --box-shadow: 0 4px 20px rgba($gold, 0.35);
-    font-weight: 700;
-    text-transform: none;
-    height: 52px;
-    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-    letter-spacing: 0.02em;
-    transition: transform 0.2s;
+    .response-item {
+      cursor: pointer;
+      transition: all 0.2s;
 
-    &:hover:not(:disabled) {
-      transform: scale(1.02);
-    }
+      &:hover {
+        --background: #f6f1e8;
+      }
 
-    ion-icon {
-      font-size: 1.2rem;
+      .response-meta {
+        margin-top: 4px;
+      }
     }
   }
 
-  // ── Loading Overlay ──────────────────────────
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(23, 33, 33, 0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    animation: fadeInUp 0.3s ease both;
-  }
+  .detail-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+    border: 1px solid rgba(55, 92, 103, 0.08);
+    background: #fffdf9;
 
-  .loading-content {
-    background: $paper;
-    padding: 48px 40px;
-    border-radius: 24px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    max-width: 90%;
-    animation: pulseGlow 2s ease-in-out infinite;
+    ion-card-header {
+      ion-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
 
-    ion-spinner {
-      width: 56px;
-      height: 56px;
-      --color: #{$teal};
-      margin-bottom: 16px;
+        .card-icon {
+          font-size: 24px;
+          color: #1d7874;
+        }
+      }
+
+      ion-card-subtitle {
+        margin-top: 4px;
+        font-size: 13px;
+        color: #607078;
+      }
     }
 
-    p {
-      color: $ink;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin: 0;
+    ion-list {
+      ion-item {
+        --padding-start: 0;
+        margin-bottom: 16px;
+
+        ion-label {
+          h3 {
+            font-size: 14px;
+            color: #607078;
+            margin-bottom: 4px;
+            font-weight: 600;
+          }
+
+          p {
+            font-size: 15px;
+            color: #172121;
+            margin: 0;
+            word-break: break-word;
+            font-weight: 500;
+          }
+        }
+      }
     }
 
-    .loading-subtitle {
-      color: $muted;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-top: 8px;
-    }
-  }
-
-  // ── Responsive ───────────────────────────────
-  @media (max-width: 576px) {
-    .stats-card .stats-grid {
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-card,
-    .responses-card,
-    .detail-card {
-      border-radius: 16px;
+    .no-data {
+      text-align: center;
+      color: #607078;
+      padding: 24px;
+      font-style: italic;
     }
   }
 }
