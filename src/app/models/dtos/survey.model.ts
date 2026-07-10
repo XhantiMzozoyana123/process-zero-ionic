@@ -1,4 +1,4 @@
-export type SurveyQuestionType = 'multiple_choice' | 'open_ended';
+export type SurveyQuestionType = 'MultipleChoice' | 'OpenEnded' | 0 | 1;
 
 export interface SurveyQuestion {
   id: number;

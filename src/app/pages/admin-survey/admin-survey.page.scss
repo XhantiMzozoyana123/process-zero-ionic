@@ -1,6 +1,13 @@
 .admin-survey-page {
   --background: #fffdf9;
 
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 16px;
+  }
+
   .loading-container,
   .empty-container {
     display: flex;
@@ -134,6 +141,7 @@
     box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
     border: 1px solid rgba(55, 92, 103, 0.08);
     background: #fffdf9;
+    max-width: 100%;
 
     ion-card-header {
       ion-card-title {
@@ -185,6 +193,7 @@
     border: 1px solid rgba(55, 92, 103, 0.15);
     border-radius: 8px;
     margin-bottom: 16px;
+    max-width: 100%;
 
     ion-card-header {
       display: flex;

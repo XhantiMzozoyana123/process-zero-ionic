@@ -46,7 +46,7 @@ export class SurveyService {
       Status: survey.status,
       Questions: survey.questions.map(q => ({
         Text: q.text,
-        Type: q.type === 'multiple_choice' ? 'MultipleChoice' : 'OpenEnded',
+        Type: q.type,
         IsRequired: q.required,
         Options: q.options
       }))
@@ -64,7 +64,7 @@ export class SurveyService {
     if (survey.questions) {
       backendPayload.Questions = survey.questions.map(q => ({
         Text: q.text,
-        Type: q.type === 'multiple_choice' ? 'MultipleChoice' : 'OpenEnded',
+        Type: q.type,
         IsRequired: q.required,
         Options: q.options
       }));
