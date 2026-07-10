@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
-import { Survey, SurveyResponseResult } from 'src/app/models/dtos/survey.model';
+import { Survey, SurveyQuestion, SurveyResponseResult } from 'src/app/models/dtos/survey.model';
 
 @Component({
   selector: 'app-survey',
@@ -52,8 +52,20 @@ export class SurveyPage implements OnInit {
     this.errorMessage = '';
     this.surveyService.getSurvey(id).subscribe({
       next: (survey) => {
-        this.survey = survey;
-        this.buildAnswersForm(survey.questions.length);
+        const contactFields: SurveyQuestion[] = [];
+        const businessFields: SurveyQuestion[] = [];
+        for (const q of survey.questions) {
+          if (this.isContactField(q.text)) {
+            contactFields.push(q);
+          } else {
+            businessFields.push(q);
+          }
+        }
+        this.survey = {
+          ...survey,
+          questions: [...businessFields, ...contactFields]
+        };
+        this.buildAnswersForm(this.survey.questions.length);
         this.loading = false;
       },
       error: (err) => {
