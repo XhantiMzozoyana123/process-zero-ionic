@@ -69,8 +69,173 @@
       </div>
     </ng-container>
 
+    <!-- Audit Preview State - Visual Charts -->
+    <ng-container *ngIf="!loading && !errorMessage && !submitted && showAuditPreview && auditReportData">
+      <div class="audit-preview-container">
+        <ion-icon name="analytics-outline" class="audit-icon"></ion-icon>
+        <h2>Your Business Audit</h2>
+        <p class="audit-subtitle">AI-powered insights based on your responses</p>
+
+        <!-- Overall Score Card -->
+        <ion-card class="score-card">
+          <ion-card-content>
+            <div class="score-header">
+              <h3>Overall Business Health</h3>
+              <span class="score-badge" [class]="getScoreClass(auditReportData.overallScore)">
+                {{ auditReportData.overallScore }}/100
+              </span>
+            </div>
+            <div class="gauge-container">
+              <svg viewBox="0 0 100 50" class="gauge">
+                <path d="M10 40 A30 30 0 0 1 90 40" stroke="#e0e0e0" stroke-width="8" fill="none" />
+                <path 
+                  d="M10 40 A30 30 0 0 1 90 40" 
+                  stroke="#1d7874" 
+                  stroke-width="8" 
+                  fill="none" 
+                  stroke-dasharray="100"
+                  [attr.stroke-dashoffset]="100 - auditReportData.overallScore"
+                />
+              </svg>
+              <div class="gauge-label">{{ auditReportData.inventoryHealthLabel }}</div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Inventory Health Score -->
+        <ion-card class="metric-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="cube-outline" class="card-icon"></ion-icon>
+              Inventory Health Score
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="radial-chart">
+              <div class="radial-background">
+                <div class="radial-progress" [style.--progress]="auditReportData.inventoryHealthScore">
+                  <span class="radial-value">{{ auditReportData.inventoryHealthScore }}%</span>
+                </div>
+              </div>
+              <div class="metric-label">{{ auditReportData.inventoryHealthLabel }}</div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Savings Metrics -->
+        <div class="metrics-grid">
+          <ion-card class="metric-mini">
+            <ion-card-content>
+              <ion-icon name="time-outline" class="metric-icon"></ion-icon>
+              <div class="metric-value">{{ auditReportData.timeSavingsHours }} hrs</div>
+              <div class="metric-label">Monthly Time Savings</div>
+            </ion-card-content>
+          </ion-card>
+          <ion-card class="metric-mini">
+            <ion-card-content>
+              <ion-icon name="cash-outline" class="metric-icon"></ion-icon>
+              <div class="metric-value">{{ auditReportData.costSavingsPercentage }}%</div>
+              <div class="metric-label">Potential Cost Reduction</div>
+            </ion-card-content>
+          </ion-card>
+          <ion-card class="metric-mini">
+            <ion-card-content>
+              <ion-icon name="document-text-outline" class="metric-icon"></ion-icon>
+              <div class="metric-value">{{ auditReportData.responsesAnalyzed }}</div>
+              <div class="metric-label">Questions Analyzed</div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <!-- Top Risks Bar Chart -->
+        <ion-card class="chart-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="warning-outline" class="card-icon"></ion-icon>
+              Top 3 Business Risks
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="bar-chart">
+              <div class="bar-row" *ngFor="let item of auditReportData.topRisks.labels; let i = index">
+                <div class="bar-label">{{ item }}</div>
+                <div class="bar-container">
+                  <div 
+                    class="bar-fill risk-bar" 
+                    [style.width.%]="auditReportData.topRisks.values[i]"
+                    [style.background-color]="auditReportData.topRisks.colors?.[i]"
+                  >
+                    <span class="bar-value">{{ auditReportData.topRisks.values[i] }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Top Opportunities Bar Chart -->
+        <ion-card class="chart-card">
+          <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="rocket-outline" class="card-icon"></ion-icon>
+                Top 3 AI Opportunities
+              </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="bar-chart">
+              <div class="bar-row" *ngFor="let item of auditReportData.topOpportunities.labels; let i = index">
+                <div class="bar-label">{{ item }}</div>
+                <div class="bar-container">
+                  <div 
+                    class="bar-fill opportunity-bar" 
+                    [style.width.%]="auditReportData.topOpportunities.values[i]"
+                    [style.background-color]="auditReportData.topOpportunities.colors?.[i]"
+                  >
+                    <span class="bar-value">{{ auditReportData.topOpportunities.values[i] }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Responses Overview -->
+        <ion-card class="responses-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
+              Response Summary
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list lines="full">
+              <ion-item *ngFor="let answer of getBusinessAnswers(); let i = index">
+                <ion-label>
+                  <h3>Question {{ i + 1 }}</h3>
+                  <p>{{ answer }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <div class="audit-actions">
+          <ion-button (click)="cancelAudit()" fill="outline">
+            <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+            Back to Survey
+          </ion-button>
+          <ion-button (click)="unlockReport()" class="unlock-button">
+            <ion-icon name="lock-open-outline" slot="start"></ion-icon>
+            Unlock Full Report
+          </ion-button>
+        </div>
+        
+        <p class="audit-cta">Enter your contact details to receive your complete audit report and consultation.</p>
+      </div>
+    </ng-container>
+
     <!-- Survey Form -->
-    <ng-container *ngIf="!loading && !errorMessage && !submitted">
+    <ng-container *ngIf="!loading && !errorMessage && !submitted && !showAuditPreview">
       <!-- Survey Header -->
       <div class="survey-header">
         <h1>{{ survey?.title }}</h1>
@@ -83,22 +248,22 @@
           <ion-card-header>
             <ion-card-title>
               <ion-icon name="help-circle-outline" class="card-icon"></ion-icon>
-              Survey Questions
+              Questions
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <div formArrayName="answers">
               <ng-container *ngFor="let question of survey?.questions; let i = index">
-                <ion-item lines="none" class="question-item">
+                <ion-item *ngIf="!isContactField(question.text, question.category)" lines="none" class="question-item">
                   <ion-label position="stacked">
                     {{ question.text }}
-                    <span class="required-star" *ngIf="question.required"> *</span>
+                    <span *ngIf="question.required" class="required-star"> *</span>
                   </ion-label>
 
                   <!-- Multiple Choice: radio buttons -->
-                  <ng-container *ngIf="(question.type === 'MultipleChoice' || question.type === 0) && question.options?.length; else openEnded">
+                  <ng-container *ngIf="question.options?.length; else openEnded">
                     <div class="mcq-options">
-                      <ion-radio-group [formControlName]="i">
+                      <ion-radio-group [formControlName]="getFormControlIndex(i)">
                         <ion-item
                           *ngFor="let option of question.options"
                           lines="none"
@@ -113,35 +278,23 @@
 
                   <!-- Open ended / fallback -->
                   <ng-template #openEnded>
-                    <ng-container [ngSwitch]="true">
-                      <!-- Contact fields: use single-line input -->
-                      <ion-input
-                        *ngSwitchCase="isContactField(question.text)"
-                        [formControlName]="i"
-                        [type]="getInputType(question.text)"
-                        placeholder="Your answer..."
-                        [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
-                      ></ion-input>
-                      <!-- Other open-ended: textarea -->
-                      <ion-textarea
-                        *ngSwitchDefault
-                        [formControlName]="i"
-                        rows="3"
-                        placeholder="Your answer..."
-                        [class.ion-invalid]="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
-                      ></ion-textarea>
-                    </ng-container>
+                    <ion-textarea
+                      [formControlName]="getFormControlIndex(i)"
+                      rows="3"
+                      placeholder="Your answer..."
+                      [class.ion-invalid]="answersFormArray.at(getFormControlIndex(i))?.invalid && answersFormArray.at(getFormControlIndex(i))?.touched"
+                    ></ion-textarea>
                   </ng-template>
 
                   <ion-note
                     color="danger"
-                    *ngIf="answersFormArray.at(i)?.invalid && answersFormArray.at(i)?.touched"
+                    *ngIf="answersFormArray.at(getFormControlIndex(i))?.invalid && answersFormArray.at(getFormControlIndex(i))?.touched"
                   >
-                    <span *ngIf="answersFormArray.at(i)?.errors?.['required']">This field is required</span>
-                    <span *ngIf="answersFormArray.at(i)?.errors?.['email']">Please enter a valid email</span>
+                    <span *ngIf="answersFormArray.at(getFormControlIndex(i))?.errors?.['required']">This field is required</span>
+                    <span *ngIf="answersFormArray.at(getFormControlIndex(i))?.errors?.['email']">Please enter a valid email</span>
                   </ion-note>
                 </ion-item>
-                <ion-item-divider *ngIf="i < (survey?.questions?.length ?? 0) - 1"></ion-item-divider>
+                <ion-item-divider *ngIf="!isContactField(question.text, question.category) && i < (survey?.questions?.length ?? 0) - 1"></ion-item-divider>
               </ng-container>
             </div>
           </ion-card-content>
@@ -169,6 +322,129 @@
           </ion-button>
         </div>
       </form>
+
+      <!-- Contact Information Overlay -->
+      <div *ngIf="showContactModal" class="contact-overlay">
+        <div class="contact-modal">
+          <div class="contact-modal-header">
+            <h2>
+              <ion-icon name="person-outline" slot="start"></ion-icon>
+              Contact Information
+            </h2>
+            <ion-button fill="clear" (click)="cancelContactModal()">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+          
+          <p class="modal-description">Please provide your contact details so we can follow up regarding your response.</p>
+          
+          <form [formGroup]="contactForm" class="contact-form">
+            <ion-list lines="none" class="contact-list">
+              <ion-item class="contact-item">
+                <ion-label position="stacked">
+                  Email Address <span class="required-star">*</span>
+                </ion-label>
+                <ion-input
+                  formControlName="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  [class.ion-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched"
+                ></ion-input>
+                <ion-note color="danger" *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+                  Valid email is required
+                </ion-note>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">
+                  First Name <span class="required-star">*</span>
+                </ion-label>
+                <ion-input
+                  formControlName="firstName"
+                  type="text"
+                  placeholder="John"
+                  [class.ion-invalid]="contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched"
+                ></ion-input>
+                <ion-note color="danger" *ngIf="contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched">
+                  First name is required
+                </ion-note>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">
+                  Last Name <span class="required-star">*</span>
+                </ion-label>
+                <ion-input
+                  formControlName="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  [class.ion-invalid]="contactForm.get('lastName')?.invalid && contactForm.get('lastName')?.touched"
+                ></ion-input>
+                <ion-note color="danger" *ngIf="contactForm.get('lastName')?.invalid && contactForm.get('lastName')?.touched">
+                  Last name is required
+                </ion-note>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">
+                  Phone Number <span class="required-star">*</span>
+                </ion-label>
+                <ion-input
+                  formControlName="phone"
+                  type="tel"
+                  placeholder="+1 234 567 8900"
+                  [class.ion-invalid]="contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched"
+                ></ion-input>
+                <ion-note color="danger" *ngIf="contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched">
+                  Phone number is required
+                </ion-note>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">Company (Optional)</ion-label>
+                <ion-input
+                  formControlName="company"
+                  type="text"
+                  placeholder="Your Company"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">Job Title (Optional)</ion-label>
+                <ion-input
+                  formControlName="job"
+                  type="text"
+                  placeholder="Your Job Title"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item class="contact-item">
+                <ion-label position="stacked">Industry (Optional)</ion-label>
+                <ion-input
+                  formControlName="industry"
+                  type="text"
+                  placeholder="Your Industry"
+                ></ion-input>
+              </ion-item>
+            </ion-list>
+
+            <div class="submit-container">
+              <ion-button
+                type="button"
+                expand="block"
+                size="large"
+                (click)="confirmSubmit()"
+                [disabled]="submitting"
+                class="submit-button"
+              >
+                <ion-spinner *ngIf="submitting" slot="start"></ion-spinner>
+                <ion-icon *ngIf="!submitting" name="checkmark-outline" slot="start"></ion-icon>
+                {{ submitting ? 'Submitting...' : 'Submit Response' }}
+              </ion-button>
+            </div>
+          </form>
+        </div>
+      </div>
     </ng-container>
   </div>
 </ion-content>

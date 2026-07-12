@@ -1,256 +1,444 @@
+// Survey page styles - Process Zero Theme
+
 .survey-page {
   --background: #fffdf9;
-
+  
   .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
-    width: 100%;
     padding: 16px;
   }
+}
+
+// Contact Overlay styles - Process Zero Theme
+.contact-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(23, 33, 33, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.contact-modal {
+  background: #fffdf9;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 18px 45px rgba(19, 31, 31, 0.14);
+}
+
+.contact-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(55, 92, 103, 0.15);
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #172121;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.modal-description {
+  color: #607078;
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.contact-form {
+  padding: 0 20px 20px 20px;
+}
+
+.contact-list {
+  --background: transparent;
+  padding: 0;
+}
+
+.contact-item {
+  --background: transparent;
+  margin-bottom: 20px;
+  
+  ion-label {
+    font-weight: 500;
+    color: #172121;
+  }
+  
+  ion-input {
+    --background: #f6f1e8;
+    --color: #172121;
+    --placeholder-color: #607078;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(55, 92, 103, 0.15);
+    margin-top: 8px;
+  }
+}
+
+.submit-container {
+  margin-top: 20px;
+}
+
+// Form styles
+ion-item {
+  margin-bottom: 16px;
+  --background: transparent;
+}
+
+ion-item ion-label {
+  color: #172121;
+}
+
+ion-input, ion-textarea {
+  --color: #172121;
+  --placeholder-color: #607078;
+}
+
+.required-star {
+  color: #c06c52;
+}
+
+// Audit Preview styles - Visual Charts
+.audit-preview-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.audit-icon {
+  font-size: 64px;
+  color: #1d7874;
+  margin-bottom: 16px;
+  display: block;
+  text-align: center;
+}
+
+.audit-preview-container h2 {
+  text-align: center;
+  color: #172121;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.audit-subtitle {
+  text-align: center;
+  color: #607078;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+// Overall Score Card
+.score-card {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+  border: 1px solid rgba(55, 92, 103, 0.08);
+  margin-bottom: 24px;
+
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+    color: #172121;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.score-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+
+  &.score-excellent {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+  }
+
+  &.score-good {
+    background: linear-gradient(135deg, #81c784, #66bb6a);
+  }
+
+  &.score-fair {
+    background: linear-gradient(135deg, #ffa726, #ff9800);
+  }
+
+  &.score-warning {
+    background: linear-gradient(135deg, #ffcc80, #ffb74d);
+    color: #172121;
+  }
+
+  &.score-critical {
+    background: linear-gradient(135deg, #ff6b6b, #f44336);
+  }
+}
+
+// Gauge Chart Styles
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gauge {
+  width: 100%;
+  height: 80px;
+  margin-bottom: 12px;
+}
+
+.gauge-label {
+  color: #607078;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+// Radial Chart Styles (Inventory Health)
+.metric-card {
+  background: #fffdf9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+  border: 1px solid rgba(55, 92, 103, 0.08);
+  margin-bottom: 24px;
+
+  ion-card-header {
+    padding-bottom: 8px;
+  }
+}
+
+.radial-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.radial-background {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f6f1e8;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.radial-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #1d7874 0%,
+    #335c67 calc(var(--progress) * 3.6deg),
+    #f6f1e8 calc(var(--progress) * 3.6deg)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #172121;
+  text-align: center;
+}
+
+// Metrics Grid (Savings, Questions Analyzed)
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
 
   ion-card {
-    margin: 16px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
-    border: 1px solid rgba(55, 92, 103, 0.08);
+    margin: 0;
   }
+}
 
-  .survey-header {
-    text-align: center;
-    margin-bottom: 24px;
-    padding: 24px 16px;
-    background: linear-gradient(135deg, #1d7874 0%, #335c67 100%);
-    border-radius: 12px;
-    color: #fffdf9;
+.metric-mini {
+  background: #fffdf9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+  border: 1px solid rgba(55, 92, 103, 0.08);
+  text-align: center;
+  padding: 12px 8px;
 
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #fffdf9;
-      margin-bottom: 8px;
-    }
-
-    .survey-description {
-      color: #f6f1e8;
-      font-size: 14px;
-      margin-bottom: 12px;
-      opacity: 0.95;
-    }
-
-    .required-note {
-      font-size: 12px;
-      color: #f6f1e8;
-      opacity: 0.85;
-    }
-
-    .required-star {
-      color: #d7a449;
-      font-weight: bold;
-    }
+  ion-card-content {
+    padding: 8px;
   }
+}
 
-  .form-card {
-    ion-card-header {
-      ion-card-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+.metric-icon {
+  font-size: 24px;
+  color: #1d7874;
+  margin-bottom: 8px;
+}
 
-        .card-icon {
-          font-size: 24px;
-          color: #1d7874;
-        }
-      }
-    }
+.metric-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #172121;
+  margin-bottom: 4px;
+}
 
-    ion-item {
-      --padding-start: 0;
-      margin-bottom: 16px;
-    }
+.metric-card .metric-label,
+.metric-mini .metric-label {
+  color: #607078;
+  font-size: 12px;
+  font-weight: 500;
+}
 
-    ion-label {
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #172121;
-    }
+// Bar Chart Styles
+.chart-card {
+  background: #fffdf9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+  border: 1px solid rgba(55, 92, 103, 0.08);
+  margin-bottom: 24px;
 
-    ion-input,
-    ion-textarea {
-      margin-top: 8px;
-      --background: #f6f1e8;
-      --border-radius: 8px;
-      --padding-start: 12px;
-      --padding-end: 12px;
-    }
-
-    ion-textarea {
-      --padding-top: 12px;
-      --padding-bottom: 12px;
-    }
+  ion-card-header {
+    padding-bottom: 8px;
   }
+}
 
-  .privacy-card {
-    background: #f6f1e8;
-    border-left: 4px solid #1d7874;
+.bar-chart {
+  padding: 8px 0;
+}
 
-    ion-card-content {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
+.bar-row {
+  margin-bottom: 16px;
+}
 
-      .privacy-icon {
-        font-size: 24px;
-        color: #1d7874;
-        flex-shrink: 0;
-      }
+.bar-label {
+  font-size: 13px;
+  color: #172121;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
 
-      p {
-        margin: 0;
-        font-size: 13px;
-        color: #607078;
-        line-height: 1.5;
+.bar-container {
+  height: 24px;
+  background: #f6f1e8;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-        a {
-          color: #1d7874;
-          text-decoration: none;
-          font-weight: 600;
-        }
-      }
-    }
+.bar-fill {
+  height: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  transition: width 0.5s ease;
+  min-width: 40px;
+}
+
+.risk-bar {
+  background: linear-gradient(90deg, #ff6b6b, #ffa726);
+}
+
+.opportunity-bar {
+  background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+.bar-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+// Responses Card
+.responses-card {
+  background: #fffdf9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
+  border: 1px solid rgba(55, 92, 103, 0.08);
+  margin-bottom: 24px;
+}
+
+.audit-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  
+  ion-button {
+    flex: 1;
   }
+}
 
-  .submit-container {
-    margin-top: 24px;
-    margin-bottom: 32px;
+.unlock-button {
+  --background: linear-gradient(135deg, #1d7874, #335c67);
+  --border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
+}
 
-    ion-button {
-      --background: linear-gradient(135deg, #1d7874, #335c67);
-      --border-radius: 12px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
-    }
-  }
+.audit-cta {
+  text-align: center;
+  color: #607078;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 16px;
+  background: #f6f1e8;
+  border-radius: 12px;
+  border: 1px dashed rgba(55, 92, 103, 0.3);
+}
 
-  .loading-container,
-  .error-container,
-  .success-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    text-align: center;
-    padding: 32px;
-  }
+// Button styles - Process Zero gradient
+.submit-button {
+  --background: linear-gradient(135deg, #1d7874, #335c67);
+  --border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
+  --padding-start: 24px;
+  --padding-end: 24px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
 
-  .loading-container {
-    ion-spinner {
-      margin-bottom: 16px;
-      color: #1d7874;
-    }
+// Apply Process Zero theme to all ion-buttons in survey
+ion-button {
+  --background: linear-gradient(135deg, #1d7874, #335c67);
+  --border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
+}
 
-    p {
-      color: #607078;
-    }
-  }
-
-  .error-container {
-    .error-icon {
-      font-size: 64px;
-      color: #c06c52;
-      margin-bottom: 16px;
-    }
-
-    h2 {
-      color: #172121;
-      margin-bottom: 8px;
-    }
-
-    p {
-      color: #607078;
-      margin-bottom: 24px;
-    }
-  }
-
-  .success-container {
-    .success-icon {
-      font-size: 64px;
-      color: #1d7874;
-      margin-bottom: 16px;
-    }
-
-    h2 {
-      color: #172121;
-      margin-bottom: 8px;
-    }
-
-    p {
-      color: #607078;
-      margin-bottom: 24px;
-    }
-
-    .result-card {
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 24px;
-      background: #f6f1e8;
-      border: 1px solid rgba(55, 92, 103, 0.1);
-
-      ion-item {
-        --padding-start: 0;
-      }
-
-      h3 {
-        font-size: 14px;
-        color: #607078;
-        margin-bottom: 4px;
-        font-weight: 500;
-      }
-
-      p {
-        font-size: 16px;
-        color: #172121;
-        margin: 0;
-        font-weight: 600;
-      }
-    }
-
-    ion-button {
-      max-width: 300px;
-      --background: linear-gradient(135deg, #1d7874, #335c67);
-      --border-radius: 12px;
-    }
-  }
-
-  .mcq-options {
-    margin-top: 12px;
-
-    .mcq-option {
-      --padding-start: 0;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(55, 92, 103, 0.15);
-      padding: 8px 12px;
-      background: #f6f1e8;
-      transition: all 0.2s;
-
-      &:hover {
-        background: #fffdf9;
-        border-color: #1d7874;
-      }
-
-      ion-radio {
-        --color: #1d7874;
-        --color-checked: #1d7874;
-        margin-right: 12px;
-      }
-
-      ion-label {
-        margin: 0;
-        font-size: 15px;
-        color: #172121;
-      }
-    }
-  }
+ion-button[fill="clear"] {
+  --background: transparent;
+  --box-shadow: none;
+  --color: #607078;
 }

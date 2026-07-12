@@ -38,17 +38,19 @@ export class SurveyService {
   }
 
   /** POST /api/survey — Creates a new survey */
-  createSurvey(survey: Omit<Survey, 'id' | 'createdAt' | 'updatedAt'>): Observable<Survey> {
+  createSurvey(survey: Omit<Survey, 'id' | 'createdAt' | 'updatedAt' | 'uploadedAt'>): Observable<Survey> {
     const backendPayload = {
       Name: survey.name,
       Title: survey.title,
       Description: survey.description,
       Status: survey.status,
+      // Contact questions (0-6) are auto-prepended by the service; only the
+      // business questions (7+) supplied here become SurveyQuestion rows.
       Questions: survey.questions.map(q => ({
         Text: q.text,
         Type: q.type,
         IsRequired: q.required,
-        Options: q.options
+        Options: q.type === 'MultipleChoice' ? q.options : undefined
       }))
     };
     return this.http.post<Survey>(this.apiUrl, backendPayload);
@@ -66,7 +68,7 @@ export class SurveyService {
         Text: q.text,
         Type: q.type,
         IsRequired: q.required,
-        Options: q.options
+        Options: q.type === 'MultipleChoice' ? q.options : undefined
       }));
     }
     return this.http.put<Survey>(`${this.apiUrl}/${id}`, backendPayload);

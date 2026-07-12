@@ -65,7 +65,7 @@ export class AdminSurveyPage implements OnInit {
     return this.fb.group({
       id: [question?.id ?? Date.now() + Math.floor(Math.random() * 1000)],
       text: [question?.text ?? '', Validators.required],
-      type: [question?.type ?? 'open_ended'],
+      type: [question?.type ?? 'OpenEnded'],
       required: [question?.required ?? false],
       options: this.fb.array((question?.options ?? []).map(o => this.fb.control(o)))
     });
@@ -169,7 +169,7 @@ export class AdminSurveyPage implements OnInit {
         text: q.text,
         type: q.type,
         required: q.required,
-        options: q.type === 'multiple_choice' ? q.options : undefined
+        options: q.type === 'MultipleChoice' ? q.options : undefined
       }))
     };
 
