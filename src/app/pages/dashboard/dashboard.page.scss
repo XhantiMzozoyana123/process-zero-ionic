@@ -23,6 +23,8 @@ $coral: #c06c52;
 .dashboard-page {
 	--background: radial-gradient(circle at top left, rgba(215, 164, 73, 0.15), transparent 32%), linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
 	color: var(--dashboard-ink);
+	min-height: 100%;
+	overflow-y: auto;
 }
 
 .dashboard-hero {
@@ -225,15 +227,10 @@ $coral: #c06c52;
 	border-left: 4px solid var(--dashboard-gold);
 }
 
-.hero-metrics-grid,
-.report-grid,
-.health-grid {
+.hero-metrics-grid {
 	display: grid;
 	gap: 18px;
 	padding: 0 18px 18px;
-}
-
-.hero-metrics-grid {
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -264,44 +261,19 @@ $coral: #c06c52;
 	background: linear-gradient(180deg, rgba(51, 92, 103, 0.16), rgba(255, 253, 249, 0.92));
 }
 
-  .report-grid,
-  .messenger-widget-section {
-    display: grid;
-    gap: 18px;
-    padding: 0 18px 18px;
-  }
+.report-grid {
+	display: grid;
+	gap: 18px;
+	padding: 0 18px 18px;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+}
 
-  .messenger-widget-section {
-    grid-template-columns: 1fr;
-  }
-
-  .messenger-panel {
-    padding: 22px;
-    cursor: default;
-  }
-
-  .messenger-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  .messenger-text {
-    color: var(--dashboard-muted);
-    font-size: 0.95rem;
-    margin: 0;
-  }
-
-  .messenger-btn {
-    --border-radius: 12px;
-    font-weight: 600;
-  }
-
-  .report-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
+.health-grid {
+	display: grid;
+	gap: 18px;
+	padding: 0 18px 18px;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 
 .panel {
 	grid-column: span 4;
@@ -438,11 +410,6 @@ $coral: #c06c52;
 	width: 100%;
 	border-radius: 18px 18px 0 0;
 	background: linear-gradient(180deg, var(--dashboard-teal), var(--dashboard-blue));
-}
-
-.health-grid {
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	padding: 0;
 }
 
 .health-card {

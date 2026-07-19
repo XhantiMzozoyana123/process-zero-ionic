@@ -34,14 +34,22 @@ export class AdminGuard implements CanActivate, CanActivateChild, CanMatch {
   }
 
   private checkAdmin(): boolean | UrlTree {
+    // If admin is impersonating a user, allow access by switching back to admin token
+    if (this.authService.isImpersonating()) {
+      this.authService.switchToAdmin();
+    }
+
+    // Admin must be authenticated and have Admin role
     if (this.authService.isAuthenticated() && this.authService.isAdmin()) {
       return true;
     }
 
+    // Not authenticated - go to login
     if (!this.authService.isAuthenticated()) {
       return this.router.createUrlTree(['/login']);
     }
 
+    // Authenticated but not admin - go to account dashboard
     return this.router.createUrlTree(['/account/dashboard']);
   }
 }

@@ -11,11 +11,6 @@
         <ion-icon name="home-outline" slot="start"></ion-icon>
         <ion-label>Home</ion-label>
       </ion-item>
-      <ion-item routerLink="messenger" routerLinkActive="active-link" class="sidebar-item">
-        <ion-icon name="chatbubbles-outline" slot="start"></ion-icon>
-        <ion-label>Messenger</ion-label>
-        <ion-badge *ngIf="unreadCount > 0" slot="end" color="primary" class="messenger-badge">{{ unreadCount }}</ion-badge>
-      </ion-item>
       <ion-item routerLink="leadlake" routerLinkActive="active-link" class="sidebar-item">
         <ion-icon name="globe-outline" slot="start"></ion-icon>
         <ion-label>Lead Lake</ion-label>
@@ -46,7 +41,7 @@
       </ion-item>
       <ion-item routerLink="help" routerLinkActive="active-link" class="sidebar-item">
         <ion-icon name="help-circle-outline" slot="start"></ion-icon>
-        <ion-label>Help &amp; Guide</ion-label>
+        <ion-label>Help & Guide</ion-label>
       </ion-item>
       <ion-item routerLink="settings" routerLinkActive="active-link" class="sidebar-item">
         <ion-icon name="settings-outline" slot="start"></ion-icon>
@@ -73,9 +68,13 @@
         <ion-icon name="key-outline" slot="start"></ion-icon>
         <ion-label>Change Password</ion-label>
       </ion-item>
-      <ion-item *ngIf="isAdmin" routerLink="/admin/dashboard" routerDirection="forward" class="sidebar-item admin-switch">
+      <ion-item *ngIf="isAdmin && !isImpersonating()" routerLink="/admin/dashboard" routerDirection="forward" class="sidebar-item admin-switch">
         <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
         <ion-label>Switch to Admin</ion-label>
+      </ion-item>
+      <ion-item *ngIf="isImpersonating()" routerLink="/admin/dashboard" routerDirection="forward" class="sidebar-item admin-switch">
+        <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
+        <ion-label>Admin Dashboard</ion-label>
       </ion-item>
       <ion-item button (click)="logout()" class="sidebar-item">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
@@ -97,14 +96,16 @@
         <span class="brand-title">Process Zero</span>
       </ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="openMessenger()" class="notification-btn">
-          <ion-icon name="notifications-outline"></ion-icon>
-          <ion-badge *ngIf="unreadCount > 0" class="notification-badge">{{ unreadCount }}</ion-badge>
-        </ion-button>
         <ion-menu-button menu="settings-menu"></ion-menu-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Impersonation Banner -->
+  <div *ngIf="isImpersonating()" class="impersonation-banner">
+    <ion-icon name="swap-horizontal-outline"></ion-icon>
+    <span>Impersonating {{ impersonatorEmail || 'user' }}. <ion-button fill="clear" size="small" (click)="switchBackToAdmin()">Switch back to Admin</ion-button></span>
+  </div>
 
   <ion-content>
     <ion-router-outlet></ion-router-outlet>

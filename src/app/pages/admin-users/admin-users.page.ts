@@ -6,6 +6,7 @@ import { KpiService } from 'src/app/services/kpi-service';
 import { ProductService } from 'src/app/services/product-service';
 import { KPI } from 'src/app/models/entities/kpi.model';
 import { Product } from 'src/app/models/entities/product.model';
+import { AuthService } from 'src/app/services/auth-service';
 
 @Component({
   selector: 'app-admin-users',
@@ -33,7 +34,8 @@ export class AdminUsersPage implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private kpiService: KpiService,
-    private productService: ProductService
+    private productService: ProductService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -180,6 +182,36 @@ export class AdminUsersPage implements OnInit {
     await alert.present();
   }
 
+  async impersonateUser(user: ApplicationUser): Promise<void> {
+    // Ensure only admins can impersonate users (defense in depth)
+    if (!this.authService.isAdmin()) {
+      this.showToast('Only administrators can impersonate users.', 'danger');
+      return;
+    }
+
+    const confirm = await this.alertController.create({
+      header: 'Login as User',
+      message: `You will login as ${user.userName}. You can return to your admin account using the admin switcher. Continue?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Login', handler: () => {
+            this.userService.impersonateUser(user.id).subscribe({
+              next: ({ token }) => {
+                const current = localStorage.getItem('token');
+                if (current) localStorage.setItem('adminToken', current);
+                localStorage.setItem('token', token);
+                window.location.href = '/impersonation/dashboard';
+              },
+              error: () => this.showToast('Could not login as user.', 'danger')
+            });
+          }
+        }
+      ]
+    });
+    await confirm.present();
+  }
+
   private async showToast(message: string, color: string): Promise<void> {
     const toast = await this.toastController.create({ message, color, duration: 2500, position: 'bottom' });
     await toast.present();
@@ -242,5 +274,3 @@ export class AdminUsersPage implements OnInit {
     return 'R ' + (val ?? 0).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 }
-
-

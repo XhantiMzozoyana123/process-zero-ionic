@@ -120,4 +120,28 @@ export class AuthService {
     }
     return this.http.post<ApiMessageResponse>(`${this.apiUrl}/refresh`, { token });
   }
+
+  setAdminToken(token: string) {
+    localStorage.setItem('adminToken', token);
+  }
+
+  getAdminToken(): string | null {
+    return localStorage.getItem('adminToken');
+  }
+
+  clearAdminToken() {
+    localStorage.removeItem('adminToken');
+  }
+
+  switchToAdmin() {
+    const adminToken = this.getAdminToken();
+    if (adminToken) {
+      this.setToken(adminToken);
+      this.clearAdminToken();
+    }
+  }
+
+  isImpersonating(): boolean {
+    return !!this.getAdminToken();
+  }
 }

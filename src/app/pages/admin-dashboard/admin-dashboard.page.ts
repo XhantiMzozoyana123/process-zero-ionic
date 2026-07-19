@@ -13,7 +13,6 @@ import { MeetingDto } from 'src/app/models/dtos/meeting-dto.model';
 import { Contact } from 'src/app/models/entities/contact.model';
 import { ApplicationUser } from 'src/app/models/entities/application-user.model';
 import { OverallStatisticsDto } from 'src/app/models/dtos/relay-dto.model';
-import { MessengerService } from 'src/app/services/messenger.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,7 +22,6 @@ import { MessengerService } from 'src/app/services/messenger.service';
 })
 export class AdminDashboardPage implements OnInit {
   loading: boolean = true;
-  unreadCount = 0;
 
   // Users
   totalUsers: number = 0;
@@ -74,25 +72,11 @@ export class AdminDashboardPage implements OnInit {
     private leadlakeService: LeadlakeService,
     private relayService: RelayService,
     private payrollService: AdminPayrollService,
-    private messengerService: MessengerService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadAnalytics();
-    this.loadUnreadCount();
-  }
-
-  loadUnreadCount(): void {
-    this.messengerService.getConversations().subscribe({
-      next: conversations => {
-        this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
-      }
-    });
-  }
-
-  openMessenger(): void {
-    this.router.navigate(['/admin/messenger']);
   }
 
   loadAnalytics(): void {

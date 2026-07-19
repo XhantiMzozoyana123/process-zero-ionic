@@ -35,4 +35,8 @@ export class AdminUserService {
   isUserBanned(id: string): Observable<{ id: string; isBanned: boolean }> {
     return this.http.get<{ id: string; isBanned: boolean }>(`${this.apiUrl}/${id}/is-banned`);
   }
+
+  impersonateUser(id: string): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/${id}/impersonate`, {});
+  }
 }

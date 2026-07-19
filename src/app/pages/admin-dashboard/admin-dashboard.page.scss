@@ -12,6 +12,7 @@ $red: #c44536;
 .admin-dashboard-page {
   --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
     linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+    
 }
 
 .admin-hero {
@@ -504,9 +505,4 @@ $red: #c44536;
 
 .muted {
   color: $muted;
-}
-
-// ── Messenger Widget Section ───────────────────
-.messenger-widget-section {
-  padding: 0 18px 18px;
 }

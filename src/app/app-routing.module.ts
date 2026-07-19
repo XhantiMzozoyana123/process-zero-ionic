@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { ImpersonationGuard } from './guards/impersonation.guard';
 
 const routes: Routes = [
   {
@@ -18,6 +19,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canMatch: [AuthGuard],
     loadChildren: () => import('./pages/account/account.module').then( m => m.AccountPageModule)
+  },
+  {
+    path: 'impersonation',
+    canActivate: [ImpersonationGuard],
+    canMatch: [ImpersonationGuard],
+    loadChildren: () => import('./pages/impersonation/impersonation.module').then( m => m.ImpersonationPageModule)
   },
   {
     path: 'admin',

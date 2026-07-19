@@ -7,7 +7,6 @@ import { ProductService } from 'src/app/services/product-service';
 import { KpiService } from 'src/app/services/kpi-service';
 import { IntroService } from 'src/app/services/intro-service';
 import { MilestoneService } from 'src/app/services/milestone-service';
-import { MessengerService } from 'src/app/services/messenger.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +22,6 @@ export class DashboardPage implements OnInit {
   loadingProducts = false;
   loadingKpi = false;
   errorMessage = '';
-  unreadCount = 0;
 
   milestones: Milestone[] = [];
   loadingMilestones = false;
@@ -38,26 +36,12 @@ export class DashboardPage implements OnInit {
     private kpiService: KpiService,
     private introService: IntroService,
     private milestoneService: MilestoneService,
-    private router: Router,
-    private messengerService: MessengerService
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.loadProducts();
     this.loadMilestones();
-    this.loadUnreadCount();
-  }
-
-  loadUnreadCount(): void {
-    this.messengerService.getConversations().subscribe({
-      next: conversations => {
-        this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
-      }
-    });
-  }
-
-  openMessenger(): void {
-    this.router.navigate(['/account/messenger']);
   }
 
   toggleMilestonesCollapsed(): void {

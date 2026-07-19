@@ -1,4 +1,13 @@
 {
+  "/api": {
+    "target": "https://localhost:7183",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "cookieDomainRewrite": {
+      "*": ""
+    }
+  },
   "/api/ai": {
     "target": "https://llm.processzero.xyz",
     "secure": true,

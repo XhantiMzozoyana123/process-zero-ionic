@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth-service';
-import { MessengerService } from 'src/app/services/messenger.service';
 
 @Component({
   selector: 'app-admin',
@@ -10,22 +9,16 @@ import { MessengerService } from 'src/app/services/messenger.service';
   standalone: false
 })
 export class AdminPage implements OnInit {
-  unreadCount = 0;
+  isAdmin = false;
+  impersonatorEmail: string | null = null;
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private messengerService: MessengerService
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.messengerService.getConversations().subscribe(conversations => {
-      this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
-    });
-  }
-
-  openMessenger(): void {
-    this.router.navigate(['/admin/messenger']);
+  ngOnInit(): void {
+    this.isAdmin = this.authService.isAdmin();
   }
 
   logout(): void {

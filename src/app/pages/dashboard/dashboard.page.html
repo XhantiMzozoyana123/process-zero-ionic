@@ -1,8 +1,4 @@
-<ion-content [fullscreen]="true" class="dashboard-page">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
+<div class="dashboard-page">
   <section class="dashboard-hero">
     <!-- Milestones Hero (shown when milestones are incomplete) -->
     <div class="hero-copy milestones-hero" *ngIf="showMilestones">
@@ -148,116 +144,96 @@
       </article>
     </section>
 
-    <!-- Messenger Notification Widget -->
-    <section class="messenger-widget-section">
-      <article class="panel messenger-panel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Messaging</p>
-            <h3><ion-icon name="chatbubbles-outline"></ion-icon> Messenger</h3>
-          </div>
-          <ion-badge *ngIf="unreadCount > 0" color="primary" class="unread-badge">{{ unreadCount }}</ion-badge>
+    <article class="panel panel-wide panel-dark">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Conversion Funnel</p>
+          <h3>From outreach to closed deals</h3>
         </div>
-        <div class="messenger-content">
-          <p class="messenger-text">Stay connected with your team and clients</p>
-          <ion-button expand="block" shape="round" class="messenger-btn" (click)="openMessenger()">
-            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-            Open Messenger
-          </ion-button>
-        </div>
-      </article>
+        <span class="panel-badge">Latest snapshot</span>
+      </div>
 
-      <article class="panel panel-wide panel-dark">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Conversion Funnel</p>
-            <h3>From outreach to closed deals</h3>
-          </div>
-          <span class="panel-badge">Latest snapshot</span>
-        </div>
-
-        <div class="funnel-list">
-          <div class="funnel-row" *ngFor="let item of funnelMetrics">
-            <div class="funnel-copy">
-              <span>{{ item.label }}</span>
-              <strong>{{ item.value }}</strong>
-            </div>
-            <div class="funnel-track">
-              <div class="funnel-fill" [style.width.%]="item.percent" [style.background]="item.accent"></div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel panel-accent">
-        <div class="panel-header compact">
-          <div>
-            <p class="eyebrow">Snapshot</p>
-            <h3>Operational facts</h3>
-          </div>
-        </div>
-
-        <div class="snapshot-list">
-          <div>
-            <span>Product ID</span>
-            <strong>{{ kpi.productId }}</strong>
-          </div>
-          <div>
-            <span>Active Clients</span>
-            <strong>{{ kpi.activeClients }}</strong>
-          </div>
-          <div>
-            <span>Meetings Booked</span>
-            <strong>{{ kpi.meetingsBooked }}</strong>
-          </div>
-
-          <div>
-            <span>Updated</span>
-            <strong>{{ kpi.updatedAt | date:'medium' }}</strong>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel panel-wide">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Revenue Lens</p>
-            <h3>Revenue mix across current KPI dimensions</h3>
-          </div>
-        </div>
-
-        <div class="revenue-chart">
-          <div class="revenue-bar" *ngFor="let item of revenueMetrics">
-            <div class="revenue-topline">
-              <span>{{ item.label }}</span>
-              <strong>{{ item.value | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
-            </div>
-            <div class="revenue-track">
-              <div class="revenue-fill" [style.height.%]="item.percent"></div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel panel-wide panel-soft">
-
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Operating Metrics</p>
-            <h3>Supporting performance indicators</h3>
-          </div>
-        </div>
-
-        <div class="metrics-table">
-          <div class="metrics-row" *ngFor="let item of operatingMetrics">
-            <div>
-              <span>{{ item.label }}</span>
-              <p>{{ item.note }}</p>
-            </div>
+      <div class="funnel-list">
+        <div class="funnel-row" *ngFor="let item of funnelMetrics">
+          <div class="funnel-copy">
+            <span>{{ item.label }}</span>
             <strong>{{ item.value }}</strong>
           </div>
+          <div class="funnel-track">
+            <div class="funnel-fill" [style.width.%]="item.percent" [style.background]="item.accent"></div>
+          </div>
         </div>
-      </article>
-    </section>
+      </div>
+    </article>
+
+    <article class="panel panel-accent">
+      <div class="panel-header compact">
+        <div>
+          <p class="eyebrow">Snapshot</p>
+          <h3>Operational facts</h3>
+        </div>
+      </div>
+
+      <div class="snapshot-list">
+        <div>
+          <span>Product ID</span>
+          <strong>{{ kpi.productId }}</strong>
+        </div>
+        <div>
+          <span>Active Clients</span>
+          <strong>{{ kpi.activeClients }}</strong>
+        </div>
+        <div>
+          <span>Meetings Booked</span>
+          <strong>{{ kpi.meetingsBooked }}</strong>
+        </div>
+
+        <div>
+          <span>Updated</span>
+          <strong>{{ kpi.updatedAt | date:'medium' }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel panel-wide">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Revenue Lens</p>
+          <h3>Revenue mix across current KPI dimensions</h3>
+        </div>
+      </div>
+
+      <div class="revenue-chart">
+        <div class="revenue-bar" *ngFor="let item of revenueMetrics">
+          <div class="revenue-topline">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value | currency:'ZAR':'symbol-narrow':'1.2-2' }}</strong>
+          </div>
+          <div class="revenue-track">
+            <div class="revenue-fill" [style.height.%]="item.percent"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel panel-wide panel-soft">
+
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Operating Metrics</p>
+          <h3>Supporting performance indicators</h3>
+        </div>
+      </div>
+
+      <div class="metrics-table">
+        <div class="metrics-row" *ngFor="let item of operatingMetrics">
+          <div>
+            <span>{{ item.label }}</span>
+            <p>{{ item.note }}</p>
+          </div>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </div>
+    </article>
   </ng-container>
-</ion-content>
+</div>
