@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   apiUrl: "https://api.processzero.xyz/api",
   google: {
-    clientId: '1016527872417-kbdv2il3hi0ojbu43fs0rtmhl9ujueh6.apps.googleusercontent.com',
+    clientId: '384499091370-4md9khsd5f5g4t0gcej852pmdcg1280a.apps.googleusercontent.com',
     redirectUrl: 'http://processzero.xyz/oauth/google/callback',
     scope: 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly',
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'],
