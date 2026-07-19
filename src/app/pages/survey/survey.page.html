@@ -69,18 +69,18 @@
       </div>
     </ng-container>
 
-    <!-- Audit Preview State - Visual Charts -->
+    <!-- Audit Preview State - Visual Charts (Generic) -->
     <ng-container *ngIf="!loading && !errorMessage && !submitted && showAuditPreview && auditReportData">
       <div class="audit-preview-container">
         <ion-icon name="analytics-outline" class="audit-icon"></ion-icon>
-        <h2>Your Business Audit</h2>
-        <p class="audit-subtitle">AI-powered insights based on your responses</p>
+        <h2>Your Survey Analysis</h2>
+        <p class="audit-subtitle">{{ auditReportData.surveyType | titlecase }} survey insights powered by AI</p>
 
         <!-- Overall Score Card -->
         <ion-card class="score-card">
           <ion-card-content>
             <div class="score-header">
-              <h3>Overall Business Health</h3>
+              <h3>Response Quality Score</h3>
               <span class="score-badge" [class]="getScoreClass(auditReportData.overallScore)">
                 {{ auditReportData.overallScore }}/100
               </span>
@@ -97,89 +97,55 @@
                   [attr.stroke-dashoffset]="100 - auditReportData.overallScore"
                 />
               </svg>
-              <div class="gauge-label">{{ auditReportData.inventoryHealthLabel }}</div>
+              <div class="gauge-label">{{ auditReportData.scoreLabel }}</div>
             </div>
           </ion-card-content>
         </ion-card>
 
-        <!-- Inventory Health Score -->
-        <ion-card class="metric-card">
-          <ion-card-header>
-            <ion-card-title>
-              <ion-icon name="cube-outline" class="card-icon"></ion-icon>
-              Inventory Health Score
-            </ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="radial-chart">
-              <div class="radial-background">
-                <div class="radial-progress" [style.--progress]="auditReportData.inventoryHealthScore">
-                  <span class="radial-value">{{ auditReportData.inventoryHealthScore }}%</span>
-                </div>
-              </div>
-              <div class="metric-label">{{ auditReportData.inventoryHealthLabel }}</div>
-            </div>
-          </ion-card-content>
-        </ion-card>
-
-        <!-- Savings Metrics -->
+        <!-- Dynamic Metrics Grid -->
         <div class="metrics-grid">
-          <ion-card class="metric-mini">
-            <ion-card-content>
-              <ion-icon name="time-outline" class="metric-icon"></ion-icon>
-              <div class="metric-value">{{ auditReportData.timeSavingsHours }} hrs</div>
-              <div class="metric-label">Monthly Time Savings</div>
-            </ion-card-content>
-          </ion-card>
-          <ion-card class="metric-mini">
-            <ion-card-content>
-              <ion-icon name="cash-outline" class="metric-icon"></ion-icon>
-              <div class="metric-value">{{ auditReportData.costSavingsPercentage }}%</div>
-              <div class="metric-label">Potential Cost Reduction</div>
-            </ion-card-content>
-          </ion-card>
           <ion-card class="metric-mini">
             <ion-card-content>
               <ion-icon name="document-text-outline" class="metric-icon"></ion-icon>
               <div class="metric-value">{{ auditReportData.responsesAnalyzed }}</div>
-              <div class="metric-label">Questions Analyzed</div>
+              <div class="metric-label">Questions Answered</div>
+            </ion-card-content>
+          </ion-card>
+          <ion-card class="metric-mini" *ngFor="let metric of auditReportData.keyMetrics">
+            <ion-card-content>
+              <ion-icon name="analytics-outline" class="metric-icon"></ion-icon>
+              <div class="metric-value">{{ metric.values[0] }}%</div>
+              <div class="metric-label">{{ metric.labels[0] }}</div>
             </ion-card-content>
           </ion-card>
         </div>
 
-        <!-- Top Risks Bar Chart -->
-        <ion-card class="chart-card">
+        <!-- Key Insights -->
+        <ion-card class="chart-card" *ngIf="auditReportData.topInsights?.length">
           <ion-card-header>
             <ion-card-title>
-              <ion-icon name="warning-outline" class="card-icon"></ion-icon>
-              Top 3 Business Risks
+              <ion-icon name="bulb-outline" class="card-icon"></ion-icon>
+              Key Insights
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <div class="bar-chart">
-              <div class="bar-row" *ngFor="let item of auditReportData.topRisks.labels; let i = index">
-                <div class="bar-label">{{ item }}</div>
-                <div class="bar-container">
-                  <div 
-                    class="bar-fill risk-bar" 
-                    [style.width.%]="auditReportData.topRisks.values[i]"
-                    [style.background-color]="auditReportData.topRisks.colors?.[i]"
-                  >
-                    <span class="bar-value">{{ auditReportData.topRisks.values[i] }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ion-list lines="none">
+              <ion-item *ngFor="let insight of auditReportData.topInsights">
+                <ion-label>
+                  <p>{{ insight }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
           </ion-card-content>
         </ion-card>
 
-        <!-- Top Opportunities Bar Chart -->
-        <ion-card class="chart-card">
+        <!-- Opportunities Bar Chart -->
+        <ion-card class="chart-card" *ngIf="auditReportData.topOpportunities?.labels?.length">
           <ion-card-header>
-              <ion-card-title>
-                <ion-icon name="rocket-outline" class="card-icon"></ion-icon>
-                Top 3 AI Opportunities
-              </ion-card-title>
+            <ion-card-title>
+              <ion-icon name="rocket-outline" class="card-icon"></ion-icon>
+              Growth Opportunities
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <div class="bar-chart">
@@ -204,7 +170,7 @@
           <ion-card-header>
             <ion-card-title>
               <ion-icon name="chatbox-ellipses-outline" class="card-icon"></ion-icon>
-              Response Summary
+              Your Responses
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
@@ -230,7 +196,7 @@
           </ion-button>
         </div>
         
-        <p class="audit-cta">Enter your contact details to receive your complete audit report and consultation.</p>
+        <p class="audit-cta">Enter your contact details to receive your complete analysis and personalized recommendations.</p>
       </div>
     </ng-container>
 
@@ -318,7 +284,7 @@
           >
             <ion-spinner *ngIf="submitting" slot="start"></ion-spinner>
             <ion-icon *ngIf="!submitting" name="paper-plane-outline" slot="start"></ion-icon>
-            {{ submitting ? 'Submitting...' : 'Submit Survey' }}
+            {{ submitting ? 'Analyzing...' : 'Analyze My Responses' }}
           </ion-button>
         </div>
       </form>
@@ -336,7 +302,7 @@
             </ion-button>
           </div>
           
-          <p class="modal-description">Please provide your contact details so we can follow up regarding your response.</p>
+          <p class="modal-description">Please provide your contact details so we can follow up regarding your analysis.</p>
           
           <form [formGroup]="contactForm" class="contact-form">
             <ion-list lines="none" class="contact-list">

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth-service';
+import { MessengerService } from 'src/app/services/messenger.service';
 
 @Component({
   selector: 'app-admin',
@@ -8,11 +9,24 @@ import { AuthService } from 'src/app/services/auth-service';
   styleUrls: ['./admin.page.scss'],
   standalone: false
 })
-export class AdminPage {
+export class AdminPage implements OnInit {
+  unreadCount = 0;
+
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private messengerService: MessengerService
   ) {}
+
+  ngOnInit() {
+    this.messengerService.getConversations().subscribe(conversations => {
+      this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
+    });
+  }
+
+  openMessenger(): void {
+    this.router.navigate(['/admin/messenger']);
+  }
 
   logout(): void {
     this.authService.logout();

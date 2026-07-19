@@ -1,5 +1,5 @@
 /**
- * Model for structured visual audit report data
+ * Model for structured visual audit report data - Generic for any survey type
  */
 export interface AuditChartData {
   labels: string[];
@@ -8,14 +8,16 @@ export interface AuditChartData {
 }
 
 export interface AuditReport {
-  inventoryHealthScore: number;
-  inventoryHealthLabel: string;
-  topRisks: AuditChartData;
-  topOpportunities: AuditChartData;
-  timeSavingsHours: number;
-  costSavingsPercentage: number;
   overallScore: number;
+  scoreLabel: string;
+  keyMetrics: AuditChartData[];
+  sentimentScore?: number;
+  responseDepth?: number;
   responsesAnalyzed: number;
+  // Generic categories for any survey type
+  topInsights: string[];
+  topOpportunities: AuditChartData;
+  surveyType?: string;
 }
 
 /**

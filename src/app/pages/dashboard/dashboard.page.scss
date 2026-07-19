@@ -264,9 +264,44 @@ $coral: #c06c52;
 	background: linear-gradient(180deg, rgba(51, 92, 103, 0.16), rgba(255, 253, 249, 0.92));
 }
 
-.report-grid {
-	grid-template-columns: repeat(12, minmax(0, 1fr));
-}
+  .report-grid,
+  .messenger-widget-section {
+    display: grid;
+    gap: 18px;
+    padding: 0 18px 18px;
+  }
+
+  .messenger-widget-section {
+    grid-template-columns: 1fr;
+  }
+
+  .messenger-panel {
+    padding: 22px;
+    cursor: default;
+  }
+
+  .messenger-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .messenger-text {
+    color: var(--dashboard-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .messenger-btn {
+    --border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .report-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
 
 .panel {
 	grid-column: span 4;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth-service';
 import { IntroService } from 'src/app/services/intro-service';
+import { MessengerService } from 'src/app/services/messenger.service';
 import { filter, take } from 'rxjs/operators';
 
 @Component({
@@ -13,15 +14,20 @@ import { filter, take } from 'rxjs/operators';
 export class AccountPage implements OnInit {
   isKpiModalOpen = false;
   isAdmin = false;
+  unreadCount = 0;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private introService: IntroService
+    private introService: IntroService,
+    private messengerService: MessengerService
   ) { }
 
   ngOnInit() {
     this.isAdmin = this.authService.isAdmin();
+    this.messengerService.getConversations().subscribe(conversations => {
+      this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
+    });
 
     if (!this.introService.hasSeenIntro()) {
       // Wait for the dashboard route to finish loading before starting tour
@@ -37,6 +43,10 @@ export class AccountPage implements OnInit {
   startTour(): void {
     this.introService.resetIntro();
     this.introService.startTour();
+  }
+
+  openMessenger(): void {
+    this.router.navigate(['/account/messenger']);
   }
 
   openKpiModal(): void {

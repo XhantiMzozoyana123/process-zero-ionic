@@ -172,7 +172,27 @@
         </div>
       </div>
 
-    </div>
+     </div>
+   </section>
+
+  <!-- Messenger Notification Widget -->
+  <section class="messenger-widget-section" *ngIf="!loading">
+    <article class="panel messenger-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Messaging</p>
+          <h3><ion-icon name="chatbubbles-outline"></ion-icon> Messenger</h3>
+        </div>
+        <ion-badge *ngIf="unreadCount > 0" color="primary" class="unread-badge">{{ unreadCount }}</ion-badge>
+      </div>
+      <div class="messenger-content">
+        <p class="messenger-text">Stay connected with your team and clients</p>
+        <ion-button expand="block" shape="round" class="messenger-btn" (click)="openMessenger()">
+          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+          Open Messenger
+        </ion-button>
+      </div>
+    </article>
   </section>
 
   <section class="analytics-loading" *ngIf="loading">
@@ -184,4 +204,3 @@
           <div class="loading-bar"></div>
         </div>
   </section>
-</ion-content>

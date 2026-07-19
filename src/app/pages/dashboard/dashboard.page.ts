@@ -7,6 +7,7 @@ import { ProductService } from 'src/app/services/product-service';
 import { KpiService } from 'src/app/services/kpi-service';
 import { IntroService } from 'src/app/services/intro-service';
 import { MilestoneService } from 'src/app/services/milestone-service';
+import { MessengerService } from 'src/app/services/messenger.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ export class DashboardPage implements OnInit {
   loadingProducts = false;
   loadingKpi = false;
   errorMessage = '';
+  unreadCount = 0;
 
   milestones: Milestone[] = [];
   loadingMilestones = false;
@@ -31,23 +33,36 @@ export class DashboardPage implements OnInit {
 
   readonly reportDate = new Date();
 
-  toggleMilestonesCollapsed(): void {
-    this.milestonesCollapsed = !this.milestonesCollapsed;
-    localStorage.setItem('milestones_collapsed', String(this.milestonesCollapsed));
-  }
-
-
   constructor(
     private productService: ProductService,
     private kpiService: KpiService,
     private introService: IntroService,
     private milestoneService: MilestoneService,
-    private router: Router
+    private router: Router,
+    private messengerService: MessengerService
   ) { }
 
   ngOnInit() {
     this.loadProducts();
     this.loadMilestones();
+    this.loadUnreadCount();
+  }
+
+  loadUnreadCount(): void {
+    this.messengerService.getConversations().subscribe({
+      next: conversations => {
+        this.unreadCount = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
+      }
+    });
+  }
+
+  openMessenger(): void {
+    this.router.navigate(['/account/messenger']);
+  }
+
+  toggleMilestonesCollapsed(): void {
+    this.milestonesCollapsed = !this.milestonesCollapsed;
+    localStorage.setItem('milestones_collapsed', String(this.milestonesCollapsed));
   }
 
   get completedMilestones(): number {
@@ -66,7 +81,6 @@ export class DashboardPage implements OnInit {
   goToMilestone(milestone: Milestone): void {
     if (!milestone.completed) {
       if (milestone.id === 'update-kpi') {
-        // Already on the dashboard — highlight the KPI FAB, then open its modal
         this.introService.startKpiFabTour(() => {
           const fabBtn = document.querySelector<HTMLElement>('.kpi-fab-btn');
           if (fabBtn) fabBtn.click();
@@ -96,7 +110,6 @@ export class DashboardPage implements OnInit {
   }
 
   private loadMilestones(): void {
-    // Show cached milestones instantly
     const cached = this.milestoneService.getCached();
     if (cached) {
       this.milestones = cached;
@@ -106,7 +119,6 @@ export class DashboardPage implements OnInit {
       this.loadingMilestones = true;
     }
 
-    // Always refresh from APIs in the background
     this.milestoneService.getMilestones().subscribe({
       next: (milestones) => {
         this.milestones = milestones;
@@ -236,7 +248,6 @@ export class DashboardPage implements OnInit {
     ];
   }
 
-
   onProductChange() {
     if (!this.selectedProductId) {
       this.latestKpi = undefined;
@@ -318,7 +329,6 @@ export class DashboardPage implements OnInit {
   }
 
   private toPercent(value: number, maxValue: number): number {
-
     if (!maxValue) {
       return 0;
     }
@@ -341,7 +351,4 @@ export class DashboardPage implements OnInit {
       maximumFractionDigits: 0,
     }).format(value || 0);
   }
-
 }
-
-
