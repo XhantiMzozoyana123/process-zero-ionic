@@ -62,26 +62,23 @@
         </ion-card-header>
         <ion-card-content>
 
-          <div class="kpi-row">
-            <ion-label class="kpi-label">Call Outreach</ion-label>
-            <ion-input class="kpi-input" type="number" min="1" step="1" inputmode="numeric"
-              [(ngModel)]="callOutreachToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
-            <ion-button type="button" size="small" fill="outline" (click)="addCallOutreach()">Add</ion-button>
-          </div>
+<div class="kpi-row">
+             <ion-label class="kpi-label">Call Outreach</ion-label>
+             <ion-input class="kpi-input" type="text" placeholder="1" [(ngModel)]="callOutreachToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
+             <ion-button type="button" size="small" fill="outline" (click)="addCallOutreach()">Add</ion-button>
+           </div>
 
-          <div class="kpi-row">
-            <ion-label class="kpi-label">Email Outreach</ion-label>
-            <ion-input class="kpi-input" type="number" min="1" step="1" inputmode="numeric"
-              [(ngModel)]="emailOutreachToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
-            <ion-button type="button" size="small" fill="outline" (click)="addEmailOutreach()">Add</ion-button>
-          </div>
+           <div class="kpi-row">
+             <ion-label class="kpi-label">Email Outreach</ion-label>
+             <ion-input class="kpi-input" type="text" placeholder="1" [(ngModel)]="emailOutreachToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
+             <ion-button type="button" size="small" fill="outline" (click)="addEmailOutreach()">Add</ion-button>
+           </div>
 
-          <div class="kpi-row">
-            <ion-label class="kpi-label">Calls Made</ion-label>
-            <ion-input class="kpi-input" type="number" min="1" step="1" inputmode="numeric"
-              [(ngModel)]="callsMadeToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
-            <ion-button type="button" size="small" fill="outline" (click)="addCallsMade()">Add</ion-button>
-          </div>
+           <div class="kpi-row">
+             <ion-label class="kpi-label">Calls Made</ion-label>
+             <ion-input class="kpi-input" type="text" placeholder="1" [(ngModel)]="callsMadeToAdd" [ngModelOptions]="{ standalone: true }"></ion-input>
+             <ion-button type="button" size="small" fill="outline" (click)="addCallsMade()">Add</ion-button>
+           </div>
 
         </ion-card-content>
       </ion-card>
@@ -93,9 +90,9 @@
         </ion-card-header>
         <ion-card-content>
 
-          <div class="kpi-row">
+<div class="kpi-row">
             <ion-label class="kpi-label">Deal Closed (amount)</ion-label>
-            <ion-input class="kpi-input" type="number" min="0" step="0.01" inputmode="decimal"
+            <ion-input class="kpi-input" type="text" placeholder="0.00"
               [(ngModel)]="dealAmount" [ngModelOptions]="{ standalone: true }"></ion-input>
             <ion-button type="button" size="small" fill="outline" (click)="addDealClosed()">Record</ion-button>
           </div>

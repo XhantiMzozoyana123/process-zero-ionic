@@ -235,9 +235,9 @@
           <!-- Target Threshold -->
           <div class="form-section-header">Target Threshold</div>
           <ion-list lines="none">
-            <ion-item>
+<ion-item>
               <ion-label position="stacked">Target MRR *</ion-label>
-              <ion-input formControlName="targetMRR" type="number" placeholder="0.00"></ion-input>
+              <ion-input formControlName="targetMRR" type="text" placeholder="0.00"></ion-input>
             </ion-item>
             <p class="field-error" *ngIf="isInvalid('targetMRR')">Valid amount is required.</p>
           </ion-list>
@@ -246,9 +246,9 @@
           <!-- Consequence Flags -->
           <div class="form-section-header">Consequence Rules</div>
           <ion-list lines="none">
-            <ion-item>
+<ion-item>
               <ion-label position="stacked">Grace Period (days) *</ion-label>
-              <ion-input formControlName="gracePeriodDays" type="number" placeholder="0"></ion-input>
+              <ion-input formControlName="gracePeriodDays" type="text" placeholder="0"></ion-input>
             </ion-item>
             <p class="field-error" *ngIf="isInvalid('gracePeriodDays')">Valid number is required.</p>
 
