@@ -91,6 +91,12 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'credits',
+        loadChildren: () => import('./../../pages/credit/credit.module')
+        .then( m => m.CreditPageModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

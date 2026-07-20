@@ -1,0 +1,137 @@
+<ion-content class="credit-page">
+  <ion-refresher slot="fixed" (ionRefresh)="loadWallet($event); loadPackages($event); loadTransactions($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-row">
+      <div>
+        <h1>Credits</h1>
+        <p>Purchase credits for platform access and view your transaction history.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wallet Card -->
+  <section class="wallet-section" *ngIf="!loadingWallet">
+    <ion-card class="wallet-card">
+      <ion-card-header>
+        <ion-card-title>Your Credit Balance</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="balance-display">
+          <span class="credit-amount">{{ wallet?.creditBalance ?? 0 }}</span>
+          <span class="credit-label">Credits</span>
+        </div>
+        <div class="wallet-stats" *ngIf="wallet">
+          <div class="stat-item">
+            <span class="stat-label">Total Purchased</span>
+            <span class="stat-value">{{ wallet.totalCreditsPurchased }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Consumed</span>
+            <span class="stat-value">{{ wallet.totalCreditsConsumed }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </section>
+
+  <!-- Packages Section -->
+  <section class="packages-section">
+    <h2>Credit Packages</h2>
+    
+    <div *ngIf="loadingPackages" class="loading-wrap">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+
+    <div *ngIf="!loadingPackages && packages.length === 0" class="empty-state">
+      <ion-icon name="cube-outline"></ion-icon>
+      <p>No packages available for purchase.</p>
+    </div>
+
+    <div *ngIf="!loadingPackages && packages.length > 0" class="packages-grid">
+      <ion-card class="package-card" *ngFor="let pkg of packages">
+        <ion-card-header>
+          <ion-card-title>{{ pkg.name }}</ion-card-title>
+          <ion-card-subtitle>{{ pkg.description }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="package-details">
+            <div class="package-credit">
+              <span class="credit-value">{{ pkg.creditAmount }}</span>
+              <span class="credit-label">Credits</span>
+            </div>
+            <div class="package-price">
+              <span class="price-value">{{ formatCurrency(pkg.discountedPrice ?? pkg.price, pkg.currency) }}</span>
+              <span class="price-label" *ngIf="pkg.discountPercentage">Save {{ pkg.discountPercentage }}%</span>
+            </div>
+          </div>
+          <ion-button expand="block" (click)="openPurchaseModal(pkg)">
+            Purchase
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </section>
+
+  <!-- Transactions Section -->
+  <section class="transactions-section">
+    <h2>Transaction History</h2>
+    
+    <div *ngIf="loadingTransactions" class="loading-wrap">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+
+    <div *ngIf="!loadingTransactions && transactions.length === 0" class="empty-state">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>No transactions yet.</p>
+    </div>
+
+    <div *ngIf="!loadingTransactions && transactions.length > 0" class="transactions-list">
+      <div class="transaction-item" *ngFor="let tx of transactions">
+        <ion-icon [name]="getTransactionIcon(tx.transactionType)" 
+                  [color]="getTransactionColor(tx.transactionType)"
+                  class="transaction-icon"></ion-icon>
+        <div class="transaction-details">
+          <p class="transaction-desc">{{ tx.description }}</p>
+          <p class="transaction-date">{{ tx.transactionDate | date:'medium' }}</p>
+        </div>
+        <div class="transaction-amount" [class.positive]="tx.creditAmount >= 0" [class.negative]="tx.creditAmount < 0">
+          {{ tx.creditAmount >= 0 ? '+' : '' }}{{ tx.creditAmount }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Purchase Modal -->
+  <ion-modal [isOpen]="isPurchaseOpen" (didDismiss)="closePurchaseModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Purchase Credits</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closePurchaseModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content" *ngIf="selectedPackage">
+        <div class="modal-package-info">
+          <h3>{{ selectedPackage.name }}</h3>
+          <p>{{ selectedPackage.description }}</p>
+          <div class="modal-package-details">
+            <span class="modal-credit">{{ selectedPackage.creditAmount }} Credits</span>
+            <span class="modal-price">{{ formatCurrency(selectedPackage.discountedPrice ?? selectedPackage.price, selectedPackage.currency) }}</span>
+          </div>
+        </div>
+        
+        <ion-button expand="block" 
+                    (click)="purchaseCredits()" 
+                    [disabled]="purchaseLoading">
+          {{ purchaseLoading ? 'Processing...' : 'Confirm Purchase' }}
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
