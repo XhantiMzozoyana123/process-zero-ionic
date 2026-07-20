@@ -35,6 +35,8 @@ export interface Survey {
   description: string;
   status: 'Active' | 'Draft' | 'Archived' | 'Closed';
   questions: SurveyQuestion[];
+  /** URL for demo call booking (used in business audit emails). */
+  bookingLink?: string;
   /** Last uploaded/modified timestamp (backend Surveys.UploadedAt). */
   uploadedAt?: string;
   createdAt?: string;
