@@ -1,12 +1,20 @@
+$pz-ink:   #172121;
+$pz-teal:  #1d7874;
+$pz-gold:  #d7a449;
+$pz-blue:  #335c67;
+$pz-sand:  #f6f1e8;
+$pz-paper: #fffdf9;
+$pz-coral: #c06c52;
+$pz-muted: #607078;
+
 .credit-page {
-  --credit-primary: var(--ion-color-primary);
-  --credit-success: var(--ion-color-success);
-  --credit-danger: var(--ion-color-danger);
+  --dashboard-teal: #{$pz-teal};
+  --dashboard-gold: #{$pz-gold};
 }
 
 .page-header {
   padding: 20px 16px;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
+  background: linear-gradient(135deg, $pz-teal, $pz-blue);
   color: white;
 
   h1 {
@@ -44,13 +52,13 @@
   .credit-amount {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--ion-color-primary);
+    color: $pz-gold;
   }
 
   .credit-label {
     margin-left: 8px;
     font-size: 1.2rem;
-    color: var(--ion-color-medium);
+    color: $pz-muted;
   }
 }
 
@@ -58,7 +66,7 @@
   display: flex;
   gap: 24px;
   padding-top: 16px;
-  border-top: 1px solid var(--ion-color-light);
+  border-top: 1px solid $pz-sand;
 
   .stat-item {
     display: flex;
@@ -66,7 +74,7 @@
 
     .stat-label {
       font-size: 0.85rem;
-      color: var(--ion-color-medium);
+      color: $pz-muted;
     }
 
     .stat-value {
@@ -84,6 +92,7 @@
     margin: 0 0 16px;
     font-size: 1.4rem;
     font-weight: 600;
+    color: $pz-ink;
   }
 }
 
@@ -110,12 +119,13 @@
       .credit-value {
         font-size: 1.5rem;
         font-weight: 600;
+        color: $pz-teal;
       }
 
       .credit-label {
         margin-left: 4px;
         font-size: 0.9rem;
-        color: var(--ion-color-medium);
+        color: $pz-muted;
       }
     }
 
@@ -127,12 +137,12 @@
       .price-value {
         font-size: 1.2rem;
         font-weight: 600;
-        color: var(--ion-color-success);
+        color: $pz-coral;
       }
 
       .price-label {
         font-size: 0.75rem;
-        color: var(--ion-color-warning);
+        color: $pz-gold;
       }
     }
   }
@@ -148,7 +158,7 @@
   display: flex;
   align-items: center;
   padding: 12px;
-  background: var(--ion-color-light);
+  background: $pz-sand;
   border-radius: 8px;
 
   .transaction-icon {
@@ -162,12 +172,13 @@
     .transaction-desc {
       margin: 0;
       font-weight: 500;
+      color: $pz-ink;
     }
 
     .transaction-date {
       margin: 4px 0 0;
       font-size: 0.8rem;
-      color: var(--ion-color-medium);
+      color: $pz-muted;
     }
   }
 
@@ -176,11 +187,11 @@
     font-size: 1.1rem;
 
     &.positive {
-      color: var(--ion-color-success);
+      color: $pz-teal;
     }
 
     &.negative {
-      color: var(--ion-color-danger);
+      color: $pz-coral;
     }
   }
 }
@@ -196,11 +207,12 @@
   flex-direction: column;
   align-items: center;
   padding: 32px 0;
-  color: var(--ion-color-medium);
+  color: $pz-muted;
 
   ion-icon {
     font-size: 3rem;
     margin-bottom: 8px;
+    color: $pz-teal;
   }
 }
 
@@ -215,11 +227,12 @@
   h3 {
     margin: 0 0 8px;
     font-size: 1.5rem;
+    color: $pz-ink;
   }
 
   p {
     margin: 0 0 16px;
-    color: var(--ion-color-medium);
+    color: $pz-muted;
   }
 
   .modal-package-details {
@@ -227,5 +240,6 @@
     justify-content: center;
     gap: 24px;
     font-size: 1.2rem;
+    color: $pz-ink;
   }
 }
