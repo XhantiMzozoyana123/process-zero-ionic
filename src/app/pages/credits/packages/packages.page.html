@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Credit Packages</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="packages-container">
+    <div class="loading-state" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading packages...</p>
+    </div>
+
+    <ion-card class="error-card" *ngIf="error && !loading">
+      <ion-card-content>
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        {{ error }}
+      </ion-card-content>
+    </ion-card>
+
+    <div class="packages-grid" *ngIf="!loading && !error">
+      <ion-card class="package-card" *ngFor="let pkg of packages">
+        <ion-card-content>
+          <div class="package-header">
+            <h2>{{ pkg.name }}</h2>
+            <ion-badge *ngIf="pkg.isSubscription" color="tertiary">Subscription</ion-badge>
+          </div>
+
+          <p class="package-description">{{ pkg.description }}</p>
+
+          <div class="package-credits">
+            <ion-icon name="diamond-outline"></ion-icon>
+            <span class="credits-amount">{{ pkg.creditAmount }} Credits</span>
+          </div>
+
+          <div class="package-features" *ngIf="pkg.durationMinutes">
+            <ion-item lines="none">
+              <ion-icon name="time-outline" slot="start"></ion-icon>
+              <ion-label>{{ pkg.durationMinutes }} minutes of platform access per credit</ion-label>
+            </ion-item>
+          </div>
+
+          <div class="package-pricing">
+            <div class="price-row">
+              <span class="price-label">Price</span>
+              <span class="price-value" *ngIf="!pkg.discountPercentage || pkg.discountPercentage === 0">
+                {{ pkg.price | currency:pkg.currency:'symbol-narrow':'1.2-2' }}
+              </span>
+              <div class="discount-price" *ngIf="pkg.discountPercentage && pkg.discountPercentage > 0">
+                <span class="original-price">{{ pkg.price | currency:pkg.currency:'symbol-narrow':'1.2-2' }}</span>
+                <span class="discount-percentage">{{ pkg.discountPercentage }}% OFF</span>
+                <span class="final-price">{{ formatPrice(pkg) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <ion-button expand="block" routerLink="/account/credits/wallet" class="purchase-btn">
+            <ion-icon slot="start" name="card-outline"></ion-icon>
+            Purchase Now
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

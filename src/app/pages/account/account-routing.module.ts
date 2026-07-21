@@ -15,7 +15,6 @@ const routes: Routes = [
         loadChildren: () => import('./../../pages/leadlake/leadlake.module')
           .then(m => m.LeadlakePageModule),
           canActivate: [AuthGuard, AssessmentGuard]
-
       },
       {
         path: 'contacts',
@@ -67,6 +66,12 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'credits',
+        loadChildren: () => import('./../../pages/credits/credits.module')
+        .then(m => m.CreditsPageModule),
+        canActivate: [AuthGuard, AssessmentGuard]
+      },
+      {
         path: 'kpi-policies',
         loadChildren: () => import('./../../pages/kpi-policies/kpi-policies.module')
         .then( m => m.KpiPoliciesPageModule),
@@ -88,12 +93,6 @@ const routes: Routes = [
         path: 'assessments',
         loadChildren: () => import('./../../pages/assessment/assessment.module')
         .then( m => m.AssessmentPageModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'credits',
-        loadChildren: () => import('./../../pages/credit/credit.module')
-        .then( m => m.CreditPageModule),
         canActivate: [AuthGuard]
       },
       {

@@ -134,6 +134,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'credits',
+        loadChildren: () => import('../admin-credits/admin-credits.module')
+          .then(m => m.AdminCreditsPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

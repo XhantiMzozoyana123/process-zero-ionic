@@ -44,13 +44,14 @@ export class AdminSurveyPage implements OnInit {
     private toastController: ToastController,
     private alertController: AlertController
   ) {
-    this.surveyForm = this.fb.group({
-      name: ['', Validators.required],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      status: ['Active'],
-      questions: this.fb.array([])
-    });
+  this.surveyForm = this.fb.group({
+    name: ['', Validators.required],
+    title: ['', Validators.required],
+    description: ['', Validators.required],
+    status: ['Active'],
+    bookingLink: [''],
+    questions: this.fb.array([])
+  });
   }
 
   ngOnInit(): void {
@@ -115,7 +116,8 @@ export class AdminSurveyPage implements OnInit {
       name: '',
       title: '',
       description: '',
-      status: 'Active'
+      status: 'Active',
+      bookingLink: ''
     });
     while (this.questionsFormArray.length > 0) {
       this.questionsFormArray.removeAt(0);
@@ -135,7 +137,8 @@ export class AdminSurveyPage implements OnInit {
           name: survey.name,
           title: survey.title,
           description: survey.description,
-          status: survey.status || 'Active'
+          status: survey.status || 'Active',
+          bookingLink: survey.bookingLink ?? ''
         });
         while (this.questionsFormArray.length > 0) {
           this.questionsFormArray.removeAt(0);
@@ -165,6 +168,7 @@ export class AdminSurveyPage implements OnInit {
       title: formValue.title,
       description: formValue.description,
       status: formValue.status,
+      bookingLink: formValue.bookingLink || undefined,
       questions: formValue.questions.map((q: any) => ({
         text: q.text,
         type: q.type,

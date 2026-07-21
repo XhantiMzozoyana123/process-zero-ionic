@@ -1,0 +1,152 @@
+.wallet-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 16px;
+}
+
+.error-card {
+  --background: rgba(220, 53, 69, 0.1);
+  margin-bottom: 16px;
+}
+
+.success-card {
+  --background: rgba(25, 135, 84, 0.1);
+  margin-bottom: 16px;
+}
+
+.wallet-card {
+  margin-bottom: 16px;
+  .wallet-header {
+    text-align: center;
+    padding: 20px 0;
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      color: var(--ion-color-medium);
+      font-weight: 500;
+    }
+
+    .balance-amount {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--ion-color-primary);
+      margin: 0;
+    }
+
+    .balance-label {
+      margin: 8px 0 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+    }
+  }
+
+  .wallet-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+    border-top: 1px solid var(--ion-color-light);
+    border-bottom: 1px solid var(--ion-color-light);
+    margin: 16px 0;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+
+      .stat-label {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+
+  .wallet-actions {
+    padding-top: 8px;
+  }
+}
+
+.subscription-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-primary);
+  }
+
+  .subscription-status {
+    margin: 0;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  .subscription-id {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+.modal-content {
+  padding: 16px;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    margin-bottom: 8px;
+    cursor: pointer;
+
+    &.selected {
+      --background: var(--ion-color-light);
+    }
+
+    .package-details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+
+      .price {
+        font-weight: 600;
+        color: var(--ion-color-primary);
+      }
+    }
+
+    .discount-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      background: var(--ion-color-success);
+      color: white;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+
+  ion-button {
+    margin-top: 16px;
+  }
+}

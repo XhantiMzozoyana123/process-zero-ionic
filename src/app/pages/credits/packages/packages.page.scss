@@ -1,0 +1,162 @@
+.packages-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+.error-card {
+  --background: rgba(220, 53, 69, 0.1);
+  --color: var(--ion-color-danger);
+  
+  ion-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.package-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  ion-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .package-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+  }
+
+  .package-description {
+    color: var(--ion-color-medium);
+    margin: 0 0 16px;
+    font-size: 0.95rem;
+  }
+
+  .package-credits {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--ion-color-light);
+    border-radius: 8px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
+    }
+
+    .credits-amount {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .package-features {
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+  }
+
+  .package-pricing {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--ion-color-light);
+    margin-bottom: 16px;
+
+    .price-row {
+      display: flex;
+      flex-direction: column;
+
+      .price-label {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+        margin-bottom: 4px;
+      }
+
+      .price-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+      }
+
+      .discount-price {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .original-price {
+          font-size: 1rem;
+          color: var(--ion-color-medium);
+          text-decoration: line-through;
+        }
+
+        .discount-percentage {
+          display: inline-block;
+          align-self: flex-start;
+          padding: 4px 8px;
+          background: var(--ion-color-success);
+          color: white;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .final-price {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--ion-color-success);
+        }
+      }
+    }
+  }
+
+  .purchase-btn {
+    margin-top: auto;
+    --background: var(--ion-color-primary);
+  }
+}
+
+@media (min-width: 768px) {
+  .packages-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .packages-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

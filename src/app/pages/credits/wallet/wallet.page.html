@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>My Wallet</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="wallet-container">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading wallet...</p>
+    </div>
+
+    <!-- Error State -->
+    <ion-card class="error-card" *ngIf="error && !loading">
+      <ion-card-content>{{ error }}</ion-card-content>
+    </ion-card>
+
+    <!-- Success Message -->
+    <ion-card class="success-card" *ngIf="purchaseSuccess && !loading">
+      <ion-card-content>{{ purchaseSuccess }}</ion-card-content>
+    </ion-card>
+
+    <!-- Wallet Information -->
+    <ng-container *ngIf="wallet && !loading">
+      <ion-card class="wallet-card">
+        <ion-card-content>
+          <div class="wallet-header">
+            <h2>Credit Balance</h2>
+            <p class="balance-amount">{{ wallet.creditBalance | number:'1.2-2' }}</p>
+            <p class="balance-label">Available Credits</p>
+          </div>
+
+          <div class="wallet-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total Purchased</span>
+              <span class="stat-value">{{ wallet.totalCreditsPurchased | number:'1.2-2' }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Consumed</span>
+              <span class="stat-value">{{ wallet.totalCreditsConsumed | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="wallet-actions">
+            <ion-button expand="block" (click)="openPurchaseModal()">
+              <ion-icon slot="start" name="card-outline"></ion-icon>
+              Purchase Credits
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Subscription Info -->
+      <ion-card *ngIf="wallet.subscriptionStatus">
+        <ion-card-content>
+          <div class="subscription-info">
+            <ion-icon name="repeat-outline"></ion-icon>
+            <div>
+              <p class="subscription-status">{{ wallet.subscriptionStatus }}</p>
+              <p class="subscription-id" *ngIf="wallet.subscriptionId">ID: {{ wallet.subscriptionId }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+  </div>
+
+  <!-- Purchase Modal -->
+  <ion-modal [isOpen]="showPurchaseModal" (didDismiss)="closePurchaseModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Purchase Credits</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closePurchaseModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="modal-content">
+          <h3>Select a Package</h3>
+
+          <ion-list>
+            <ion-item button *ngFor="let pkg of packages" (click)="selectedPackageId = pkg.id" [class.selected]="selectedPackageId === pkg.id">
+              <ion-label>
+                <h2>{{ pkg.name }}</h2>
+                <p>{{ pkg.description }}</p>
+                <p class="package-details">
+                  <span>{{ pkg.creditAmount }} credits</span>
+                  <span class="price">{{ pkg.price | currency:pkg.currency:'symbol-narrow':'1.2-2' }}</span>
+                </p>
+                <p class="discount-badge" *ngIf="pkg.discountPercentage && pkg.discountPercentage > 0">
+                  {{ pkg.discountPercentage }}% OFF
+                </p>
+              </ion-label>
+              <div class="selection-indicator" slot="start">
+                <ion-icon *ngIf="selectedPackageId === pkg.id" name="checkmark-circle" color="primary"></ion-icon>
+                <ion-icon *ngIf="selectedPackageId !== pkg.id" name="radio-button-off-outline" color="medium"></ion-icon>
+              </div>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" [disabled]="!selectedPackageId" (click)="confirmPurchase()">
+            Confirm Purchase
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

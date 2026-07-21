@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Transaction History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="transactions-container">
+    <div class="loading-state" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading transactions...</p>
+    </div>
+
+    <ion-card class="error-card" *ngIf="error && !loading">
+      <ion-card-content>
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        {{ error }}
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="empty-card" *ngIf="!loading && !error && transactions.length === 0">
+      <ion-card-content class="empty-content">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <p>No transactions yet</p>
+        <p class="empty-subtitle">Your transaction history will appear here</p>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="transactions-list" *ngIf="!loading && !error && transactions.length > 0">
+      <ion-item-group class="transaction-group" *ngFor="let txn of transactions">
+        <ion-item class="transaction-item">
+          <div class="transaction-icon" [class]="'transaction-icon transaction-' + getTransactionColor(txn.transactionType)">
+            <ion-icon [name]="getTransactionIcon(txn.transactionType)"></ion-icon>
+          </div>
+
+          <ion-label class="transaction-details">
+            <h3>{{ txn.description }}</h3>
+            <p class="transaction-meta">
+              <span class="transaction-type">{{ txn.transactionType }}</span>
+              <span class="transaction-date">{{ formatDate(txn.transactionDate) }}</span>
+            </p>
+            <p class="transaction-ref" *ngIf="txn.referenceId">
+              Ref: {{ txn.referenceId }}
+            </p>
+          </ion-label>
+
+          <div class="transaction-amount" [class.positive]="txn.creditAmount >= 0" [class.negative]="txn.creditAmount < 0">
+            {{ formatAmount(txn.creditAmount) }}
+          </div>
+        </ion-item>
+
+        <ion-item lines="none" class="balance-item">
+          <ion-label>
+            <p>Balance after: {{ txn.balanceAfterTransaction | number:'1.2-2' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-item-group>
+    </div>
+  </div>
+</ion-content>

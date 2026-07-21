@@ -21,6 +21,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/account/account.module').then( m => m.AccountPageModule)
   },
   {
+    path: 'credits',
+    canActivate: [AuthGuard],
+    canMatch: [AuthGuard],
+    loadChildren: () => import('./pages/credits/credits.module').then( m => m.CreditsPageModule)
+  },
+  {
     path: 'impersonation',
     canActivate: [ImpersonationGuard],
     canMatch: [ImpersonationGuard],
