@@ -89,15 +89,39 @@ export class WalletPage implements OnInit {
   }
 
   renderPayPalButton(orderId: string) {
-    const checkPayPal = () => {
-      if (!window.paypal) {
-        setTimeout(checkPayPal, 500);
-        return;
-      }
-      this.initPayPalButton(orderId);
+    const waitForPayPal = () => {
+      return new Promise<void>((resolve, reject) => {
+        // If already loaded, resolve immediately
+        if (window.paypal) {
+          resolve();
+          return;
+        }
+
+        // Poll for window.paypal to become available
+        const checkInterval = setInterval(() => {
+          if (window.paypal) {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 100);
+
+        // Timeout after 10 seconds
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          reject(new Error('PayPal SDK load timeout'));
+        }, 10000);
+      });
     };
 
-    checkPayPal();
+    waitForPayPal()
+      .then(() => {
+        this.initPayPalButton(orderId);
+      })
+      .catch((err) => {
+        console.error(err);
+        this.error = 'PayPal failed to load. Please check your internet connection and refresh.';
+        this.processingPayment = false;
+      });
   }
 
   private initPayPalButton(orderId: string) {
@@ -106,37 +130,52 @@ export class WalletPage implements OnInit {
 
     container.innerHTML = '';
 
-    window.paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color: 'black',
-        shape: 'rect',
-        label: 'pay'
-      },
-      createOrder: () => orderId,
-      onApprove: (data: any) => {
-        return this.payPalService.capturePayPalOrder(data.orderID, this.selectedPackageId!).subscribe({
-          next: (response) => {
-            this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
-            this.loadWallet();
-            this.closePurchaseModal();
-            this.processingPayment = false;
-          },
-          error: (err) => {
-            this.error = 'PayPal payment capture failed.';
-            this.processingPayment = false;
-            console.error(err);
-          }
+    try {
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'black',
+          shape: 'rect',
+          label: 'pay'
+        },
+        createOrder: () => orderId,
+        onApprove: (data: any) => {
+          return this.payPalService.capturePayPalOrder(data.orderID, this.selectedPackageId!).subscribe({
+            next: (response) => {
+              this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
+              this.loadWallet();
+              this.closePurchaseModal();
+              this.processingPayment = false;
+            },
+            error: (err) => {
+              this.error = 'PayPal payment capture failed.';
+              this.processingPayment = false;
+              console.error(err);
+            }
+          });
+        },
+        onError: (err: any) => {
+          this.error = 'PayPal payment was cancelled or failed.';
+          this.processingPayment = false;
+          console.error(err);
+        },
+        onCancel: () => {
+          this.processingPayment = false;
+        }
+      }).render(container)
+        .then(() => {
+          // Button rendered successfully, hide processing spinner
+          this.processingPayment = false;
+        })
+        .catch((err: any) => {
+          console.error('PayPal button render failed:', err);
+          this.error = 'Failed to render PayPal button. Please refresh.';
+          this.processingPayment = false;
         });
-      },
-      onError: (err: any) => {
-        this.error = 'PayPal payment was cancelled or failed.';
-        this.processingPayment = false;
-        console.error(err);
-      },
-      onCancel: () => {
-        this.processingPayment = false;
-      }
-    }).render(container);
+    } catch (err) {
+      console.error('PayPal initialization error:', err);
+      this.error = 'PayPal initialization failed. Please refresh.';
+      this.processingPayment = false;
+    }
   }
 }
