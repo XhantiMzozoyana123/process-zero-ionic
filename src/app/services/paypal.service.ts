@@ -17,7 +17,7 @@ export class PayPalService {
       Authorization: `Bearer ${localStorage.getItem('access_token') || ''}`
     });
 
-    return this.http.post<{ orderId: string; packageId: number }>(
+    return this.http.post<{ orderId: string; approvalUrl: string; packageId: number }>(
       `${this.apiUrl}/paypal/create`,
       { packageId },
       { headers }

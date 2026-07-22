@@ -33,6 +33,37 @@ export class WalletPage implements OnInit {
   ngOnInit() {
     this.loadWallet();
     this.loadPackages();
+    this.checkPayPalReturn();
+  }
+
+  private checkPayPalReturn() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('paypal') === 'success') {
+      const orderId = sessionStorage.getItem('paypal_order_id');
+      const packageId = sessionStorage.getItem('paypal_package_id');
+      
+      if (orderId && packageId) {
+        this.processingPayment = true;
+        this.error = null;
+        
+        this.payPalService.capturePayPalOrder(orderId, parseInt(packageId)).subscribe({
+          next: (response) => {
+            this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
+            this.loadWallet();
+            sessionStorage.removeItem('paypal_order_id');
+            sessionStorage.removeItem('paypal_package_id');
+          },
+          error: (err) => {
+            this.error = 'PayPal payment capture failed.';
+            this.processingPayment = false;
+            console.error(err);
+          }
+        });
+      }
+    } else if (urlParams.get('paypal') === 'cancelled') {
+      sessionStorage.removeItem('paypal_order_id');
+      sessionStorage.removeItem('paypal_package_id');
+    }
   }
 
   loadWallet() {
@@ -78,7 +109,11 @@ export class WalletPage implements OnInit {
 
     this.payPalService.createPayPalOrder(this.selectedPackageId).subscribe({
       next: (res) => {
-        this.renderPayPalButton(res.orderId);
+        // Store order details before redirecting
+        sessionStorage.setItem('paypal_order_id', res.orderId);
+        sessionStorage.setItem('paypal_package_id', res.packageId.toString());
+        // Redirect to PayPal approval URL
+        window.location.href = res.approvalUrl;
       },
       error: (err) => {
         this.error = 'Failed to initiate PayPal payment.';
@@ -86,96 +121,5 @@ export class WalletPage implements OnInit {
         console.error(err);
       }
     });
-  }
-
-  renderPayPalButton(orderId: string) {
-    const waitForPayPal = () => {
-      return new Promise<void>((resolve, reject) => {
-        // If already loaded, resolve immediately
-        if (window.paypal) {
-          resolve();
-          return;
-        }
-
-        // Poll for window.paypal to become available
-        const checkInterval = setInterval(() => {
-          if (window.paypal) {
-            clearInterval(checkInterval);
-            resolve();
-          }
-        }, 100);
-
-        // Timeout after 30 seconds
-        setTimeout(() => {
-          clearInterval(checkInterval);
-          reject(new Error('PayPal SDK load timeout'));
-        }, 30000);
-      });
-    };
-
-    waitForPayPal()
-      .then(() => {
-        this.initPayPalButton(orderId);
-      })
-      .catch((err) => {
-        console.error(err);
-        this.error = 'PayPal failed to load. Please check your internet connection and refresh.';
-        this.processingPayment = false;
-      });
-  }
-
-  private initPayPalButton(orderId: string) {
-    const container = document.getElementById('paypal-button-container');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    try {
-      window.paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'black',
-          shape: 'rect',
-          label: 'pay'
-        },
-        createOrder: () => orderId,
-        onApprove: (data: any) => {
-          return this.payPalService.capturePayPalOrder(data.orderID, this.selectedPackageId!).subscribe({
-            next: (response) => {
-              this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
-              this.loadWallet();
-              this.closePurchaseModal();
-              this.processingPayment = false;
-            },
-            error: (err) => {
-              this.error = 'PayPal payment capture failed.';
-              this.processingPayment = false;
-              console.error(err);
-            }
-          });
-        },
-        onError: (err: any) => {
-          this.error = 'PayPal payment was cancelled or failed.';
-          this.processingPayment = false;
-          console.error(err);
-        },
-        onCancel: () => {
-          this.processingPayment = false;
-        }
-      }).render(container)
-        .then(() => {
-          // Button rendered successfully, hide processing spinner
-          this.processingPayment = false;
-        })
-        .catch((err: any) => {
-          console.error('PayPal button render failed:', err);
-          this.error = 'Failed to render PayPal button. Please refresh.';
-          this.processingPayment = false;
-        });
-    } catch (err) {
-      console.error('PayPal initialization error:', err);
-      this.error = 'PayPal initialization failed. Please refresh.';
-      this.processingPayment = false;
-    }
   }
 }
