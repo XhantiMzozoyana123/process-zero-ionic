@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "https://api.processzero.xyz/api",
+  apiUrl: "https://localhost:7183/api", 
   google: {
     clientId: '384499091370-4md9khsd5f5g4t0gcej852pmdcg1280a.apps.googleusercontent.com',
     redirectUrl: 'http://processzero.xyz/oauth/google/callback',
