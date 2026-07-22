@@ -24,15 +24,15 @@ export class PayPalService {
     );
   }
 
-  capturePayPalOrder(orderId: string) {
+  capturePayPalOrder(orderId: string, packageId: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token') || ''}`
     });
 
-    return this.http.post<CreditPurchaseResponseDto>(
+    return this.http.post<{ capture: any; credits: CreditPurchaseResponseDto }>(
       `${this.apiUrl}/paypal/capture`,
-      { orderId },
+      { orderId, packageId },
       { headers }
     );
   }

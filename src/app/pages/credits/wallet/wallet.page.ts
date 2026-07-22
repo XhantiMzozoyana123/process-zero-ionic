@@ -109,9 +109,9 @@ export class WalletPage implements OnInit {
       },
       createOrder: () => orderId,
       onApprove: (data: any) => {
-        return this.payPalService.capturePayPalOrder(data.orderID).subscribe({
+        return this.payPalService.capturePayPalOrder(data.orderID, this.selectedPackageId!).subscribe({
           next: (response) => {
-            this.purchaseSuccess = `Purchase successful! New balance: ${response.newBalance} credits.`;
+            this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
             this.loadWallet();
             this.closePurchaseModal();
             this.processingPayment = false;
