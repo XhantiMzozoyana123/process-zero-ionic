@@ -35,26 +35,35 @@ export class WalletPage implements OnInit {
     if (urlParams.get('paypal') === 'success') {
       const orderId = sessionStorage.getItem('paypal_order_id');
       const packageId = sessionStorage.getItem('paypal_package_id');
-      
+
       if (orderId && packageId) {
         this.processingPayment = true;
         this.error = null;
-        
+
         this.payPalService.capturePayPalOrder(orderId, parseInt(packageId)).subscribe({
           next: (response) => {
             this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
+            this.processingPayment = false;
             this.loadWallet();
             sessionStorage.removeItem('paypal_order_id');
             sessionStorage.removeItem('paypal_package_id');
+            // Clean up URL parameters to avoid re-triggering on refresh
+            window.history.replaceState({}, document.title, window.location.pathname);
           },
           error: (err) => {
-            this.error = 'PayPal payment capture failed.';
+            this.error = 'PayPal payment capture failed. Please try again or contact support.';
             this.processingPayment = false;
             console.error(err);
           }
         });
+      } else {
+        // Session storage is missing — likely expired or opened in a new tab
+        this.error = 'Payment session expired or invalid. Please try purchasing again.';
+        sessionStorage.removeItem('paypal_order_id');
+        sessionStorage.removeItem('paypal_package_id');
       }
     } else if (urlParams.get('paypal') === 'cancelled') {
+      this.error = 'Payment was cancelled. You can try again anytime.';
       sessionStorage.removeItem('paypal_order_id');
       sessionStorage.removeItem('paypal_package_id');
     }

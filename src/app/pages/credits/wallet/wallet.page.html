@@ -101,8 +101,6 @@
             <p>Opening secure payment...</p>
           </div>
 
-          <div id="paypal-button-container" *ngIf="processingPayment"></div>
-
           <ion-button *ngIf="!processingPayment" expand="block" class="purchase-btn" [disabled]="!selectedPackageId" (click)="confirmPurchase()">
             Confirm Purchase
           </ion-button>
