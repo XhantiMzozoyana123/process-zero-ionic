@@ -89,12 +89,18 @@ export class WalletPage implements OnInit {
   }
 
   renderPayPalButton(orderId: string) {
-    if (!window.paypal) {
-      this.error = 'PayPal failed to load. Please refresh.';
-      this.processingPayment = false;
-      return;
-    }
+    const checkPayPal = () => {
+      if (!window.paypal) {
+        setTimeout(checkPayPal, 500);
+        return;
+      }
+      this.initPayPalButton(orderId);
+    };
 
+    checkPayPal();
+  }
+
+  private initPayPalButton(orderId: string) {
     const container = document.getElementById('paypal-button-container');
     if (!container) return;
 
