@@ -67,4 +67,7 @@ ion-list {
 
   ion-item {
     --background: rgba($paper, 0.92);
-    --border-radius:
+    --border-radius: 14px;
+    --box-shadow: 0 4px 14px rgba(19, 31, 31, 0.06);
+  }
+}
