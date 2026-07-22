@@ -15,11 +15,14 @@ export class PayPalService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token') || ''}`
-    });
+    );
+
+    const returnUrl = `${window.location.origin}/account/credits/wallet?paypal=success`;
+    const cancelUrl = `${window.location.origin}/account/credits/packages?paypal=cancelled`;
 
     return this.http.post<{ orderId: string; approvalUrl: string; packageId: number }>(
       `${this.apiUrl}/paypal/create`,
-      { packageId },
+      { packageId, returnUrl, cancelUrl },
       { headers }
     );
   }
