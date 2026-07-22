@@ -1,6 +1,20 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$teal: #1d7874;
+$gold: #d7a449;
+$blue: #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+.transactions-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
 .transactions-container {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
+  padding: 28px 18px 100px;
 }
 
 .loading-state {
@@ -12,15 +26,20 @@
   gap: 16px;
 
   p {
-    color: var(--ion-color-medium);
+    color: $muted;
+    margin: 0;
   }
 }
 
 .error-card {
-  --background: rgba(220, 53, 69, 0.1);
-  --color: var(--ion-color-danger);
-  
+  --background: rgba($coral, 0.1);
+  --color: $coral;
+  border: 1px solid rgba($coral, 0.2);
+  border-radius: 16px;
+  margin-bottom: 16px;
+
   ion-icon {
+    color: $coral;
     margin-right: 8px;
     vertical-align: middle;
   }
@@ -28,7 +47,12 @@
 
 .empty-card {
   text-align: center;
-  padding: 40px 20px;
+  padding: 56px 20px;
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
 
   .empty-content {
     display: flex;
@@ -38,18 +62,19 @@
 
     ion-icon {
       font-size: 64px;
-      color: var(--ion-color-medium);
+      color: rgba($coral, 0.4);
     }
 
     p {
       margin: 0;
       font-size: 1.1rem;
-      color: var(--ion-color-dark);
+      color: $ink;
+      font-weight: 700;
     }
 
     .empty-subtitle {
-      font-size: 0.9rem;
-      color: var(--ion-color-medium);
+      font-size: 0.92rem;
+      color: $muted;
     }
   }
 }
@@ -60,9 +85,12 @@
 
 .transaction-group {
   margin-bottom: 16px;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 24px rgba(19, 31, 31, 0.06);
 }
 
 .transaction-item {
@@ -70,7 +98,7 @@
   --padding-end: 16px;
   --padding-top: 16px;
   --padding-bottom: 16px;
-  
+
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -79,13 +107,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     flex-shrink: 0;
 
     ion-icon {
       font-size: 24px;
+      color: #fff;
     }
   }
 
@@ -96,7 +125,8 @@
     h3 {
       margin: 0 0 4px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: $ink;
       word-break: break-word;
     }
 
@@ -106,16 +136,19 @@
       gap: 8px;
       margin: 4px 0;
       font-size: 0.85rem;
-      color: var(--ion-color-medium);
+      color: $muted;
 
       .transaction-type {
         text-transform: capitalize;
+        font-weight: 600;
+        color: $teal;
       }
 
       .transaction-date {
         &::before {
           content: '•';
           margin-right: 8px;
+          color: $muted;
         }
       }
     }
@@ -123,37 +156,70 @@
     .transaction-ref {
       margin: 4px 0 0;
       font-size: 0.85rem;
-      color: var(--ion-color-medium);
+      color: $muted;
       font-family: monospace;
     }
   }
 
   .transaction-amount {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 800;
     flex-shrink: 0;
     margin-left: 8px;
 
     &.positive {
-      color: var(--ion-color-success);
+      color: $teal;
     }
 
     &.negative {
-      color: var(--ion-color-danger);
+      color: $coral;
     }
   }
 }
 
 .balance-item {
-  --background: var(--ion-color-light);
+  --background: rgba($ink, 0.03);
   --padding-start: 16px;
   --padding-end: 16px;
-  --padding-top: 8px;
-  --padding-bottom: 8px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
 
-  p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--ion-color-medium);
+  ion-label {
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: $muted;
+      font-weight: 500;
+    }
+  }
+}
+
+.transaction-purchase .transaction-icon {
+  background: linear-gradient(135deg, $teal, $blue);
+}
+
+.transaction-consumption .transaction-icon {
+  background: linear-gradient(135deg, $coral, $gold);
+}
+
+.transaction-adjustment .transaction-icon {
+  background: linear-gradient(135deg, $blue, $teal);
+}
+
+.transaction-refund .transaction-icon {
+  background: linear-gradient(135deg, $gold, $coral);
+}
+
+.transaction-bonus .transaction-icon {
+  background: linear-gradient(135deg, $teal, $blue);
+}
+
+.transaction-subscription .transaction-icon {
+  background: linear-gradient(135deg, $blue, $teal);
+}
+
+@media (max-width: 600px) {
+  .transactions-container {
+    padding: 20px 14px 100px;
   }
 }

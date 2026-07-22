@@ -1,10 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>My Wallet</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
+<ion-content class="ion-padding wallet-page">
   <div class="wallet-container">
     <!-- Loading State -->
     <div class="loading-state" *ngIf="loading">
@@ -44,7 +38,7 @@
           </div>
 
           <div class="wallet-actions">
-            <ion-button expand="block" (click)="openPurchaseModal()">
+            <ion-button expand="block" class="purchase-btn" (click)="openPurchaseModal()">
               <ion-icon slot="start" name="card-outline"></ion-icon>
               Purchase Credits
             </ion-button>
@@ -102,7 +96,14 @@
             </ion-item>
           </ion-list>
 
-          <ion-button expand="block" [disabled]="!selectedPackageId" (click)="confirmPurchase()">
+          <div *ngIf="processingPayment" class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Opening secure payment...</p>
+          </div>
+
+          <div id="paypal-button-container" *ngIf="processingPayment"></div>
+
+          <ion-button *ngIf="!processingPayment" expand="block" class="purchase-btn" [disabled]="!selectedPackageId" (click)="confirmPurchase()">
             Confirm Purchase
           </ion-button>
         </div>

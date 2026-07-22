@@ -1,6 +1,20 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$teal: #1d7874;
+$gold: #d7a449;
+$blue: #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+.packages-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
 .packages-container {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 28px 18px 100px;
 }
 
 .loading-state {
@@ -12,15 +26,20 @@
   gap: 16px;
 
   p {
-    color: var(--ion-color-medium);
+    color: $muted;
+    margin: 0;
   }
 }
 
 .error-card {
-  --background: rgba(220, 53, 69, 0.1);
-  --color: var(--ion-color-danger);
-  
+  --background: rgba($coral, 0.1);
+  --color: $coral;
+  border: 1px solid rgba($coral, 0.2);
+  border-radius: 16px;
+  margin-bottom: 16px;
+
   ion-icon {
+    color: $coral;
     margin-right: 8px;
     vertical-align: middle;
   }
@@ -29,71 +48,109 @@
 .packages-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  gap: 18px;
   padding: 16px 0;
 }
 
 .package-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 38px rgba(19, 31, 31, 0.12);
+  }
 
   ion-card-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
   .package-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    gap: 10px;
 
     h2 {
       margin: 0;
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: $ink;
+    }
+
+    ion-badge {
+      --background: linear-gradient(135deg, rgba($gold, 0.2), rgba($coral, 0.18));
+      --color: $coral;
+      border: 1px solid rgba($coral, 0.25);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
   }
 
   .package-description {
-    color: var(--ion-color-medium);
-    margin: 0 0 16px;
+    color: $muted;
+    margin: 0 0 18px;
     font-size: 0.95rem;
+    line-height: 1.45;
   }
 
   .package-credits {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: var(--ion-color-light);
-    border-radius: 8px;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba($teal, 0.08), rgba($blue, 0.08));
+    border-radius: 12px;
+    border: 1px solid rgba($teal, 0.12);
 
     ion-icon {
-      font-size: 24px;
-      color: var(--ion-color-primary);
+      font-size: 26px;
+      color: $teal;
     }
 
     .credits-amount {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--ion-color-dark);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: $ink;
     }
   }
 
   .package-features {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     font-size: 0.9rem;
-    color: var(--ion-color-medium);
+    color: $muted;
+
+    ion-item {
+      --background: transparent;
+      --padding-start: 0;
+      --inner-padding-start: 0;
+      
+      ion-icon {
+        color: $coral;
+        font-size: 18px;
+      }
+
+      ion-label {
+        margin-left: 6px;
+        font-size: 0.88rem;
+      }
+    }
   }
 
   .package-pricing {
     margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid var(--ion-color-light);
+    padding: 18px 0;
+    border-top: 1px solid rgba($ink, 0.08);
     margin-bottom: 16px;
 
     .price-row {
@@ -102,60 +159,69 @@
 
       .price-label {
         font-size: 0.85rem;
-        color: var(--ion-color-medium);
+        color: $muted;
         margin-bottom: 4px;
+        font-weight: 500;
       }
 
       .price-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--ion-color-dark);
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: $ink;
       }
 
       .discount-price {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
 
         .original-price {
-          font-size: 1rem;
-          color: var(--ion-color-medium);
+          font-size: 1.05rem;
+          color: $muted;
           text-decoration: line-through;
         }
 
         .discount-percentage {
           display: inline-block;
           align-self: flex-start;
-          padding: 4px 8px;
-          background: var(--ion-color-success);
-          color: white;
-          border-radius: 4px;
+          padding: 5px 10px;
+          background: linear-gradient(135deg, $gold, $coral);
+          color: #fff;
+          border-radius: 999px;
           font-size: 0.85rem;
-          font-weight: 600;
+          font-weight: 700;
         }
 
         .final-price {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: var(--ion-color-success);
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: $teal;
         }
       }
     }
   }
 
   .purchase-btn {
-    margin-top: auto;
-    --background: var(--ion-color-primary);
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+    --border-radius: 12px;
+    --box-shadow: 0 4px 14px rgba($teal, 0.25);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .packages-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
+  .packages-container {
+    padding: 32px 18px 100px;
+  }
+
   .packages-grid {
     grid-template-columns: repeat(3, 1fr);
   }

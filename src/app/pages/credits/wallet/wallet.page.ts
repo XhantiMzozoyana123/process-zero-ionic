@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CreditService as CreditApiService } from 'src/app/services/credit.service';
+import { PayPalService } from 'src/app/services/paypal.service';
 import { UserWalletDto } from 'src/app/models/dtos/user-wallet-dto.model';
 import { CreditPurchaseResponseDto } from 'src/app/models/dtos/credit-purchase-response-dto.model';
 import { PurchaseCreditsRequestDto } from 'src/app/models/dtos/purchase-credits-request-dto.model';
+
+declare global {
+  interface Window {
+    paypal?: any;
+  }
+}
 
 @Component({
   selector: 'app-wallet',
@@ -19,8 +26,9 @@ export class WalletPage implements OnInit {
   packages: any[] = [];
   selectedPackageId: number | null = null;
   showPurchaseModal = false;
+  processingPayment = false;
 
-  constructor(private creditService: CreditApiService) {}
+  constructor(private creditService: CreditApiService, private payPalService: PayPalService) {}
 
   ngOnInit() {
     this.loadWallet();
@@ -65,25 +73,64 @@ export class WalletPage implements OnInit {
 
   confirmPurchase() {
     if (!this.selectedPackageId) return;
+    this.processingPayment = true;
+    this.error = null;
 
-    const request: PurchaseCreditsRequestDto = {
-      creditPackageId: this.selectedPackageId
-    };
-
-    this.creditService.purchaseCredits(request).subscribe({
-      next: (response: CreditPurchaseResponseDto) => {
-        if (response.success) {
-          this.purchaseSuccess = `Purchase successful! New balance: ${response.newBalance} credits.`;
-          this.loadWallet();
-          this.closePurchaseModal();
-        } else {
-          this.error = response.message || 'Purchase failed.';
-        }
+    this.payPalService.createPayPalOrder(this.selectedPackageId).subscribe({
+      next: (res) => {
+        this.renderPayPalButton(res.orderId);
       },
       error: (err) => {
-        this.error = 'Purchase failed.';
+        this.error = 'Failed to initiate PayPal payment.';
+        this.processingPayment = false;
         console.error(err);
       }
     });
+  }
+
+  renderPayPalButton(orderId: string) {
+    if (!window.paypal) {
+      this.error = 'PayPal failed to load. Please refresh.';
+      this.processingPayment = false;
+      return;
+    }
+
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    window.paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'black',
+        shape: 'rect',
+        label: 'pay'
+      },
+      createOrder: () => orderId,
+      onApprove: (data: any) => {
+        return this.payPalService.capturePayPalOrder(data.orderID).subscribe({
+          next: (response) => {
+            this.purchaseSuccess = `Purchase successful! New balance: ${response.newBalance} credits.`;
+            this.loadWallet();
+            this.closePurchaseModal();
+            this.processingPayment = false;
+          },
+          error: (err) => {
+            this.error = 'PayPal payment capture failed.';
+            this.processingPayment = false;
+            console.error(err);
+          }
+        });
+      },
+      onError: (err: any) => {
+        this.error = 'PayPal payment was cancelled or failed.';
+        this.processingPayment = false;
+        console.error(err);
+      },
+      onCancel: () => {
+        this.processingPayment = false;
+      }
+    }).render(container);
   }
 }

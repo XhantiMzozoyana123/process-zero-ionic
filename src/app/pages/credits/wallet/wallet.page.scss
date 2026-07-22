@@ -1,6 +1,20 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$teal: #1d7874;
+$gold: #d7a449;
+$blue: #335c67;
+$coral: #c06c52;
+$muted: #607078;
+
+.wallet-page {
+  --background: linear-gradient(135deg, #{$sand} 0%, #ece6da 100%);
+}
+
 .wallet-container {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
+  padding: 28px 18px 100px;
 }
 
 .loading-state {
@@ -8,44 +22,73 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 60px 20px;
   gap: 16px;
+
+  p {
+    color: $muted;
+    margin: 0;
+  }
 }
 
 .error-card {
-  --background: rgba(220, 53, 69, 0.1);
+  --background: rgba($coral, 0.1);
+  --color: $coral;
+  border: 1px solid rgba($coral, 0.2);
+  border-radius: 16px;
   margin-bottom: 16px;
+
+  ion-icon {
+    color: $coral;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
 }
 
 .success-card {
-  --background: rgba(25, 135, 84, 0.1);
+  --background: rgba($teal, 0.1);
+  --color: $teal;
+  border: 1px solid rgba($teal, 0.2);
+  border-radius: 16px;
   margin-bottom: 16px;
 }
 
 .wallet-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
   margin-bottom: 16px;
+
   .wallet-header {
     text-align: center;
-    padding: 20px 0;
+    padding: 24px 0 16px;
 
     h2 {
-      margin: 0 0 8px;
-      font-size: 1.2rem;
-      color: var(--ion-color-medium);
-      font-weight: 500;
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      color: $muted;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     .balance-amount {
-      font-size: 3rem;
-      font-weight: bold;
-      color: var(--ion-color-primary);
+      font-size: 3.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, $teal, $blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 0;
     }
 
     .balance-label {
-      margin: 8px 0 0;
-      color: var(--ion-color-medium);
-      font-size: 0.9rem;
+      margin: 10px 0 0;
+      color: $muted;
+      font-size: 0.92rem;
+      font-weight: 500;
     }
   }
 
@@ -53,100 +96,181 @@
     display: flex;
     justify-content: space-around;
     padding: 20px 0;
-    border-top: 1px solid var(--ion-color-light);
-    border-bottom: 1px solid var(--ion-color-light);
+    border-top: 1px solid rgba($ink, 0.08);
+    border-bottom: 1px solid rgba($ink, 0.08);
     margin: 16px 0;
 
     .stat-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
 
       .stat-label {
         font-size: 0.85rem;
-        color: var(--ion-color-medium);
+        color: $muted;
+        font-weight: 500;
       }
 
       .stat-value {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--ion-color-dark);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $ink;
       }
     }
   }
 
   .wallet-actions {
-    padding-top: 8px;
+    padding: 16px 0 8px;
   }
+}
+
+.subscription-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(19, 31, 31, 0.06);
 }
 
 .subscription-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 
   ion-icon {
-    font-size: 24px;
-    color: var(--ion-color-primary);
+    font-size: 26px;
+    color: $teal;
   }
 
   .subscription-status {
     margin: 0;
-    font-weight: 600;
-    color: var(--ion-color-dark);
+    font-weight: 700;
+    color: $ink;
+    font-size: 1rem;
   }
 
   .subscription-id {
     margin: 4px 0 0;
     font-size: 0.85rem;
-    color: var(--ion-color-medium);
+    color: $muted;
   }
 }
 
+.purchase-btn {
+  --background: linear-gradient(135deg, #{$teal}, #{$blue});
+  --border-radius: 12px;
+  --box-shadow: 0 4px 14px rgba($teal, 0.25);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 8px;
+}
+
 .modal-content {
-  padding: 16px;
+  --background: linear-gradient(180deg, #{$sand} 0%, #{$paper} 100%);
+  padding: 20px;
 
   h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
+    margin: 0 0 18px;
+    color: $ink;
+    font-weight: 800;
+  }
+
+  ion-list {
+    background: transparent;
   }
 
   ion-item {
     --padding-start: 0;
-    margin-bottom: 8px;
+    --inner-padding-start: 0;
+    margin-bottom: 10px;
     cursor: pointer;
+    border-radius: 14px;
+    border: 1px solid rgba($ink, 0.08);
+    background: rgba($paper, 0.92);
+    backdrop-filter: blur(12px);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
     &.selected {
-      --background: var(--ion-color-light);
+      border-color: rgba($teal, 0.4);
+      box-shadow: 0 4px 18px rgba($teal, 0.12);
+      transform: translateY(-1px);
+    }
+
+    ion-label {
+      h2 {
+        color: $ink;
+        font-weight: 700;
+      }
+
+      p {
+        color: $muted;
+      }
     }
 
     .package-details {
       display: flex;
       justify-content: space-between;
-      margin-top: 4px;
+      align-items: center;
+      margin-top: 6px;
       font-size: 0.9rem;
-      color: var(--ion-color-medium);
+      color: $muted;
 
       .price {
-        font-weight: 600;
-        color: var(--ion-color-primary);
+        font-weight: 700;
+        color: $teal;
+        font-size: 1rem;
       }
     }
 
     .discount-badge {
       display: inline-block;
       margin-top: 8px;
-      padding: 4px 8px;
-      background: var(--ion-color-success);
-      color: white;
-      border-radius: 4px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, $gold, $coral);
+      color: #fff;
+      border-radius: 999px;
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .selection-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba($teal, 0.1);
+      color: $teal;
+    }
+
+    &:has(.selected) .selection-indicator {
+      background: linear-gradient(135deg, $teal, $blue);
+      color: #fff;
     }
   }
 
   ion-button {
-    margin-top: 16px;
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+    --border-radius: 12px;
+    --box-shadow: 0 4px 14px rgba($teal, 0.25);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .wallet-container {
+    padding: 20px 14px 100px;
+  }
+
+  .wallet-header {
+    .balance-amount {
+      font-size: 2.6rem;
+    }
   }
 }

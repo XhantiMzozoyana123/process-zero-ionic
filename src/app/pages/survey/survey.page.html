@@ -117,16 +117,16 @@
                       [formControlName]="getFormControlIndex(i)"
                       rows="3"
                       placeholder="Your answer..."
-                      [class.ion-invalid]="answersFormArray.at(getFormControlIndex(i))?.invalid && answersFormArray.at(getFormControlIndex(i))?.touched"
+                      [class.ion-invalid]="answersFormArray.at(getFormControlIndex(i)).invalid && answersFormArray.at(getFormControlIndex(i)).touched"
                     ></ion-textarea>
                   </ng-template>
 
                   <ion-note
                     color="danger"
-                    *ngIf="answersFormArray.at(getFormControlIndex(i))?.invalid && answersFormArray.at(getFormControlIndex(i))?.touched"
+                    *ngIf="answersFormArray.at(getFormControlIndex(i)).invalid && answersFormArray.at(getFormControlIndex(i)).touched"
                   >
-                    <span *ngIf="answersFormArray.at(getFormControlIndex(i))?.errors?.['required']">This field is required</span>
-                    <span *ngIf="answersFormArray.at(getFormControlIndex(i))?.errors?.['email']">Please enter a valid email</span>
+                    <span *ngIf="answersFormArray.at(getFormControlIndex(i)).errors?.['required']">This field is required</span>
+                    <span *ngIf="answersFormArray.at(getFormControlIndex(i)).errors?.['email']">Please enter a valid email</span>
                   </ion-note>
                 </ion-item>
                 <ion-item-divider *ngIf="!isContactField(question.text, question.category) && i < (survey?.questions?.length ?? 0) - 1"></ion-item-divider>
@@ -171,9 +171,9 @@
             <ion-icon name="close-outline" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
-        
+
         <p class="modal-description">Please provide your contact details so we can follow up regarding your response.</p>
-        
+
         <form [formGroup]="contactForm" class="contact-form">
           <ion-list lines="none" class="contact-list">
             <ion-item class="contact-item">
