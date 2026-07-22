@@ -105,11 +105,11 @@ export class WalletPage implements OnInit {
           }
         }, 100);
 
-        // Timeout after 10 seconds
+        // Timeout after 30 seconds
         setTimeout(() => {
           clearInterval(checkInterval);
           reject(new Error('PayPal SDK load timeout'));
-        }, 10000);
+        }, 30000);
       });
     };
 
