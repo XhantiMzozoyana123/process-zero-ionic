@@ -5,12 +5,6 @@ import { UserWalletDto } from 'src/app/models/dtos/user-wallet-dto.model';
 import { CreditPurchaseResponseDto } from 'src/app/models/dtos/credit-purchase-response-dto.model';
 import { PurchaseCreditsRequestDto } from 'src/app/models/dtos/purchase-credits-request-dto.model';
 
-declare global {
-  interface Window {
-    paypal?: any;
-  }
-}
-
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
