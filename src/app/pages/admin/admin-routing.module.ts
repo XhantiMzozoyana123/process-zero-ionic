@@ -140,6 +140,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'consumption',
+        loadChildren: () => import('../admin-consumption/admin-consumption.module')
+          .then(m => m.AdminConsumptionPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

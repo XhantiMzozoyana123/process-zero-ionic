@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms'; // <-- add this
 
 // 🔥 Auth Interceptor
 import { AuthInterceptor } from './interceptors/auth-interceptor';
+import { CustomErrorHandler } from './services/error-handler.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +26,9 @@ import { AuthInterceptor } from './interceptors/auth-interceptor';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     // ✅ JWT Interceptor
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    // ✅ Global error handler to prevent blank pages from uncaught errors
+    { provide: ErrorHandler, useClass: CustomErrorHandler }
   ],
   bootstrap: [AppComponent],
 })

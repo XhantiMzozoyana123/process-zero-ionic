@@ -1,0 +1,115 @@
+<div class="credit-timer-widget">
+  <!-- Loading State -->
+  <div class="timer-loading" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Timer Display - Static snapshot, not live countdown -->
+  <div class="timer-display" *ngIf="!isLoading" [class.timer-expired]="isExpired" title="Remaining Active Usage Time">
+    <div class="timer-icon">
+      <ion-icon name="time-outline"></ion-icon>
+    </div>
+    <div class="timer-info">
+      <div class="timer-label">Active Usage Time Remaining</div>
+      <div class="timer-value">
+        <span class="time-block hours">{{ displayHours }}</span>
+        <span class="time-sep">:</span>
+        <span class="time-block minutes">{{ displayMinutes }}</span>
+        <span class="time-sep">:</span>
+        <span class="time-block seconds">{{ displaySeconds }}</span>
+      </div>
+      <div class="timer-sub" *ngIf="!isExpired">
+        Snapshot from {{ lastUpdated }}
+      </div>
+      <div class="timer-sub expired-text" *ngIf="isExpired">No active credits remaining</div>
+    </div>
+    <div class="timer-actions" *ngIf="!isExpired">
+      <ion-button fill="clear" size="small" class="timer-refresh-btn" (click)="refreshTimer()">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" size="small" class="timer-buy-btn" (click)="openPurchaseModal()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <ion-modal [isOpen]="showPurchaseModal" (didDismiss)="closePurchaseModal()">
+    <ng-template>
+      <ng-container *ngIf="isExpired; else manualPurchase">
+        <ion-header>
+          <ion-toolbar color="danger">
+            <ion-title>Credits Expired</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closePurchaseModal()">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding purchase-modal-content">
+          <div class="modal-icon-wrap">
+            <ion-icon name="timer-outline" class="expired-icon"></ion-icon>
+          </div>
+          <h2>Your Active Usage Time Has Expired</h2>
+          <p>You've used up all your available credits. To continue using the app, please purchase more credits.</p>
+
+          <div class="plans-summary">
+            <h4>Available Plans</h4>
+            <div class="plan-row">
+              <span class="plan-name">Starter</span>
+              <span class="plan-detail">10 credits / 50 hrs</span>
+              <span class="plan-price">$9.99</span>
+            </div>
+            <div class="plan-row">
+              <span class="plan-name">Monthly</span>
+              <span class="plan-detail">30 credits / 150 hrs</span>
+              <span class="plan-price">$24.00</span>
+            </div>
+            <div class="plan-row">
+              <span class="plan-name">Pro</span>
+              <span class="plan-detail">50 credits / 250 hrs</span>
+              <span class="plan-price">$39.99</span>
+            </div>
+            <div class="plan-row">
+              <span class="plan-name">Enterprise</span>
+              <span class="plan-detail">200 credits / 1,000 hrs</span>
+              <span class="plan-price">$149.99</span>
+            </div>
+          </div>
+
+          <p class="rate-note">Consumption rate: <strong>0.2 credits per hour</strong> (1 credit = 5 hours)</p>
+
+          <ion-button expand="block" class="purchase-now-btn" (click)="goToCredits()">
+            <ion-icon slot="start" name="card-outline"></ion-icon>
+            Purchase Credits Now
+          </ion-button>
+        </ion-content>
+      </ng-container>
+
+      <ng-template #manualPurchase>
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Purchase Credits</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closePurchaseModal()">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding purchase-modal-content">
+          <div class="modal-icon-wrap">
+            <ion-icon name="wallet-outline" class="buy-icon"></ion-icon>
+          </div>
+          <h2>Top Up Your Credits</h2>
+          <p>Purchase more credits to keep using the app without interruption.</p>
+
+          <ion-button expand="block" class="purchase-now-btn" (click)="goToCredits()">
+            <ion-icon slot="start" name="card-outline"></ion-icon>
+            View Credit Packages
+          </ion-button>
+          <ion-button expand="block" fill="clear" (click)="closePurchaseModal()">
+            Continue Using App
+          </ion-button>
+        </ion-content>
+      </ng-template>
+    </ng-template>
+  </ion-modal>
+</div>

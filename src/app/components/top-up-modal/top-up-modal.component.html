@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-title>Top Up Credits</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="message-box">
+    <ion-icon name="warning-outline" color="warning" class="warning-icon"></ion-icon>
+    <p class="message-text">{{ message }}</p>
+  </div>
+
+  <p class="info-text">
+    To continue using Process Zero, please purchase more credits.
+  </p>
+
+  <ion-list>
+    <ion-item *ngFor="let p of packages" [class.selected]="selectedPackage && selectedPackage.id === p.id" (click)="selectPackage(p)" button>
+      <ion-label>
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.description }}</p>
+        <p class="package-detail">
+          {{ p.creditAmount }} credits = {{ p.creditAmount * 5 }} hours
+          <span *ngIf="p.discountPercentage">&nbsp;•&nbsp;{{ p.discountPercentage }}% OFF</span>
+        </p>
+        <p class="price">
+          ${{ p.price | number:'1.2-2' }}
+          <span *ngIf="p.discountedPrice" class="original-price">${{ p.discountedPrice | number:'1.2-2' }}</span>
+        </p>
+      </ion-label>
+      <ion-badge color="success" *ngIf="p.discountPercentage">SAVE {{ p.discountPercentage }}%</ion-badge>
+    </ion-item>
+  </ion-list>
+
+  <div class="actions">
+    <ion-button expand="block" color="success" [disabled]="!selectedPackage || isProcessing" (click)="purchase()">
+      <ion-spinner *ngIf="isProcessing" slot="start"></ion-spinner>
+      Purchase & Continue
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" (click)="dismiss()">
+      Cancel
+    </ion-button>
+  </div>
+</ion-content>

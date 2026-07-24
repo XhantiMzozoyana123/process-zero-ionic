@@ -1,0 +1,226 @@
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.credit-timer-widget {
+  display: flex;
+  align-items: center;
+}
+
+// ── Loading ────────────────────────────
+.timer-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+
+  ion-spinner {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ── Timer Display (navbar compact) ─────
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: #fff;
+  transition: all 0.3s ease;
+  cursor: default;
+
+  &.timer-low {
+    background: rgba($gold, 0.35);
+    animation: pulse-warning 2s infinite;
+  }
+
+  &.timer-expired {
+    background: rgba($coral, 0.4);
+  }
+}
+
+.timer-icon {
+  display: flex;
+  align-items: center;
+
+  ion-icon {
+    font-size: 16px;
+    opacity: 0.85;
+  }
+}
+
+.timer-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-label {
+  display: none; // hidden in navbar, shown on hover via title attr
+}
+
+.timer-value {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.time-block {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 1px 4px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.time-sep {
+  margin: 0;
+  opacity: 0.6;
+  font-size: 0.75rem;
+}
+
+.timer-sub {
+  display: none; // hidden in navbar
+}
+
+.timer-action {
+  display: flex;
+  align-items: center;
+
+  .timer-buy-btn {
+    --color: #fff;
+    --padding-start: 2px;
+    --padding-end: 2px;
+    --min-height: 24px;
+    --min-width: 24px;
+    margin: 0;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+// ── Purchase Modal ─────────────────────
+.purchase-modal-content {
+  text-align: center;
+  padding: 24px 20px !important;
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 16px 0 8px;
+  }
+
+  p {
+    color: $muted;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+}
+
+.modal-icon-wrap {
+  margin-top: 16px;
+}
+
+.expired-icon {
+  font-size: 64px;
+  color: $coral;
+}
+
+.buy-icon {
+  font-size: 64px;
+  color: $teal;
+}
+
+// ── Plans Summary ──────────────────────
+.plans-summary {
+  background: $sand;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $ink;
+    margin: 0 0 12px;
+    text-align: left;
+  }
+}
+
+.plan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba($ink, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .plan-name {
+    font-weight: 600;
+    color: $ink;
+    font-size: 0.9rem;
+    min-width: 80px;
+  }
+
+  .plan-detail {
+    color: $muted;
+    font-size: 0.8rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .plan-price {
+    font-weight: 700;
+    color: $teal;
+    font-size: 0.95rem;
+    min-width: 60px;
+    text-align: right;
+  }
+}
+
+.rate-note {
+  font-size: 0.8rem !important;
+  color: $muted;
+  margin-bottom: 20px !important;
+
+  strong {
+    color: $ink;
+  }
+}
+
+.purchase-now-btn {
+  --background: linear-gradient(135deg, $teal, $blue);
+  --color: #fff;
+  --border-radius: 12px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+// ── Animations ─────────────────────────
+@keyframes pulse-warning {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba($gold, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba($gold, 0.5);
+  }
+}

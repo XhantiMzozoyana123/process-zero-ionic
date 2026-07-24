@@ -8,6 +8,7 @@ import { AccountPageRoutingModule } from './account-routing.module';
 
 import { AccountPage } from './account.page';
 import { KpiFormComponent } from 'src/app/components/kpi-form/kpi-form.component';
+import { CreditTimerComponent } from 'src/app/components/credit-timer/credit-timer.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { KpiFormComponent } from 'src/app/components/kpi-form/kpi-form.component
     FormsModule,
     IonicModule,
     AccountPageRoutingModule,
-    KpiFormComponent
+    KpiFormComponent,
+    CreditTimerComponent
 ],
   declarations: [AccountPage]
 })

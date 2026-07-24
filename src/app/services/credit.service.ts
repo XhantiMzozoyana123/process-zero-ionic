@@ -67,4 +67,13 @@ export class CreditService {
   initializeWallet(): Observable<UserWalletDto> {
     return this.http.post<UserWalletDto>(`${this.apiUrl}/initialize`, {});
   }
+
+  getRemainingHours(): Observable<{ remainingHours: number }> {
+    return this.http.get<{ remainingHours: number }>(`${this.apiUrl}/remaining-hours`);
+  }
+
+  consumeActiveUsage(minutes: number = 10): Observable<CreditConsumeResponseDto> {
+    const params = new HttpParams().set('minutes', minutes.toString());
+    return this.http.post<CreditConsumeResponseDto>(`${this.apiUrl}/consume-active-usage`, {}, { params });
+  }
 }

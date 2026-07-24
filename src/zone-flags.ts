@@ -1,6 +1,2 @@
-/**
- * Prevents Angular change detection from
- * running with certain Web Component callbacks
- */
-// eslint-disable-next-line no-underscore-dangle
-(window as any).__Zone_disable_customElements = true;
+// Zone flags disabled to fix Ionic rendering issues
+// (window as any).__Zone_disable_customElements = true;

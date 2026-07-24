@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { ConsumptionGuard } from 'src/app/guards/consumption.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { ImpersonationGuard } from './guards/impersonation.guard';
@@ -7,6 +8,7 @@ import { ImpersonationGuard } from './guards/impersonation.guard';
 const routes: Routes = [
   {
     path: 'home',
+    canActivate: [ConsumptionGuard],
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
@@ -16,20 +18,17 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [AuthGuard],
-    canMatch: [AuthGuard],
+    canActivate: [AuthGuard, ConsumptionGuard],
     loadChildren: () => import('./pages/account/account.module').then( m => m.AccountPageModule)
   },
   {
     path: 'credits',
-    canActivate: [AuthGuard],
-    canMatch: [AuthGuard],
+    canActivate: [AuthGuard, ConsumptionGuard],
     loadChildren: () => import('./pages/credits/credits.module').then( m => m.CreditsPageModule)
   },
   {
     path: 'impersonation',
-    canActivate: [ImpersonationGuard],
-    canMatch: [ImpersonationGuard],
+    canActivate: [ImpersonationGuard, ConsumptionGuard],
     loadChildren: () => import('./pages/impersonation/impersonation.module').then( m => m.ImpersonationPageModule)
   },
   {

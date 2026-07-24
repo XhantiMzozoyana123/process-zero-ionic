@@ -1,0 +1,115 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  gap: 1rem;
+  color: var(--ion-color-medium);
+}
+
+.stats-grid {
+  padding: 1rem;
+}
+
+.stat-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  ion-card-content {
+    text-align: center;
+    padding: 1.25rem 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+}
+
+.config-card {
+  margin: 0 1rem 1rem;
+  border-radius: 12px;
+
+  ion-card-content {
+    padding: 1rem;
+  }
+}
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 8px;
+  }
+
+  .error-text {
+    margin: 0 0 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  .form-actions {
+    margin-top: 16px;
+
+    ion-button {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.sessions-card {
+  margin: 0 1rem 1rem;
+  border-radius: 12px;
+
+  ion-card-content {
+    padding: 0;
+  }
+
+  ion-list {
+    background: transparent;
+  }
+
+  ion-item-sliding {
+    margin-bottom: 1px;
+  }
+
+  ion-item {
+    --padding-start: 16px;
+    --padding-end: 8px;
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 2px 0;
+      font-size: 0.8rem;
+      color: var(--ion-color-medium);
+    }
+
+    .session-meta {
+      margin-top: 4px;
+      font-weight: 500;
+      color: var(--ion-color-primary);
+      font-size: 0.85rem;
+    }
+  }
+}
