@@ -1,115 +1,475 @@
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
-  gap: 1rem;
-  color: var(--ion-color-medium);
+$sand: #f6f1e8;
+$paper: #fffdf9;
+$ink: #172121;
+$muted: #607078;
+$gold: #d7a449;
+$teal: #1d7874;
+$blue: #335c67;
+$coral: #c06c52;
+
+.admin-consumption-page {
+  --background: radial-gradient(circle at top left, rgba($gold, 0.15), transparent 32%),
+    linear-gradient(180deg, #f8f3eb 0%, #f1ece4 46%, #ece7df 100%);
+  --ion-text-color: #{$ink};
+  color: $ink;
 }
 
-.stats-grid {
-  padding: 1rem;
+.content-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
 }
 
-.stat-card {
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+/* ── HERO ── */
+.hero-shell {
+  position: relative;
+  overflow: hidden;
+}
 
-  ion-card-content {
-    text-align: center;
-    padding: 1.25rem 0.5rem;
-  }
+.hero-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  top: -210px;
+  right: -130px;
+  background: radial-gradient(circle, rgba($gold, 0.28), transparent 68%);
+  pointer-events: none;
+}
 
-  .stat-value {
-    font-size: 1.8rem;
+.page-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.95fr);
+  gap: 24px;
+  align-items: stretch;
+  padding: 44px 0 24px;
+}
+
+.hero-copy {
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba($teal, 0.08);
+    color: $teal;
+    font-size: 0.82rem;
     font-weight: 700;
-    color: var(--ion-color-primary);
-    font-variant-numeric: tabular-nums;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+
+    ion-icon {
+      font-size: 1rem;
+    }
   }
 
-  .stat-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--ion-color-medium);
-    margin-top: 4px;
-    letter-spacing: 0.5px;
+  h1 {
+    margin: 0 0 16px;
+    font-size: clamp(2.1rem, 4vw, 3rem);
+    line-height: 1.06;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: $ink;
+  }
+
+  p {
+    margin: 0;
+    max-width: 680px;
+    font-size: 1.02rem;
+    line-height: 1.62;
+    color: $muted;
   }
 }
 
-.config-card {
-  margin: 0 1rem 1rem;
-  border-radius: 12px;
-
-  ion-card-content {
-    padding: 1rem;
-  }
+.hero-highlight {
+  background: linear-gradient(135deg, $teal, $blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.config-form {
+.hero-panel {
+  align-self: end;
+  background: rgba($paper, 0.82);
+  border: 1px solid rgba($ink, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 18px 45px rgba(23, 33, 33, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 22px;
+}
+
+.hero-panel-label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted;
+  margin-bottom: 12px;
+}
+
+.hero-panel-list {
+  margin: 0;
+  padding-left: 18px;
+  color: $ink;
+  display: grid;
+  gap: 10px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.hero-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  gap: 8px;
+  margin-top: 16px;
 
-  ion-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    margin-bottom: 8px;
-  }
+  ion-button {
+    flex: 1;
 
-  .error-text {
-    margin: 0 0 8px 16px;
-    font-size: 0.8rem;
-  }
+    &[fill="outline"] {
+      --border-color: rgba(#{$teal}, 0.35);
+      --color: #{$teal};
+      --background: rgba(#{$teal}, 0.04);
+    }
 
-  .form-actions {
-    margin-top: 16px;
-
-    ion-button {
-      max-width: 400px;
-      margin: 0 auto;
+    &[color="primary"] {
+      --background: linear-gradient(135deg, #{$teal}, #{$blue});
     }
   }
 }
 
-.sessions-card {
-  margin: 0 1rem 1rem;
-  border-radius: 12px;
+/* ── PAGE BODY ── */
+.page-body {
+  padding: 0 0 28px;
+}
+
+/* ── CARDS ── */
+ion-card {
+  margin: 0 0 20px;
+  border-radius: 22px;
+  background: rgba($paper, 0.94);
+  border: 1px solid rgba($ink, 0.08);
+  box-shadow: 0 18px 46px rgba(23, 33, 33, 0.09);
+  overflow: hidden;
+
+  ion-card-header {
+    padding: 18px 22px 14px;
+    background: linear-gradient(180deg, rgba($gold, 0.1), rgba($paper, 0));
+    border-bottom: 1px solid rgba($ink, 0.06);
+  }
+
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $ink;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+
+    ion-icon {
+      color: $teal;
+      font-size: 1.15rem;
+    }
+  }
+
+  ion-card-subtitle {
+    color: $muted;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 4px;
+  }
 
   ion-card-content {
-    padding: 0;
+    padding: 20px 22px 22px;
   }
 
   ion-list {
     background: transparent;
+    padding: 14px 0 0;
   }
+}
 
-  ion-item-sliding {
-    margin-bottom: 1px;
-  }
+/* ── CONFIG SUMMARY GRID ── */
+.config-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
 
+.config-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba($sand, 0.45);
+  border: 1px solid rgba($ink, 0.06);
+  border-radius: 14px;
+}
+
+.config-summary-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $muted;
+}
+
+.config-summary-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: $ink;
+}
+
+/* ── STATS GRID ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba($sand, 0.45);
+  border: 1px solid rgba($ink, 0.06);
+  border-radius: 14px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $muted;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: $ink;
+  letter-spacing: -0.02em;
+}
+
+/* ── FORM CONTROLS ── */
+.config-form {
   ion-item {
-    --padding-start: 16px;
-    --padding-end: 8px;
+    --background: rgba($sand, 0.45);
+    --border-color: transparent;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --inner-padding-end: 0;
+    --highlight-color-focused: #{$teal};
+    margin-bottom: 12px;
+    border: 1px solid rgba($ink, 0.08);
+    border-radius: 14px;
+  }
 
-    h3 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 600;
-    }
+  ion-input,
+  ion-textarea,
+  ion-toggle {
+    --padding-start: 0.4rem;
+    color: $ink;
+  }
 
-    p {
-      margin: 2px 0;
-      font-size: 0.8rem;
-      color: var(--ion-color-medium);
-    }
+  ion-label {
+    color: $ink !important;
+    font-weight: 600;
+  }
 
-    .session-meta {
-      margin-top: 4px;
-      font-weight: 500;
-      color: var(--ion-color-primary);
-      font-size: 0.85rem;
+  .error-text {
+    margin: 0 0 12px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .hint-text {
+    margin: 0 0 12px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+}
+
+.form-actions {
+  margin-top: 16px;
+
+  ion-button {
+    --border-radius: 12px;
+    text-transform: none;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+
+    &[color='primary'] {
+      --background: linear-gradient(135deg, #{$teal}, #{$blue});
     }
+  }
+}
+
+/* ── BUTTONS ── */
+ion-button {
+  --border-radius: 12px;
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+
+  &[color='primary'] {
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+  }
+
+  &[color='success'] {
+    --background: linear-gradient(135deg, #1d7874, #2d9b8f);
+  }
+
+  &[color='warning'] {
+    --background: linear-gradient(135deg, #d7a449, #c06c52);
+  }
+
+  &[color='danger'] {
+    --background: linear-gradient(135deg, #c06c52, #b65252);
+  }
+
+  &[color='secondary'] {
+    --background: linear-gradient(135deg, #{$blue}, #{$teal});
+  }
+
+  &[fill='outline'] {
+    --border-color: rgba(#{$teal}, 0.35);
+    --color: #{$teal};
+    --background: rgba(#{$teal}, 0.04);
+  }
+}
+
+/* ── ACTIVE SESSIONS LIST ── */
+.sessions-card {
+  ion-list {
+    ion-item {
+      --background: linear-gradient(180deg, rgba($paper, 0.85), rgba($sand, 0.55));
+
+      ion-label {
+        h3 {
+          font-weight: 800;
+          color: $ink;
+          letter-spacing: -0.01em;
+          font-size: 1rem;
+          margin: 0 0 4px;
+        }
+
+        p {
+          color: $muted;
+          font-size: 0.88rem;
+          margin: 0.3rem 0;
+          line-height: 1.45;
+        }
+
+        .session-meta {
+          color: $blue;
+          font-weight: 700;
+          font-size: 0.82rem;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+}
+
+ion-chip {
+  height: 26px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ── LOADING STATE ── */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+
+  ion-spinner {
+    width: 36px;
+    height: 36px;
+    color: $teal;
+  }
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: $muted;
+
+  ion-icon {
+    font-size: 2.4rem;
+    color: rgba($ink, 0.25);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+}
+
+.hint {
+  color: $muted;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0 0 16px;
+
+  strong {
+    color: $ink;
+  }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .page-header {
+    grid-template-columns: 1fr;
+    padding-top: 36px;
+  }
+
+  .config-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .content-shell {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .hero-copy h1 {
+    font-size: 1.95rem;
+  }
+
+  .config-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  ion-card {
+    border-radius: 18px;
+
+    ion-card-header,
+    ion-card-content {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  .hero-actions {
+    flex-direction: column;
   }
 }

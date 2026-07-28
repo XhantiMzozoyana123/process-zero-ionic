@@ -36,6 +36,12 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && !isAuthEndpoint) {
+          // Check if the request has the skip-redirect header, meaning failures should
+          // never kick the user out (e.g. consumption heartbeats, session init).
+          const skipRedirect = request.headers.get('X-Skip-Auth-Redirect') === 'true';
+          if (skipRedirect) {
+            return throwError(() => error);
+          }
           return this.handle401Error(request, next);
         }
 
@@ -50,6 +56,13 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // If we are in impersonation mode, don't clear session or redirect to login.
+    // Impersonated user tokens may not have access to all endpoints (e.g. consumption),
+    // and we don't want a 401 from those to kick the admin back to the login screen.
+    if (this.authService.isImpersonating()) {
+      return throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized during impersonation' }));
+    }
+
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject$.next(null);

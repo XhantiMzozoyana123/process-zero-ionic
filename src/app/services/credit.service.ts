@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserWalletDto } from '../models/dtos/user-wallet-dto.model';
@@ -11,6 +11,16 @@ import { CreditPurchaseResponseDto } from '../models/dtos/credit-purchase-respon
 import { CreditConsumeResponseDto } from '../models/dtos/credit-consume-response-dto.model';
 import { CreditBalanceResponseDto } from '../models/dtos/credit-balance-response-dto.model';
 import { CreateCreditPackageDto } from '../models/dtos/create-credit-package-dto.model';
+
+/**
+ * Custom header added to session-related credit requests so the AuthInterceptor
+ * knows not to clear the session or redirect to login on 401 errors.
+ * These are called from the timer/consumption system and should
+ * never kick the user out.
+ */
+const SKIP_AUTH_REDIRECT_HEADER = new HttpHeaders({
+  'X-Skip-Auth-Redirect': 'true'
+});
 
 @Injectable({
   providedIn: 'root'
@@ -68,12 +78,21 @@ export class CreditService {
     return this.http.post<UserWalletDto>(`${this.apiUrl}/initialize`, {});
   }
 
+  /**
+   * Fetches remaining usage hours for the current user.
+   * Uses skip-redirect header to prevent session-clearing on 401.
+   */
   getRemainingHours(): Observable<{ remainingHours: number }> {
-    return this.http.get<{ remainingHours: number }>(`${this.apiUrl}/remaining-hours`);
+    return this.http.get<{ remainingHours: number }>(`${this.apiUrl}/remaining-hours`, {
+      headers: SKIP_AUTH_REDIRECT_HEADER
+    });
   }
 
   consumeActiveUsage(minutes: number = 10): Observable<CreditConsumeResponseDto> {
     const params = new HttpParams().set('minutes', minutes.toString());
-    return this.http.post<CreditConsumeResponseDto>(`${this.apiUrl}/consume-active-usage`, {}, { params });
+    return this.http.post<CreditConsumeResponseDto>(`${this.apiUrl}/consume-active-usage`, {}, {
+      params,
+      headers: SKIP_AUTH_REDIRECT_HEADER
+    });
   }
 }

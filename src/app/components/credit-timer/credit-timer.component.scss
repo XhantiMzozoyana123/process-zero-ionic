@@ -12,6 +12,25 @@ $coral: #c06c52;
   align-items: center;
 }
 
+// Ensure embedded modal renders fully and doesn't clip content
+ion-modal {
+  --width: 360px;
+  --max-width: 95vw;
+  --min-width: 320px;
+  --height: auto;
+  --max-height: 90vh;
+  --overflow: hidden;
+
+  @media (min-width: 768px) {
+    --width: 480px;
+    --max-height: 85vh;
+  }
+
+  @media (max-width: 374px) {
+    --min-width: 260px;
+  }
+}
+
 // ── Loading ────────────────────────────
 .timer-loading {
   display: flex;
@@ -25,7 +44,7 @@ $coral: #c06c52;
   }
 }
 
-// ── Timer Display (navbar compact) ─────
+// ── Timer Display ──────────────────────
 .timer-display {
   display: flex;
   align-items: center;
@@ -36,11 +55,6 @@ $coral: #c06c52;
   color: #fff;
   transition: all 0.3s ease;
   cursor: default;
-
-  &.timer-low {
-    background: rgba($gold, 0.35);
-    animation: pulse-warning 2s infinite;
-  }
 
   &.timer-expired {
     background: rgba($coral, 0.4);
@@ -64,7 +78,56 @@ $coral: #c06c52;
 }
 
 .timer-label {
-  display: none; // hidden in navbar, shown on hover via title attr
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.live-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #4ade80;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse-live 2s infinite;
+}
+
+.consuming-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse-consume 2s infinite;
+}
+
+.blocked-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #f87171;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes pulse-consume {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .timer-value {
@@ -92,12 +155,26 @@ $coral: #c06c52;
 }
 
 .timer-sub {
-  display: none; // hidden in navbar
+  font-size: 0.7rem;
+  opacity: 0.7;
 }
 
-.timer-action {
+.timer-actions {
   display: flex;
   align-items: center;
+
+  .timer-refresh-btn {
+    --color: #fff;
+    --padding-start: 2px;
+    --padding-end: 2px;
+    --min-height: 24px;
+    --min-width: 24px;
+    margin: 0;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
 
   .timer-buy-btn {
     --color: #fff;

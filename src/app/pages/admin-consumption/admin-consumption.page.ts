@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConsumptionService } from 'src/app/services/consumption.service';
 import { ConsumptionConfigDto, ConsumptionStatsDto, UserSessionDto } from 'src/app/models/dtos/consumption-dto.model';
 
@@ -20,7 +20,7 @@ export class AdminConsumptionPage implements OnInit {
   loading = false;
 
   configForm: FormGroup;
-  isFormOpen = false;
+  isFormOpen = true;
   submitting = false;
 
   constructor(
@@ -52,8 +52,10 @@ export class AdminConsumptionPage implements OnInit {
   }
 
   loadConfig(): void {
+    this.loading = true;
     this.consumptionService.getConfig().subscribe({
       next: config => {
+        console.log('Config loaded:', config);
         this.config = config;
         this.configForm.patchValue({
           creditsPerHour: config.creditsPerHour,
@@ -64,22 +66,38 @@ export class AdminConsumptionPage implements OnInit {
           initialFreeHours: config.initialFreeHours,
           enforceAccessBlock: config.enforceAccessBlock
         });
+        this.loading = false;
       },
-      error: () => this.showToast('Failed to load config', 'danger')
+      error: (err) => {
+        console.error('Failed to load config:', err);
+        this.showToast('Failed to load config. Using defaults.', 'warning');
+        this.config = null;
+        this.loading = false;
+      }
     });
   }
 
   loadStats(): void {
     this.consumptionService.getStats().subscribe({
-      next: stats => { this.stats = stats; },
-      error: () => {}
+      next: stats => { 
+        console.log('Stats loaded:', stats);
+        this.stats = stats; 
+      },
+      error: (err) => {
+        console.error('Failed to load stats:', err);
+      }
     });
   }
 
   loadActiveSessions(): void {
     this.consumptionService.getAllActiveSessions().subscribe({
-      next: sessions => { this.activeSessions = sessions; },
-      error: () => {}
+      next: sessions => { 
+        console.log('Sessions loaded:', sessions);
+        this.activeSessions = sessions; 
+      },
+      error: (err) => {
+        console.error('Failed to load sessions:', err);
+      }
     });
   }
 
@@ -100,11 +118,36 @@ export class AdminConsumptionPage implements OnInit {
         this.loadConfig();
         this.loadStats();
       },
-      error: () => {
-        this.showToast('Failed to update config', 'danger');
+      error: (err) => {
+        console.error('Failed to update config:', err);
+        const errorMsg = err?.error?.message || err?.message || 'Unknown error';
+        this.showToast(`Failed to update config: ${errorMsg}`, 'danger');
         this.submitting = false;
       }
     });
+  }
+
+  async resetConfig(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Reset Configuration?',
+      message: 'This will reset all timer settings to their default values. Continue?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Reset', role: 'destructive', handler: () => {
+            this.consumptionService.deleteConfig().subscribe({
+              next: () => {
+                this.showToast('Configuration reset to defaults', 'success');
+                this.loadConfig();
+                this.loadStats();
+              },
+              error: () => this.showToast('Failed to reset config', 'danger')
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   toggleForm(): void {

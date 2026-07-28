@@ -60,3 +60,9 @@ export interface ConsumptionStatsDto {
   rate: number;
   isEnabled: boolean;
 }
+
+/** Response from GET /api/consumption/active */
+export interface ActiveSessionResponse {
+  hasActiveSession: boolean;
+  session: UserSessionDto | null;
+}

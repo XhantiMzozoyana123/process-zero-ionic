@@ -1,168 +1,229 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Consumption Settings</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleForm()" color="primary">
-        <ion-icon [name]="isFormOpen ? 'close-outline' : 'create-outline'" slot="start"></ion-icon>
-        {{ isFormOpen ? 'Close' : 'Edit Settings' }}
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <!-- Loading -->
-  <div class="loading-container" *ngIf="loading">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Loading consumption settings...</p>
-  </div>
-
-  <!-- Stats Cards -->
-  <ion-grid *ngIf="!loading && stats" class="stats-grid">
-    <ion-row>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.activeSessionsCount }}</div>
-            <div class="stat-label">Active Sessions</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.totalSessionsToday }}</div>
-            <div class="stat-label">Sessions Today</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.totalCreditsConsumedToday | number:'1.2-2' }}</div>
-            <div class="stat-label">Credits Used Today</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.totalCreditsConsumedThisMonth | number:'1.2-2' }}</div>
-            <div class="stat-label">Credits This Month</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.totalMinutesLoggedToday | number:'1.0-0' }}</div>
-            <div class="stat-label">Minutes Today</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">{{ stats.totalMinutesLoggedThisMonth | number:'1.0-0' }}</div>
-            <div class="stat-label">Minutes This Month</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <!-- Configuration Form -->
-  <ion-card *ngIf="isFormOpen && config" class="config-card">
-    <ion-card-header>
-      <ion-card-title>Consumption Configuration</ion-card-title>
-      <ion-card-subtitle>Adjust the pay-to-use engine settings</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form">
-        <ion-item>
-          <ion-label position="stacked">Credits Per Hour</ion-label>
-          <ion-input type="number" step="0.01" formControlName="creditsPerHour"></ion-input>
-        </ion-item>
-        <ion-text color="danger" *ngIf="isInvalid('creditsPerHour')">
-          <p class="error-text">Enter a valid rate (minimum 0.01).</p>
-        </ion-text>
-
-        <ion-item>
-          <ion-label position="stacked">Check Interval (minutes)</ion-label>
-          <ion-input type="number" formControlName="checkIntervalMinutes"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Max Session Duration (minutes, 0 = unlimited)</ion-label>
-          <ion-input type="number" formControlName="maxSessionMinutes"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Grace Period (minutes)</ion-label>
-          <ion-input type="number" formControlName="gracePeriodMinutes"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Initial Free Hours</ion-label>
-          <ion-input type="number" step="0.1" formControlName="initialFreeHours"></ion-input>
-        </ion-item>
-        <ion-text color="medium">
-          <p class="hint-text">Hours granted before consumption begins. When exhausted, user is blocked until top-up.</p>
-        </ion-text>
-
-        <ion-item>
-          <ion-label>Enforce Access Block</ion-label>
-          <ion-toggle formControlName="enforceAccessBlock"></ion-toggle>
-        </ion-item>
-
-        <div class="form-actions">
-          <ion-button type="submit" color="primary" [disabled]="submitting" expand="block">
-            <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
-            Save Configuration
-          </ion-button>
-        </div>
-      </form>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Active Sessions -->
-  <ion-card *ngIf="activeSessions.length > 0" class="sessions-card">
-    <ion-card-header>
-      <ion-card-title>Active Sessions ({{ activeSessions.length }})</ion-card-title>
-      <ion-card-subtitle>Real-time usage across all users</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item-sliding *ngFor="let session of activeSessions">
-          <ion-item>
-            <ion-icon name="person-circle-outline" slot="start" color="primary"></ion-icon>
-            <ion-label>
-              <h3>User: {{ session.userId }}</h3>
-              <p>Started: {{ session.sessionStartUtc | date:'short' }}</p>
-              <p *ngIf="session.deviceInfo">Device: {{ session.deviceInfo }}</p>
-              <p class="session-meta">
-                Elapsed: {{ session.elapsedMinutes | number:'1.0-0' }} min |
-                Est. Credits: {{ session.estimatedCreditsConsumed | number:'1.4-4' }}
-              </p>
-            </ion-label>
-            <ion-buttons slot="end">
-              <ion-button color="danger" fill="clear" (click)="forceEndSession(session)">
-                <ion-icon name="stop-circle-outline" slot="icon-only"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-item>
-          <ion-item-options side="end">
-            <ion-item-option color="danger" (click)="forceEndSession(session)">
-              <ion-icon slot="icon-only" name="stop-circle-outline"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-    <!-- Refresh -->
+<ion-content class="admin-consumption-page" [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
+  <!-- HERO -->
+  <div class="hero-shell">
+    <div class="hero-glow"></div>
+    <div class="content-shell">
+      <header class="page-header">
+        <div class="hero-copy">
+          <div class="hero-badge">
+            <ion-icon name="speedometer-outline"></ion-icon>
+            <span>Pay-to-Use Engine</span>
+          </div>
+          <h1>Consumption <span class="hero-highlight">Settings</span></h1>
+          <p>Configure credit rates, session limits, and access controls. The engine tracks user consumption and deducts credits based on active usage time.</p>
+        </div>
+        <aside class="hero-panel">
+          <div class="hero-panel-label">Quick Actions</div>
+          <ul class="hero-panel-list">
+            <li>Adjust credit rates and intervals</li>
+            <li>Set session duration limits</li>
+            <li>Configure grace periods and free hours</li>
+            <li>Monitor active user sessions</li>
+          </ul>
+          <div class="hero-actions">
+            <ion-button fill="outline" size="small" (click)="resetConfig()">
+              <ion-icon name="refresh-outline" slot="start"></ion-icon>
+              Reset
+            </ion-button>
+            <ion-button size="small" (click)="toggleForm()">
+              <ion-icon [name]="isFormOpen ? 'close-outline' : 'create-outline'" slot="start"></ion-icon>
+              {{ isFormOpen ? 'Close Form' : 'Edit Settings' }}
+            </ion-button>
+          </div>
+        </aside>
+      </header>
+    </div>
+  </div>
+
+  <div class="content-shell page-body">
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
+    <!-- Config Summary -->
+    <ion-card *ngIf="!loading && config" class="section-card config-summary-card">
+      <ion-card-header>
+        <ion-card-title title="Displays the currently active consumption configuration including credit rates, intervals, and access settings applied to users.">
+          <ion-icon name="settings-outline"></ion-icon>
+          Current Configuration
+        </ion-card-title>
+        <ion-card-subtitle>Active pay-to-use engine settings</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="config-summary-grid">
+          <div class="config-summary-item">
+            <span class="config-summary-label">Credits Per Hour</span>
+            <span class="config-summary-value">{{ config.creditsPerHour }}</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Check Interval</span>
+            <span class="config-summary-value">{{ config.checkIntervalMinutes }} min</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Max Session</span>
+            <span class="config-summary-value">{{ config.maxSessionMinutes }} min</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Enabled</span>
+            <span class="config-summary-value">{{ config.isEnabled ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Grace Period</span>
+            <span class="config-summary-value">{{ config.gracePeriodMinutes }} min</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Initial Free Hours</span>
+            <span class="config-summary-value">{{ config.initialFreeHours }}</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Enforce Access Block</span>
+            <span class="config-summary-value">{{ config.enforceAccessBlock ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="config-summary-item">
+            <span class="config-summary-label">Last Updated</span>
+            <span class="config-summary-value">{{ config.updatedAt | date:'short' }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Stats Cards -->
+    <ion-card *ngIf="!loading && stats" class="section-card">
+      <ion-card-header>
+        <ion-card-title title="Real-time statistics about consumption usage across all users.">
+          <ion-icon name="analytics-outline"></ion-icon>
+          Usage Statistics
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="stats-grid stats-grid-detailed">
+          <div class="stat-item">
+            <span class="stat-label">Active Sessions</span>
+            <span class="stat-value">{{ stats.activeSessionsCount }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Sessions Today</span>
+            <span class="stat-value">{{ stats.totalSessionsToday }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Credits Used Today</span>
+            <span class="stat-value">{{ stats.totalCreditsConsumedToday | number:'1.2-2' }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Credits This Month</span>
+            <span class="stat-value">{{ stats.totalCreditsConsumedThisMonth | number:'1.2-2' }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Minutes Today</span>
+            <span class="stat-value">{{ stats.totalMinutesLoggedToday | number:'1.0-0' }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Minutes This Month</span>
+            <span class="stat-value">{{ stats.totalMinutesLoggedThisMonth | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Configuration Form -->
+    <ion-card *ngIf="isFormOpen" class="section-card">
+      <ion-card-header>
+        <ion-card-title title="Modify the consumption engine settings. Changes apply immediately after saving. Configure credit rates, check intervals, session limits, and grace periods.">
+          <ion-icon name="create-outline"></ion-icon>
+          Consumption Configuration
+        </ion-card-title>
+        <ion-card-subtitle>Adjust the pay-to-use engine settings</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form">
+          <ion-item>
+            <ion-label position="stacked" title="Rate at which credits are deducted per hour of active usage. For example, 0.2 credits/hour means 0.2 credits deducted after 60 minutes of active time.">Credits Per Hour</ion-label>
+            <ion-input type="number" step="0.01" formControlName="creditsPerHour"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('creditsPerHour')">
+            <p class="error-text">Enter a valid rate (minimum 0.01).</p>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="stacked" title="How often the system checks and calculates credit consumption. 1 minute = check every 60 seconds. Lower values = more accurate tracking but slightly higher server load.">Check Interval (minutes)</ion-label>
+            <ion-input type="number" formControlName="checkIntervalMinutes"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" title="Maximum allowed session duration. 0 = unlimited (session continues until user manually ends it or credit balance runs out). Set a value to automatically end sessions after specified minutes.">Max Session Duration (minutes, 0 = unlimited)</ion-label>
+            <ion-input type="number" formControlName="maxSessionMinutes"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" title="Buffer time after grace period expires before access is blocked. Gives users a few extra minutes to top up credits or end their session gracefully.">Grace Period (minutes)</ion-label>
+            <ion-input type="number" formControlName="gracePeriodMinutes"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" title="Free hours given to users on first login or account creation. During this time, no credits are deducted. Useful for trial periods or onboarding new users.">Initial Free Hours</ion-label>
+            <ion-input type="number" step="0.1" formControlName="initialFreeHours"></ion-input>
+          </ion-item>
+          <ion-text color="medium">
+            <p class="hint-text">Hours granted before consumption begins. When exhausted, user is blocked until top-up.</p>
+          </ion-text>
+
+          <ion-item>
+            <ion-label title="When enabled, users with insufficient credits are completely blocked from accessing the app. When disabled, users may continue with limited functionality or warnings.">Enforce Access Block</ion-label>
+            <ion-toggle formControlName="enforceAccessBlock"></ion-toggle>
+          </ion-item>
+
+          <div class="form-actions">
+            <ion-button type="submit" color="primary" [disabled]="submitting" expand="block">
+              <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+              Save Configuration
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Active Sessions -->
+    <ion-card *ngIf="activeSessions.length > 0" class="section-card sessions-card">
+      <ion-card-header>
+        <ion-card-title title="Real-time view of all active user sessions. Shows elapsed time, estimated credit consumption, and allows force-ending sessions if needed.">
+          <ion-icon name="people-outline"></ion-icon>
+          Active Sessions ({{ activeSessions.length }})
+        </ion-card-title>
+        <ion-card-subtitle>Real-time usage across all users</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item-sliding *ngFor="let session of activeSessions">
+            <ion-item>
+              <ion-icon name="person-circle-outline" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <h3>User: {{ session.userId }}</h3>
+                <p>Started: {{ session.sessionStartUtc | date:'short' }}</p>
+                <p *ngIf="session.deviceInfo">Device: {{ session.deviceInfo }}</p>
+                <p class="session-meta">
+                  Elapsed: {{ session.elapsedMinutes | number:'1.0-0' }} min |
+                  Est. Credits: {{ session.estimatedCreditsConsumed | number:'1.4-4' }}
+                </p>
+              </ion-label>
+              <ion-buttons slot="end">
+                <ion-button color="danger" fill="clear" (click)="forceEndSession(session)">
+                  <ion-icon name="stop-circle-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="forceEndSession(session)">
+                <ion-icon slot="icon-only" name="stop-circle-outline"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

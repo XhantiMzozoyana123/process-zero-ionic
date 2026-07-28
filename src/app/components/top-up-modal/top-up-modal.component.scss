@@ -1,11 +1,16 @@
 .message-box {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
   background: rgba(var(--ion-color-warning-rgb), 0.1);
   border-radius: 12px;
   margin-bottom: 1rem;
+  min-width: 0;
+
+  ion-icon {
+    flex-shrink: 0;
+  }
 
   .warning-icon {
     font-size: 2.5rem;
@@ -17,6 +22,8 @@
     font-size: 1rem;
     font-weight: 500;
     color: var(--ion-color-dark);
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -25,11 +32,57 @@
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0 0 1.5rem;
+  min-width: 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  color: var(--ion-color-medium);
+  font-size: 0.95rem;
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  background: rgba(var(--ion-color-danger-rgb), 0.05);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-message {
+    margin: 0;
+    font-weight: 600;
+    color: var(--ion-color-danger);
+    font-size: 1rem;
+  }
+
+  .error-detail {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  ion-button {
+    margin-top: 0.5rem;
+  }
 }
 
 ion-list {
   background: transparent;
   margin-bottom: 1.5rem;
+  min-width: 0;
 
   ion-item {
     --background: var(--ion-color-light);
@@ -94,4 +147,5 @@ ion-list {
   flex-direction: column;
   gap: 0.75rem;
   margin-top: 1rem;
+  min-width: 0;
 }
