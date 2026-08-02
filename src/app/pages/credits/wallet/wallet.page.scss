@@ -167,6 +167,16 @@ $muted: #607078;
   margin-top: 8px;
 }
 
+.payshap-btn {
+  --background: linear-gradient(135deg, #{$gold}, #{$coral});
+  --border-radius: 12px;
+  --box-shadow: 0 4px 14px rgba($gold, 0.3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 10px;
+}
+
 .modal-content {
   --background: linear-gradient(180deg, #{$sand} 0%, #{$paper} 100%);
   padding: 20px;

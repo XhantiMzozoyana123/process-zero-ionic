@@ -37,7 +37,7 @@
         <ion-label>
           <h2>{{ pkg.name }}</h2>
           <p>{{ pkg.description }}</p>
-          <p>{{ pkg.creditAmount }} credits - ${{ pkg.price }}</p>
+          <p>{{ pkg.creditAmount }} credits - {{ pkg.currency === 'ZAR' ? 'R' : '$' }}{{ pkg.price | number:'1.2-2' }}</p>
         </ion-label>
       </ion-item>
     }

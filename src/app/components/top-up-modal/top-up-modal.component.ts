@@ -2,8 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { CreditService } from 'src/app/services/credit.service';
-import { PayPalService } from 'src/app/services/paypal.service';
-import { PurchaseCreditsRequestDto } from 'src/app/models/dtos/purchase-credits-request-dto.model';
+import { PayShapService } from 'src/app/services/payshap.service';
 
 @Component({
   selector: 'app-top-up-modal',
@@ -24,7 +23,7 @@ export class TopUpModalComponent {
   constructor(
     private modalController: ModalController,
     private creditService: CreditService,
-    private payPalService: PayPalService
+    private payShapService: PayShapService
   ) {}
 
   async ngOnInit() {
@@ -50,19 +49,23 @@ export class TopUpModalComponent {
     });
   }
 
-  buyPackage(pkg: any) {
+  buyWithPayShap(pkg: any) {
     if (this.isProcessing) return;
 
     this.isProcessing = true;
-    this.payPalService.createPayPalOrder(pkg.id).subscribe({
+    this.payShapService.createPayShapOrder(pkg.id).subscribe({
       next: (res) => {
-        sessionStorage.setItem('paypal_order_id', res.orderId);
-        sessionStorage.setItem('paypal_package_id', res.packageId.toString());
-        window.location.href = res.approvalUrl;
+        // Close the top-up modal and open PayShap payment modal
+        this.modalController.dismiss({
+          shouldRefresh: false,
+          showPayShapModal: true,
+          packageId: pkg.id,
+          payShapOrder: res
+        });
       },
       error: () => {
         this.isProcessing = false;
-        alert('Failed to start PayPal payment. Please try again.');
+        alert('Failed to create PayShap order. Please try again.');
       }
     });
   }

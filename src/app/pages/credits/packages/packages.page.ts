@@ -36,14 +36,14 @@ export class PackagesPage implements OnInit {
   }
 
   formatPrice(pkg: CreditPackageDto): string {
-    const currency = pkg.currency || 'USD';
+    const currency = pkg.currency || 'ZAR';
     let price = pkg.price;
 
     if (pkg.discountPercentage && pkg.discountPercentage > 0) {
       price = price * (1 - pkg.discountPercentage / 100);
     }
 
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
       currency: currency
     }).format(price);

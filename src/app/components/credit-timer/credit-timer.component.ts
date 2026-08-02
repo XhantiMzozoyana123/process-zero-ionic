@@ -2,18 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { CreditService } from 'src/app/services/credit.service';
 import { ConsumptionService } from 'src/app/services/consumption.service';
-import { TopUpModalComponent } from '../top-up-modal/top-up-modal.component';
 
 @Component({
   selector: 'app-credit-timer',
   standalone: true,
   imports: [
     CommonModule,
-    IonicModule,
-    TopUpModalComponent
+    IonicModule
   ],
   templateUrl: './credit-timer.component.html',
   styleUrls: ['./credit-timer.component.scss'],
@@ -39,7 +38,8 @@ export class CreditTimerComponent implements OnInit, OnDestroy {
   constructor(
     private creditService: CreditService,
     private consumptionService: ConsumptionService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -60,18 +60,8 @@ export class CreditTimerComponent implements OnInit, OnDestroy {
   }
 
   async openTopUpPackages(): Promise<void> {
-    const modal = await this.modalController.create({
-      component: TopUpModalComponent,
-      componentProps: {
-        message: 'Your active usage time has expired. Please purchase more credits to continue.'
-      }
-    });
-
-    await modal.present();
-    const { data } = await modal.onDidDismiss();
-    if (data?.shouldRefresh) {
-      this.refreshTimer();
-    }
+    // Redirect to wallet/credits page
+    void this.router.navigate(['/account/credits']);
   }
 
   /** Called from outside after a successful purchase */

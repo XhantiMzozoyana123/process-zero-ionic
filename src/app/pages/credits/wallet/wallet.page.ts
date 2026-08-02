@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { CreditService as CreditApiService } from 'src/app/services/credit.service';
-import { PayPalService } from 'src/app/services/paypal.service';
+import { PayShapService } from 'src/app/services/payshap.service';
 import { UserWalletDto } from 'src/app/models/dtos/user-wallet-dto.model';
 import { CreditPurchaseResponseDto } from 'src/app/models/dtos/credit-purchase-response-dto.model';
 import { PurchaseCreditsRequestDto } from 'src/app/models/dtos/purchase-credits-request-dto.model';
+import { CreatePayShapOrderResponse } from 'src/app/models/dtos/pay-shap-dtos.model';
+import { PayShapPaymentModalComponent } from 'src/app/components/payshap-payment-modal/payshap-payment-modal.component';
 
 @Component({
   selector: 'app-wallet',
@@ -22,51 +25,20 @@ export class WalletPage implements OnInit {
   showPurchaseModal = false;
   processingPayment = false;
 
-  constructor(private creditService: CreditApiService, private payPalService: PayPalService) {}
+  constructor(
+    private creditService: CreditApiService,
+    private payShapService: PayShapService,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit() {
     this.loadWallet();
     this.loadPackages();
-    this.checkPayPalReturn();
+    this.checkPayShapReturn();
   }
 
   private checkPayPalReturn() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('paypal') === 'success') {
-      const orderId = sessionStorage.getItem('paypal_order_id');
-      const packageId = sessionStorage.getItem('paypal_package_id');
-
-      if (orderId && packageId) {
-        this.processingPayment = true;
-        this.error = null;
-
-        this.payPalService.capturePayPalOrder(orderId, parseInt(packageId)).subscribe({
-          next: (response) => {
-            this.purchaseSuccess = `Purchase successful! New balance: ${response.credits.newBalance} credits.`;
-            this.processingPayment = false;
-            this.loadWallet();
-            sessionStorage.removeItem('paypal_order_id');
-            sessionStorage.removeItem('paypal_package_id');
-            // Clean up URL parameters to avoid re-triggering on refresh
-            window.history.replaceState({}, document.title, window.location.pathname);
-          },
-          error: (err) => {
-            this.error = 'PayPal payment capture failed. Please try again or contact support.';
-            this.processingPayment = false;
-            console.error(err);
-          }
-        });
-      } else {
-        // Session storage is missing — likely expired or opened in a new tab
-        this.error = 'Payment session expired or invalid. Please try purchasing again.';
-        sessionStorage.removeItem('paypal_order_id');
-        sessionStorage.removeItem('paypal_package_id');
-      }
-    } else if (urlParams.get('paypal') === 'cancelled') {
-      this.error = 'Payment was cancelled. You can try again anytime.';
-      sessionStorage.removeItem('paypal_order_id');
-      sessionStorage.removeItem('paypal_package_id');
-    }
+    // PayPal removed - using PayShap only
   }
 
   loadWallet() {
@@ -86,17 +58,30 @@ export class WalletPage implements OnInit {
   }
 
   loadPackages() {
+    console.log('Loading packages...');
     this.creditService.getAvailablePackages().subscribe({
       next: (data) => {
+        console.log('Packages loaded:', data);
         this.packages = data;
       },
       error: (err) => {
         console.error('Failed to load packages', err);
+        this.error = 'Failed to load credit packages.';
       }
     });
   }
 
   openPurchaseModal() {
+    console.log('Opening purchase modal, packages:', this.packages.length);
+    console.log('Wallet state:', this.wallet);
+    
+    if (!this.wallet) {
+      console.warn('Wallet not loaded yet');
+      this.error = 'Please wait for wallet to load.';
+      return;
+    }
+    
+    this.error = null;
     this.showPurchaseModal = true;
   }
 
@@ -106,23 +91,79 @@ export class WalletPage implements OnInit {
   }
 
   confirmPurchase() {
-    if (!this.selectedPackageId) return;
-    this.processingPayment = true;
-    this.error = null;
+    // PayPal removed - redirect to PayShap instead
+    this.payWithPayShap();
+  }
 
-    this.payPalService.createPayPalOrder(this.selectedPackageId).subscribe({
+  /**
+   * Initiates PayShap payment flow by opening the payment modal
+   */
+  payWithPayShap() {
+    console.log('payWithPayShap called, selectedPackageId:', this.selectedPackageId);
+    
+    if (!this.selectedPackageId) {
+      console.warn('No package selected');
+      this.error = 'Please select a package first.';
+      return;
+    }
+    
+    console.log('Creating PayShap order for package:', this.selectedPackageId);
+    this.error = null;
+    
+    this.payShapService.createPayShapOrder(this.selectedPackageId).subscribe({
       next: (res) => {
-        // Store order details before redirecting
-        sessionStorage.setItem('paypal_order_id', res.orderId);
-        sessionStorage.setItem('paypal_package_id', res.packageId.toString());
-        // Redirect to PayPal approval URL
-        window.location.href = res.approvalUrl;
+        console.log('PayShap order created successfully:', res);
+        this.openPayShapModal(res);
       },
       error: (err) => {
-        this.error = 'Failed to initiate PayPal payment.';
-        this.processingPayment = false;
-        console.error(err);
+        console.error('PayShap order creation failed:', err);
+        this.error = 'Failed to initiate PayShap payment. Please try again.';
       }
     });
+  }
+
+  /**
+   * Opens the PayShap payment modal with instructions and screenshot upload
+   */
+  private async openPayShapModal(payShapOrder: CreatePayShapOrderResponse) {
+    try {
+      console.log('Opening PayShap modal with order:', payShapOrder);
+      
+      const modal = await this.modalController.create({
+        component: PayShapPaymentModalComponent,
+        componentProps: {
+          payShapOrder: payShapOrder,
+          packageId: this.selectedPackageId
+        },
+        backdropDismiss: false
+      });
+
+      await modal.present();
+      console.log('PayShap modal presented');
+
+      const { data } = await modal.onDidDismiss();
+      console.log('PayShap modal dismissed with data:', data);
+      
+      if (data?.shouldRefresh) {
+        // Refresh wallet and packages after successful payment proof submission
+        this.loadWallet();
+        this.loadPackages();
+        
+        if (data?.success) {
+          this.purchaseSuccess = data.message || 'Payment proof submitted successfully! Your payment is pending verification.';
+        }
+      }
+    } catch (error) {
+      console.error('Error opening PayShap modal:', error);
+      this.error = 'Failed to open payment modal. Please try again.';
+    }
+  }
+
+  /**
+   * Checks for PayShap return from modal (if opened from top-up modal)
+   */
+  private checkPayShapReturn() {
+    // This can be extended if needed for URL-based returns
+    // Currently using modal dismissal events instead
   }
 }

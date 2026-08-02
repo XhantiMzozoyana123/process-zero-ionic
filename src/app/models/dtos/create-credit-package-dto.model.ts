@@ -10,3 +10,6 @@ export interface CreateCreditPackageDto {
   discountPercentage?: number;
   isSubscription?: boolean;
 }
+
+// Default currency for credit packages
+export const DEFAULT_CREDIT_PACKAGE_CURRENCY = 'ZAR';

@@ -38,8 +38,8 @@
           </div>
 
           <div class="wallet-actions">
-            <ion-button expand="block" class="purchase-btn" (click)="openPurchaseModal()">
-              <ion-icon slot="start" name="card-outline"></ion-icon>
+            <ion-button expand="block" class="payshap-btn" (click)="openPurchaseModal()">
+              <ion-icon slot="start" name="cash-outline"></ion-icon>
               Purchase Credits
             </ion-button>
           </div>
@@ -101,9 +101,9 @@
             <p>Opening secure payment...</p>
           </div>
 
-          <ion-button *ngIf="!processingPayment" expand="block" class="purchase-btn" [disabled]="!selectedPackageId" (click)="confirmPurchase()">
-            Confirm Purchase
-          </ion-button>
+           <ion-button *ngIf="!processingPayment" expand="block" class="payshap-btn" [disabled]="!selectedPackageId" (click)="payWithPayShap()">
+             Pay with PayShap
+           </ion-button>
         </div>
       </ion-content>
     </ng-template>
