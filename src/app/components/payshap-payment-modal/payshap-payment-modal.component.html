@@ -78,7 +78,10 @@
 
     <div class="expiry-notice">
       <ion-icon name="time-outline" color="warning"></ion-icon>
-      <p>Order expires: {{ payShapOrder.expiresAt | date:'medium' }}</p>
+      <div class="expiry-content">
+        <p class="expiry-label">Order expires</p>
+        <p class="expiry-time">{{ payShapOrder.expiresAt | date:'MMM d, yyyy' }} at {{ payShapOrder.expiresAt | date:'h:mm a' }}</p>
+      </div>
     </div>
 
     <ion-button expand="block" color="primary" (click)="nextStep()">

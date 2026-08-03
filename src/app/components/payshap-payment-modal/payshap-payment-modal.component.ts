@@ -8,6 +8,7 @@ import { CreatePayShapOrderResponse, SubmitPaymentProofResponse } from 'src/app/
 @Component({
   selector: 'app-payshap-payment-modal',
   templateUrl: './payshap-payment-modal.component.html',
+  styleUrls: ['./payshap-payment-modal.component.scss'],
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule]
 })
