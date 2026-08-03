@@ -1,4 +1,4 @@
-<ion-header>
+﻿<ion-header>
   <ion-toolbar color="primary">
     <ion-title>PayShap Payment</ion-title>
     <ion-buttons slot="end">
@@ -231,7 +231,7 @@
       <div class="verification-content">
         <ion-icon name="information-circle-outline" color="primary" class="info-icon"></ion-icon>
         <h4>We couldn't verify your payment screenshot</h4>
-        <p class="info-message" style="white-space: pre-line;">{{ verificationMessage }}</p>
+        <p class="info-message">{{ verificationMessage }}</p>
       </div>
 
       <ion-button expand="block" color="primary" (click)="retryVerification()">
@@ -250,3 +250,4 @@
     </ion-button>
   </div>
 </ion-content>
+
