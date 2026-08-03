@@ -34,7 +34,7 @@
       <ion-icon name="information-circle-outline" color="primary"></ion-icon>
       <h3>Step 1: Make Payment</h3>
     </div>
-    
+
     <div class="details-box">
       <ion-item lines="none">
         <ion-label>
@@ -164,19 +164,19 @@
       <ion-label position="floating">
         Bank Transaction Reference (Optional)
       </ion-label>
-      <ion-input 
-        [(ngModel)]="bankTransactionReference" 
+      <ion-input
+        [(ngModel)]="bankTransactionReference"
         [disabled]="isSubmitting"
         placeholder="Enter transaction reference if available">
       </ion-input>
     </ion-item>
 
     <!-- Submit Button -->
-    <ion-button 
+    <ion-button
       *ngIf="!showCamera && screenshotPreview"
-      expand="block" 
-      color="success" 
-      (click)="submitPaymentProof()" 
+      expand="block"
+      color="success"
+      (click)="submitPaymentProof()"
       [disabled]="isSubmitting">
       <ion-spinner *ngIf="isSubmitting" slot="start"></ion-spinner>
       {{ isSubmitting ? 'Submitting...' : 'Submit Payment Proof' }}
@@ -184,14 +184,14 @@
   </div>
 
   <!-- Step 3: Verification -->
-  <div *ngIf="currentStep === 3 || submitSuccess" class="step-content">
+  <div *ngIf="currentStep === 3" class="step-content">
     <!-- Pending verification state -->
-    <div *ngIf="!submitSuccess && !submitError && isSubmitting" class="verification-pending">
+    <div *ngIf="!submitSuccess && !submitError && isSubmitting && !verificationFailed" class="verification-pending">
       <div class="step-header">
         <ion-icon name="time-outline" color="warning"></ion-icon>
         <h3>Step 3: Verification</h3>
       </div>
-      
+
       <div class="verification-content">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
         <h4>{{ verificationMessage || 'Processing Your Payment' }}</h4>
@@ -201,12 +201,12 @@
     </div>
 
     <!-- Pending verification state (not submitting, but no response yet) -->
-    <div *ngIf="!submitSuccess && !submitError && !isSubmitting && verificationMessage" class="verification-pending">
+    <div *ngIf="!submitSuccess && !submitError && !isSubmitting && verificationMessage && !verificationFailed" class="verification-pending">
       <div class="step-header">
         <ion-icon name="time-outline" color="warning"></ion-icon>
         <h3>Step 3: Verification</h3>
       </div>
-      
+
       <div class="verification-content">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
         <h4>{{ verificationMessage }}</h4>
@@ -221,12 +221,23 @@
       <p class="info-text">Your credits will be added shortly.</p>
     </div>
 
-    <!-- Success State - Under Review -->
-    <div *ngIf="submitSuccess && isUnderReview" class="warning-state">
-      <ion-icon name="warning-outline" color="warning" class="warning-icon"></ion-icon>
-      <h2>Payment Under Review</h2>
-      <p>{{ submitSuccess }}</p>
-      <p class="info-text">If this payment cannot be verified, your account may be suspended.</p>
+    <!-- Invalid Image State - Verification Failed -->
+    <div *ngIf="verificationFailed" class="invalid-image-state">
+      <div class="step-header">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <h3>Upload Issue</h3>
+      </div>
+
+      <div class="verification-content">
+        <ion-icon name="information-circle-outline" color="primary" class="info-icon"></ion-icon>
+        <h4>We couldn't verify your payment screenshot</h4>
+        <p class="info-message" style="white-space: pre-line;">{{ verificationMessage }}</p>
+      </div>
+
+      <ion-button expand="block" color="primary" (click)="retryVerification()">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Upload a New Screenshot
+      </ion-button>
     </div>
   </div>
 

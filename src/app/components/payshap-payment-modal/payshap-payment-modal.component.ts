@@ -23,6 +23,7 @@ export class PayShapPaymentModalComponent implements OnInit, OnDestroy {
   submitError: string | null = null;
   verificationMessage: string | null = null;
   isUnderReview = false;
+  verificationFailed = false;
 
   // Step management
   currentStep = 1; // 1: Instructions, 2: Capture proof, 3: Verification
@@ -174,36 +175,43 @@ export class PayShapPaymentModalComponent implements OnInit, OnDestroy {
       this.bankTransactionReference || undefined
     ).subscribe({
       next: (res: SubmitPaymentProofResponse) => {
-        console.log('Payment proof submitted successfully:', res);
+        console.log('Payment proof submitted:', res);
         this.isSubmitting = false;
-        
+
         if (res.success) {
-          this.submitSuccess = res.message;
-          this.verificationMessage = null;
-          this.currentStep = 3;
+          if (res.verificationPassed) {
+            // AI verification passed — credits have been added
+            this.submitSuccess = res.message;
+            this.verificationMessage = null;
+            this.verificationFailed = false;
+            this.isUnderReview = false;
+            this.currentStep = 3;
 
-          // Check if payment is under review
-          this.isUnderReview = res.status === 'UnderReview';
-
-          if (this.isUnderReview) {
-            this.submitSuccess = res.message + ' Your account remains active while we verify.';
+            setTimeout(() => {
+              this.modalController.dismiss({
+                shouldRefresh: true,
+                success: true,
+                message: res.message,
+                status: res.status
+              });
+            }, 4000);
+          } else {
+            // AI verification failed — image is invalid, do NOT add credits
+            // The user should retry with a clearer screenshot
+            this.verificationFailed = true;
+            this.verificationMessage = res.message;
+            this.submitSuccess = null;
+            this.submitError = null;
+            this.isUnderReview = false;
+            this.currentStep = 3;
           }
-
-          setTimeout(() => {
-            this.modalController.dismiss({
-              shouldRefresh: true,
-              success: true,
-              message: res.message,
-              status: res.status
-            });
-          }, 4000);
         } else {
           this.submitError = res.message || 'Failed to submit payment proof.';
         }
       },
       error: (err) => {
         this.isSubmitting = false;
-        
+
         // Extract actual error message from server response
         let errorMessage = 'Failed to submit payment proof. Please try again.';
         if (err?.error?.message) {
@@ -213,16 +221,37 @@ export class PayShapPaymentModalComponent implements OnInit, OnDestroy {
         } else if (err?.message) {
           errorMessage = err.message;
         }
-        
+
         this.submitError = errorMessage;
         this.verificationMessage = null;
         this.isUnderReview = false;
+        this.verificationFailed = false;
         console.error('Payment proof submission error:', err);
 
         this.currentStep = 3;
         this.submitSuccess = null;
       }
     });
+  }
+
+  /**
+   * Retry uploading a payment screenshot after AI verification determined
+   * the previous image was invalid or incomplete.
+   * Resets all state and returns the user to the capture/upload step.
+   */
+  retryVerification() {
+    this.clearScreenshot();
+    this.verificationFailed = false;
+    this.submitSuccess = null;
+    this.submitError = null;
+    this.verificationMessage = null;
+    this.isUnderReview = false;
+    this.isSubmitting = false;
+    this.currentStep = 2;
+    // Auto-open camera after a brief delay so the user can quickly retake the photo
+    setTimeout(() => {
+      this.openCamera();
+    }, 500);
   }
 
   close() {

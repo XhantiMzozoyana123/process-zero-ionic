@@ -263,6 +263,14 @@
 }
 
 .error-state {
+  text-align: center;
+  padding: 40px 20px;
+  
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+  }
+  
   ion-button {
     margin-top: 15px;
   }
@@ -352,8 +360,7 @@
   }
 }
 
-.success-state,
-.error-state {
+.success-state {
   text-align: center;
   padding: 40px 20px;
   
@@ -384,5 +391,61 @@
   
   p {
     color: var(--ion-color-danger);
+  }
+}
+
+/* Invalid Image State - friendly, non-threatening styling */
+.invalid-image-state {
+  text-align: center;
+  padding: 40px 20px;
+  
+  .step-header {
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 1.8rem;
+    }
+    
+    h3 {
+      color: var(--ion-color-dark);
+    }
+  }
+  
+  .verification-content {
+    ion-spinner {
+      margin-bottom: 20px;
+    }
+    
+    .info-icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+    
+    h4 {
+      color: var(--ion-color-dark);
+      margin-bottom: 10px;
+    }
+    
+    .info-message {
+      color: var(--ion-color-medium);
+      margin-bottom: 20px;
+      line-height: 1.6;
+      white-space: pre-line;
+      text-align: left;
+      padding: 0 15px;
+    }
+    
+    p {
+      color: var(--ion-color-medium);
+      margin-bottom: 10px;
+      
+      &.info-text {
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  ion-button {
+    margin-top: 10px;
   }
 }

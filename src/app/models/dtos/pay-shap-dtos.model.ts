@@ -39,6 +39,12 @@ export interface SubmitPaymentProofResponse {
   message: string;
   orderId: string;
   status: string;
+  /**
+   * Indicates whether the AI verification of the payment proof image passed.
+   * When false, the user should retry uploading a valid payment screenshot.
+   * Credits are only added when this is true.
+   */
+  verificationPassed?: boolean;
 }
 
 /**
