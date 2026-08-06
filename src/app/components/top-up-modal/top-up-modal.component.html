@@ -47,8 +47,8 @@
         </p>
       </ion-label>
       <ion-badge color="success" *ngIf="p.discountPercentage">SAVE {{ p.discountPercentage }}%</ion-badge>
-      <ion-button slot="end" color="primary" fill="outline" size="small" (click)="buyWithPayShap(p)" [disabled]="isProcessing">
-        Pay with PayShap
+      <ion-button slot="end" color="primary" fill="outline" size="small" (click)="buyWithPayPal(p)" [disabled]="isProcessing">
+        Pay with PayPal
       </ion-button>
     </ion-item>
   </ion-list>

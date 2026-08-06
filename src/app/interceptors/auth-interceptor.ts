@@ -23,7 +23,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
-    const isAuthEndpoint = /\/auth\/(login|register|forgot-password|reset-password|verify-2fa)/.test(req.url);
+    // Include /auth/refresh in the exemption so we don't loop on the refresh call itself
+    const isAuthEndpoint = /\/auth\/(login|register|forgot-password|reset-password|verify-2fa|refresh)/.test(req.url);
 
     const request = token
       ? req.clone({
@@ -47,7 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         if (error.status === 403 && error.error?.error === 'Account is banned') {
           this.authService.clearSession();
-          void this.router.navigate(['/login'], { queryParams: { banned: '1' } });
+          void this.router.navigate(['/'], { queryParams: { banned: '1' } });
         }
 
         return throwError(() => error);
@@ -68,16 +69,22 @@ export class AuthInterceptor implements HttpInterceptor {
       this.refreshTokenSubject$.next(null);
 
       return this.authService.refreshToken().pipe(
-        switchMap((response) => {
+        switchMap((response: any) => {
           this.isRefreshing = false;
-          const newToken = this.authService.getToken();
+          // IMPORTANT FIX: The refresh endpoint returns a NEW token in the response.
+          // We must save it to localStorage BEFORE retrying the original request.
+          const newToken = response?.token || this.authService.getToken();
+          if (newToken) {
+            this.authService.setToken(newToken);
+          }
           this.refreshTokenSubject$.next(newToken);
           return next.handle(this.addToken(request, newToken));
         }),
         catchError((err) => {
           this.isRefreshing = false;
-          this.authService.clearSession();
-          void this.router.navigate(['/login']);
+          this.refreshTokenSubject$.next(null);
+          // Don't kick the user to the login screen — just surface the error.
+          // Long form-filling sessions should not lose their session unexpectedly.
           return throwError(() => err);
         })
       );

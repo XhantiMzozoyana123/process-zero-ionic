@@ -204,6 +204,93 @@ export class AdminSurveyPage implements OnInit {
     this.loadSurveys();
   }
 
+  triggerJsonFileInput(): void {
+    const input = document.getElementById('survey-questions-json') as HTMLInputElement | null;
+    input?.click();
+  }
+
+  /**
+   * Imports business questions from a user-selected JSON file.
+   * Supported JSON shapes:
+   *   { "questions": [ { "text": "...", "type": "OpenEnded|MultipleChoice", "required": bool, "options": [...] } ] }
+   *   [ { "text": "...", "type": "...", "required": bool, "options": [...] } ]
+   *   { "question": "...", "options": [...] }  (single question object)
+   */
+  onQuestionsFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const raw = reader.result as string;
+        const data = JSON.parse(raw);
+        const imported = this.normalizeImportedQuestions(data);
+        if (imported.length === 0) {
+          this.showToast('No valid questions found in the JSON file.', 'warning');
+          return;
+        }
+
+        // Replace all current business questions with the imported ones
+        while (this.questionsFormArray.length > 0) {
+          this.questionsFormArray.removeAt(0);
+        }
+        imported.forEach((q) => {
+          this.questionsFormArray.push(this.createQuestionFormGroup(q));
+        });
+
+        this.showToast(`Imported ${imported.length} question(s) successfully!`, 'success');
+      } catch (err) {
+        this.showToast('Invalid JSON file. Please check the file format.', 'danger');
+      } finally {
+        // Reset the input so the same file can be re-selected
+        input.value = '';
+      }
+    };
+    reader.onerror = () => {
+      this.showToast('Failed to read the file.', 'danger');
+    };
+    reader.readAsText(file);
+  }
+
+  private normalizeImportedQuestions(data: any): Partial<SurveyQuestion>[] {
+    // Case: { "questions": [...] }
+    let list: any[] = [];
+    if (Array.isArray(data)) {
+      list = data;
+    } else if (data && Array.isArray(data.questions)) {
+      list = data.questions;
+    } else if (data && typeof data === 'object' && (data.text || data.question)) {
+      // Single question object
+      list = [data];
+    } else {
+      return [];
+    }
+
+    const result: Partial<SurveyQuestion>[] = [];
+    for (const raw of list) {
+      const text = (raw?.text ?? raw?.question ?? '').toString().trim();
+      if (!text) continue;
+
+      const rawType = (raw?.type ?? raw?.questionType ?? '').toString().trim().toLowerCase();
+      const isMcq = rawType.includes('multiple') || rawType.includes('choice') || rawType.includes('mcq')
+        || (Array.isArray(raw?.options) && raw.options.length > 0);
+
+      const options: string[] = Array.isArray(raw?.options)
+        ? raw.options.map((o: any) => o?.text ?? o?.toString?.() ?? '').filter((s: string) => s.trim().length > 0)
+        : [];
+
+      result.push({
+        text,
+        type: isMcq ? 'MultipleChoice' : 'OpenEnded',
+        required: raw?.required === true || raw?.isRequired === true,
+        options
+      });
+    }
+    return result;
+  }
+
   async confirmDeleteSurvey(surveyId: number, surveyName: string): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Delete Survey',

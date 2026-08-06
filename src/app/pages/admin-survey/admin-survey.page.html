@@ -339,15 +339,40 @@
                 </ng-container>
               </div>
 
-              <ion-button
-                fill="outline"
-                expand="block"
-                (click)="addQuestion()"
-                class="add-question-btn"
-              >
-                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                Add Question
-              </ion-button>
+              <div class="questions-actions">
+                <ion-button
+                  fill="outline"
+                  expand="block"
+                  (click)="addQuestion()"
+                  class="add-question-btn"
+                >
+                  <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                  Add Question
+                </ion-button>
+
+                <div class="json-import-row">
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    id="survey-questions-json"
+                    (change)="onQuestionsFileSelected($event)"
+                    hidden
+                  />
+                  <ion-button
+                    fill="outline"
+                    expand="block"
+                    color="secondary"
+                    class="import-json-btn"
+                    (click)="triggerJsonFileInput()"
+                  >
+                    <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                    Upload Questions (JSON)
+                  </ion-button>
+                  <p class="json-help">
+                    Import a .json file with your survey questions (text, type, required, options).
+                  </p>
+                </div>
+              </div>
             </ion-card-content>
           </ion-card>
 

@@ -44,6 +44,7 @@ export class SurveyService {
       Title: survey.title,
       Description: survey.description,
       Status: survey.status,
+      BookingLink: survey.bookingLink,
       // Contact questions (0-6) are auto-prepended by the service; only the
       // business questions (7+) supplied here become SurveyQuestion rows.
       Questions: survey.questions.map(q => ({
@@ -63,6 +64,7 @@ export class SurveyService {
     if (survey.title !== undefined) backendPayload.Title = survey.title;
     if (survey.description !== undefined) backendPayload.Description = survey.description;
     if (survey.status !== undefined) backendPayload.Status = survey.status;
+    if (survey.bookingLink !== undefined) backendPayload.BookingLink = survey.bookingLink;
     if (survey.questions) {
       backendPayload.Questions = survey.questions.map(q => ({
         Text: q.text,

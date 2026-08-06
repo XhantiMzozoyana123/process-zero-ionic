@@ -14,7 +14,7 @@
   <div class="container">
     <!-- Loading State -->
     <ng-container *ngIf="loading">
-      <div class="loading-container">
+      <div class="loading-container fade-in">
         <ion-spinner name="crescent"></ion-spinner>
         <p>Loading survey...</p>
       </div>
@@ -22,11 +22,11 @@
 
     <!-- Error State -->
     <ng-container *ngIf="!loading && errorMessage">
-      <div class="error-container">
+      <div class="error-container fade-in">
         <ion-icon name="alert-circle-outline" class="error-icon"></ion-icon>
         <h2>Survey Unavailable</h2>
         <p>{{ errorMessage }}</p>
-        <ion-button (click)="retry()">
+        <ion-button (click)="retry()" class="retry-btn">
           <ion-icon name="refresh-outline" slot="start"></ion-icon>
           Try Again
         </ion-button>
@@ -35,7 +35,7 @@
 
     <!-- Success State -->
     <ng-container *ngIf="!loading && !errorMessage && submitted && submissionResult">
-      <div class="success-container">
+      <div class="success-container fade-in">
         <ion-icon name="checkmark-circle-outline" class="success-icon"></ion-icon>
         <h2>Thank You!</h2>
         <p>Your survey response has been submitted successfully! You will receive an email with a free business audit to help your business grow.</p>
@@ -72,13 +72,16 @@
     <!-- Survey Form -->
     <ng-container *ngIf="!loading && !errorMessage && !submitted && !showContactModal">
       <!-- Survey Header -->
-      <div class="survey-header">
+      <div class="survey-header fade-in">
+        <div class="survey-header-badge">
+          <ion-icon name="clipboard-outline"></ion-icon>
+        </div>
         <h1>{{ survey?.title }}</h1>
         <p class="survey-description">{{ survey?.description }}</p>
         <p class="required-note"><span class="required-star">*</span> Indicates required fields</p>
       </div>
 
-      <form [formGroup]="surveyForm" (ngSubmit)="submit()">
+      <form [formGroup]="surveyForm" (ngSubmit)="submit()" class="fade-in">
         <ion-card class="form-card">
           <ion-card-header>
             <ion-card-title>
@@ -95,8 +98,8 @@
                     <span *ngIf="question.required" class="required-star"> *</span>
                   </ion-label>
 
-                  <!-- Multiple Choice: radio buttons -->
-                  <ng-container *ngIf="question.options?.length; else openEnded">
+                  <!-- Multiple Choice: radio buttons (check type AND options) -->
+                  <ng-container *ngIf="isMultipleChoice(question); else openEnded">
                     <div class="mcq-options">
                       <ion-radio-group [formControlName]="getFormControlIndex(i)">
                         <ion-item
@@ -111,7 +114,7 @@
                     </div>
                   </ng-container>
 
-                  <!-- Open ended / fallback -->
+                  <!-- Open ended / textarea -->
                   <ng-template #openEnded>
                     <ion-textarea
                       [formControlName]="getFormControlIndex(i)"
@@ -136,10 +139,12 @@
         </ion-card>
 
         <!-- Privacy Notice -->
-        <ion-card class="privacy-card">
+        <ion-card class="privacy-card fade-in">
           <ion-card-content>
             <ion-icon name="shield-checkmark-outline" class="privacy-icon"></ion-icon>
-            <p>Your responses are confidential and will be used for market research purposes only. By submitting, you consent to the processing of your data as described in our <a routerLink="/privacy" target="_blank">Privacy Policy</a>.</p>
+            <div class="privacy-text">
+              <p>Your responses are confidential and will be used for market research purposes only. By submitting, you consent to the processing of your data as described in our <a routerLink="/privacy" target="_blank">Privacy Policy</a>.</p>
+            </div>
           </ion-card-content>
         </ion-card>
 
@@ -150,11 +155,16 @@
             expand="block"
             size="large"
             [disabled]="submitting"
+            class="submit-button"
           >
             <ion-spinner *ngIf="submitting" slot="start"></ion-spinner>
             <ion-icon *ngIf="!submitting" name="paper-plane-outline" slot="start"></ion-icon>
             {{ submitting ? 'Processing...' : 'Submit Survey' }}
           </ion-button>
+          <p class="submit-hint">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            Your information is kept private and secure.
+          </p>
         </div>
       </form>
     </ng-container>
@@ -164,10 +174,10 @@
       <div class="contact-modal">
         <div class="contact-modal-header">
           <h2>
-            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-icon name="person-outline" class="contact-modal-icon"></ion-icon>
             Contact Information
           </h2>
-          <ion-button fill="clear" (click)="cancelContactModal()">
+          <ion-button fill="clear" class="close-btn" (click)="cancelContactModal()">
             <ion-icon name="close-outline" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
@@ -282,4 +292,24 @@
       </div>
     </div>
   </div>
+  <!-- Full-width (container-fluid) demo call booking card -->
+  <ng-container *ngIf="!loading && !errorMessage && submitted && submissionResult && survey?.bookingLink">
+    <ion-card class="demo-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="calendar-outline" class="demo-icon"></ion-icon>
+          Book Your Free Demo Call
+        </ion-card-title>
+        <ion-card-subtitle>Let's discuss how we can help your business grow</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Ready to take the next step? Schedule a free 15-minute demo call with our team to explore solutions tailored to your business needs.</p>
+        <ion-button expand="block" (click)="openLink(survey!.bookingLink!)">
+          <ion-icon name="videocam-outline" slot="start"></ion-icon>
+          Book Free Demo Call
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
 </ion-content>

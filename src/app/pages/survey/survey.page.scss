@@ -1,22 +1,401 @@
 // Survey page styles - Process Zero Theme
+$sand:  #f6f1e8;
+$paper: #fffdf9;
+$ink:   #172121;
+$teal:  #1d7874;
+$gold:  #d7a449;
+$blue:  #335c67;
+$coral: #c06c52;
+$muted: #607078;
 
 .survey-page {
-  --background: #fffdf9;
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 16px;
+  --background: #{$sand};
+
+  ::ng-deep > .inner-scroll {
+    background: $sand;
   }
 }
 
-// Contact Overlay styles - Process Zero Theme
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px 56px;
+}
+
+// Shared
+.fade-in {
+  animation: fadeIn 0.45s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Header
+ion-header ion-toolbar {
+  --background: #{$paper};
+  --color: #{$ink};
+  --border-width: 0;
+  box-shadow: 0 1px 0 rgba($ink, 0.06);
+}
+
+.header-icon {
+  font-size: 22px;
+  vertical-align: -4px;
+  margin-right: 6px;
+  color: $teal;
+}
+
+// Survey header (hero)
+.survey-header {
+  text-align: center;
+  padding: 10px 4px 30px;
+
+  .survey-header-badge {
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
+    margin: 0 auto 18px;
+    background: linear-gradient(135deg, rgba($teal, 0.12), rgba($blue, 0.12));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba($teal, 0.08);
+
+    ion-icon {
+      font-size: 1.9rem;
+      color: $teal;
+    }
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 10px;
+    line-height: 1.25;
+  }
+
+  .survey-description {
+    font-size: 0.95rem;
+    color: $muted;
+    margin: 0 auto 16px;
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  .required-note {
+    font-size: 0.8rem;
+    color: $muted;
+    margin: 0;
+  }
+
+  .required-star {
+    color: $coral;
+  }
+}
+
+// Form card
+.form-card {
+  background: $paper;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(19, 31, 31, 0.09);
+  border: 1px solid rgba($ink, 0.05);
+  overflow: hidden;
+  margin: 0 0 24px;
+
+  ion-card-header {
+    background: linear-gradient(135deg, $ink, $blue);
+    padding: 20px 22px;
+
+    ion-card-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-icon {
+      font-size: 1.3rem;
+      color: $gold;
+    }
+  }
+
+  ion-card-content {
+    padding: 6px 6px 20px;
+  }
+}
+
+// Question items
+.question-item {
+  --background: transparent;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 10px;
+  --padding-bottom: 8px;
+  margin-bottom: 2px;
+
+  ion-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $ink;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  ion-textarea {
+    margin-top: 0;
+    --background: rgba($ink, 0.035);
+    --color: #{$ink};
+    --placeholder-color: #{$muted};
+    border-radius: 10px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    border: 1px solid rgba($ink, 0.07);
+  }
+
+  ion-input {
+    margin-top: 0;
+    --background: rgba($ink, 0.035);
+    --color: #{$ink};
+    --placeholder-color: #{$muted};
+    border-radius: 10px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    border: 1px solid rgba($ink, 0.07);
+  }
+}
+
+// Multiple choice options
+.mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 12px;
+  padding: 0;
+}
+
+.mcq-option {
+  --background: transparent;
+  --border-radius: 0;
+  --inner-border-width: 0;
+  --padding-start: 14px;
+  --padding-end: 16px;
+  --min-height: 48px;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  transition: background 0.15s ease;
+
+  ion-label {
+    font-size: 1rem;
+    color: $ink;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  ion-radio {
+    margin-right: 12px;
+    --border-radius: 50%;
+    --color: $muted;
+    --color-checked: $teal;
+  }
+
+  &.item-radio-checked {
+    background: rgba($teal, 0.05);
+    ion-label { color: $teal; font-weight: 600; }
+  }
+}
+
+// Divider between questions
+.question-divider,
+ion-item-divider {
+  --background: transparent;
+  height: 1px;
+  min-height: 1px;
+  border: none;
+  background: rgba($ink, 0.05);
+  margin: 0 16px;
+}
+
+// Privacy card
+.privacy-card {
+  background: rgba($paper, 0.7);
+  border-radius: 16px;
+  border: 1px dashed rgba($gold, 0.45);
+  box-shadow: none;
+  margin: 0 0 20px;
+
+  ion-card-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    color: $muted;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    padding: 16px;
+  }
+
+  .privacy-icon {
+    font-size: 1.4rem;
+    color: $teal;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .privacy-text { flex: 1; }
+
+  p { margin: 0; }
+
+  a {
+    color: $teal;
+    font-weight: 600;
+    text-decoration: none;
+  }
+}
+
+// Submit
+.submit-container {
+  margin-top: 4px;
+
+
+// Loading / Error / Success states
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 14px;
+  text-align: center;
+
+  p {
+    color: $muted;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 24px;
+
+  .error-icon {
+    font-size: 3.5rem;
+    color: $coral;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: $muted;
+    margin: 0 0 24px;
+    line-height: 1.55;
+    max-width: 360px;
+  }
+
+  .retry-btn {
+    --background: #{$coral};
+    --border-radius: 14px;
+    font-weight: 600;
+  }
+}
+
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 24px 0;
+
+  .success-icon {
+    font-size: 4rem;
+    color: $teal;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $ink;
+    margin: 0 0 10px;
+  }
+
+  > p {
+    color: $muted;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .result-card {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    box-shadow: 0 10px 34px rgba(19, 31, 31, 0.08);
+    border: 1px solid rgba($ink, 0.05);
+    margin: 0 0 24px;
+    text-align: left;
+
+    ion-card-header {
+      background: linear-gradient(135deg, $ink, $blue);
+      padding: 16px 18px;
+
+      ion-card-title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+    }
+
+    ion-card-content { padding: 0; }
+
+    ion-item {
+      --background: transparent;
+      --padding-start: 18px;
+      --padding-end: 18px;
+
+      ion-label {
+        h3 {
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: $muted;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          margin-bottom: 2px;
+        }
+        p {
+          font-size: 0.95rem;
+          color: $ink;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Contact overlay (final step modal)
 .contact-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(23, 33, 33, 0.65);
   display: flex;
   align-items: center;
@@ -26,125 +405,208 @@
 }
 
 .contact-modal {
-  background: #fffdf9;
-  border-radius: 16px;
+  background: $paper;
+  border-radius: 20px;
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 18px 45px rgba(19, 31, 31, 0.14);
+  border: 1px solid rgba($gold, 0.2);
+
+  .contact-modal-header {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, $ink, $blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px 20px 0 0;
+    z-index: 1;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .contact-modal-icon {
+      font-size: 1.4rem;
+      color: $gold;
+    }
+
+    .close-btn {
+      --background: transparent;
+      --box-shadow: none;
+      --color: #fff;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+    }
+  }
+
+  .modal-description {
+    color: $muted;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .contact-form {
+    padding: 20px;
+  }
+
+  .contact-list {
+    --background: transparent;
+    padding: 0;
+  }
+
+  .contact-item {
+    --background: transparent;
+    margin-bottom: 16px;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    ion-label {
+      font-weight: 600;
+      color: $ink;
+    }
+
+    ion-input {
+      --background: rgba($ink, 0.04);
+      --color: #{$ink};
+      --placeholder-color: #{$muted};
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid rgba($ink, 0.1);
+      margin-top: 8px;
+      min-height: 44px;
+    }
+
+    ion-note { margin-left: 2px; }
+  }
+
+  .submit-container {
+    margin-top: 24px;
+  }
 }
 
-.contact-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid rgba(55, 92, 103, 0.15);
+// Responsive
+@media (max-width: 500px) {
+  .container { padding: 14px 12px 44px; }
 
-  h2 {
-    margin: 0;
-    font-size: 20px;
+  .survey-header {
+    padding: 6px 4px 24px;
+    h1 { font-size: 1.35rem; }
+  }
+
+  .form-card {
+    border-radius: 16px;
+    ion-card-header { padding: 16px 18px; }
+    ion-card-content { padding: 4px 4px 16px; }
+  }
+
+  .contact-modal { border-radius: 16px; }
+}
+
+  .submit-button {
+    --background: linear-gradient(135deg, #{$teal}, #{$blue});
+    --border-radius: 14px;
+    --box-shadow: 0 8px 28px rgba(29, 120, 116, 0.3);
     font-weight: 700;
-    color: #172121;
+    text-transform: none;
+    font-size: 1rem;
+    height: 52px;
+    letter-spacing: 0.2px;
+  }
+
+  .submit-hint {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: $muted;
+    margin: 14px 0 0;
+
+    ion-icon {
+      font-size: 0.95rem;
+      color: $teal;
+    }
   }
 }
 
-.modal-description {
-  color: #607078;
-  margin-bottom: 24px;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.contact-form {
-  padding: 0 20px 20px 20px;
-}
-
-.contact-list {
-  --background: transparent;
-  padding: 0;
-}
-
-.contact-item {
-  --background: transparent;
-  margin-bottom: 20px;
-  
-  ion-label {
-    font-weight: 500;
-    color: #172121;
-  }
-  
-  ion-input {
-    --background: #f6f1e8;
-    --color: #172121;
-    --placeholder-color: #607078;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(55, 92, 103, 0.15);
-    margin-top: 8px;
-  }
-}
-
-.submit-container {
-  margin-top: 20px;
-}
-
-// Form styles
-ion-item {
-  margin-bottom: 16px;
-  --background: transparent;
-}
-
-ion-item ion-label {
-  color: #172121;
-}
-
-ion-input, ion-textarea {
-  --color: #172121;
-  --placeholder-color: #607078;
-}
-
-.required-star {
-  color: #c06c52;
-}
-
-// Responses Card
-.responses-card {
-  background: #fffdf9;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(23, 33, 33, 0.08);
-  border: 1px solid rgba(55, 92, 103, 0.08);
-  margin-bottom: 24px;
-}
-
-// Button styles - Process Zero gradient
-.submit-button {
-  --background: linear-gradient(135deg, #1d7874, #335c67);
+// Generic ion-button theme
+ion-button {
   --border-radius: 12px;
   font-weight: 600;
+  text-transform: none;
   letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
-  --padding-start: 24px;
-  --padding-end: 24px;
-  --padding-top: 16px;
-  --padding-bottom: 16px;
-}
-
-// Apply Process Zero theme to all ion-buttons in survey
-ion-button {
-  --background: linear-gradient(135deg, #1d7874, #335c67);
-  --border-radius: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(29, 120, 116, 0.25);
 }
 
 ion-button[fill="clear"] {
   --background: transparent;
   --box-shadow: none;
-  --color: #607078;
+  --color: #{$muted};
+}
+
+// Demo call booking card (shown on thank-you page)
+// Rendered as a full-width band ("container-fluid"): it lives directly inside
+// ion-content (outside the 760px .container) so it spans the whole viewport width.
+.demo-card {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  border-top: 1px solid rgba($ink, 0.06);
+  border-bottom: 1px solid rgba($ink, 0.06);
+  margin: 0 0 24px;
+  text-align: center;
+
+  ion-card-header {
+    background: linear-gradient(135deg, $teal, $blue);
+    padding: 22px 20px;
+    border-radius: 0;
+
+    ion-card-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    ion-card-subtitle {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+
+    p {
+      color: $muted;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 auto 18px;
+      max-width: 560px;
+    }
+  }
+
+  .demo-icon {
+    font-size: 1.4rem;
+    color: $gold;
+  }
 }

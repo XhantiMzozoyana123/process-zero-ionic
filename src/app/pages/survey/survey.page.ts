@@ -210,12 +210,27 @@ export class SurveyPage implements OnInit {
     return 'text';
   }
 
-  isMultipleChoice(questionType: any): boolean {
-    return questionType === 'MultipleChoice';
+  isMultipleChoice(question: any): boolean {
+    // Handle both string enums ("MultipleChoice") and numeric enums (0) from the API,
+    // as well as the fallback check for options array presence.
+    if (question.options && Array.isArray(question.options) && question.options.length > 0) {
+      return true;
+    }
+    const type = question.type;
+    if (type === 'MultipleChoice' || type === 0) {
+      return true;
+    }
+    return false;
   }
 
   private async showToast(message: string, color: string) {
     const toast = await this.toastController.create({ message, color, duration: 3000, position: 'top' });
     await toast.present();
+  }
+
+  openLink(url: string | null | undefined): void {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   }
 }
