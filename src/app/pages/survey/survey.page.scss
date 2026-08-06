@@ -131,14 +131,13 @@ ion-header ion-toolbar {
 
 // Question items
 .question-item {
-  --background: transparent;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --padding-top: 10px;
-  --padding-bottom: 8px;
+  display: block;
+  background: transparent;
+  padding: 10px 16px 8px;
   margin-bottom: 2px;
 
-  ion-label {
+  .question-label {
+    display: block;
     font-size: 1.2rem;
     font-weight: 600;
     color: $ink;
@@ -148,6 +147,7 @@ ion-header ion-toolbar {
 
   ion-textarea {
     margin-top: 0;
+    width: 100%;
     --background: rgba($ink, 0.035);
     --color: #{$ink};
     --placeholder-color: #{$muted};
@@ -161,6 +161,7 @@ ion-header ion-toolbar {
 
   ion-input {
     margin-top: 0;
+    width: 100%;
     --background: rgba($ink, 0.035);
     --color: #{$ink};
     --placeholder-color: #{$muted};
@@ -168,6 +169,10 @@ ion-header ion-toolbar {
     --padding-start: 14px;
     --padding-end: 14px;
     border: 1px solid rgba($ink, 0.07);
+  }
+
+  ion-note {
+    margin-left: 2px;
   }
 }
 
@@ -199,16 +204,17 @@ ion-header ion-toolbar {
     line-height: 1.4;
   }
 
-  ion-radio {
+  .mcq-radio {
+    font-size: 22px;
     margin-right: 12px;
-    --border-radius: 50%;
-    --color: $muted;
-    --color-checked: $teal;
+    color: $muted;
+    transition: color 0.15s ease;
   }
 
   &.item-radio-checked {
     background: rgba($teal, 0.05);
     ion-label { color: $teal; font-weight: 600; }
+    .mcq-radio { color: $teal; }
   }
 }
 

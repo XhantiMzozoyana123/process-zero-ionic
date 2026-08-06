@@ -92,25 +92,29 @@
           <ion-card-content>
             <div formArrayName="answers">
               <ng-container *ngFor="let question of survey?.questions; let i = index">
-                <ion-item *ngIf="!isContactField(question.text, question.category)" lines="none" class="question-item">
-                  <ion-label position="stacked">
+                <div *ngIf="!isContactField(question.text, question.category)" class="question-item">
+                  <div class="question-label">
                     {{ question.text }}
                     <span *ngIf="question.required" class="required-star"> *</span>
-                  </ion-label>
+                  </div>
 
-                  <!-- Multiple Choice: radio buttons (check type AND options) -->
+                  <!-- Multiple Choice: radio buttons (custom, form-driven checked state) -->
                   <ng-container *ngIf="isMultipleChoice(question); else openEnded">
                     <div class="mcq-options">
-                      <ion-radio-group [formControlName]="getFormControlIndex(i)">
-                        <ion-item
-                          *ngFor="let option of question.options"
-                          lines="none"
-                          class="mcq-option"
-                        >
-                          <ion-radio [value]="option"></ion-radio>
-                          <ion-label>{{ option }}</ion-label>
-                        </ion-item>
-                      </ion-radio-group>
+                      <ion-item
+                        *ngFor="let option of question.options"
+                        lines="none"
+                        class="mcq-option"
+                        [class.item-radio-checked]="answersFormArray.at(getFormControlIndex(i)).value === option"
+                        (click)="selectAnswer(i, option)"
+                      >
+                        <ion-icon
+                          slot="start"
+                          class="mcq-radio"
+                          [name]="answersFormArray.at(getFormControlIndex(i)).value === option ? 'radio-button-on' : 'radio-button-off'"
+                        ></ion-icon>
+                        <ion-label>{{ option }}</ion-label>
+                      </ion-item>
                     </div>
                   </ng-container>
 
@@ -131,7 +135,7 @@
                     <span *ngIf="answersFormArray.at(getFormControlIndex(i)).errors?.['required']">This field is required</span>
                     <span *ngIf="answersFormArray.at(getFormControlIndex(i)).errors?.['email']">Please enter a valid email</span>
                   </ion-note>
-                </ion-item>
+                </div>
                 <ion-item-divider *ngIf="!isContactField(question.text, question.category) && i < (survey?.questions?.length ?? 0) - 1"></ion-item-divider>
               </ng-container>
             </div>

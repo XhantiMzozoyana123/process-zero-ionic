@@ -98,6 +98,18 @@ export class SurveyPage implements OnInit {
     return this.questionToFormIndex.get(questionIndex) ?? 0;
   }
 
+  /**
+   * Writes the selected option directly into the matching FormArray control.
+   * Used by multiple-choice radio options so the checked state is driven by the
+   * actual form value, guaranteeing the boxes can be ticked regardless of the
+   * native ion-radio-group click handling.
+   */
+  selectAnswer(questionIndex: number, option: string): void {
+    const control = this.answersFormArray.at(this.getFormControlIndex(questionIndex));
+    control.setValue(option);
+    control.markAsTouched();
+  }
+
   submit(): void {
     if (this.surveyForm.invalid) {
       this.surveyForm.markAllAsTouched();
