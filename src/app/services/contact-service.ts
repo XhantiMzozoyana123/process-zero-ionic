@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/entities/contact.model';
 import { LeadLake } from '../models/entities/leadlake.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 type LeadLakeCreatePayload = Omit<LeadLake, 'industry'> & {
   industry: LeadLake['industry'] | number;

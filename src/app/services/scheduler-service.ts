@@ -14,7 +14,7 @@ import {
   PendingEmailItem,
   ScheduleResult
 } from '../models/dtos/scheduler-dtos.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'

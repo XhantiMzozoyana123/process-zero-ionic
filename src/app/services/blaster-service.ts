@@ -5,7 +5,7 @@ import { EmailDto } from '../models/dtos/email-dto.model';
 import { TwilioFacebookDto } from '../models/dtos/twilio-facebook-dto.model';
 import { TwilioSmsDto } from '../models/dtos/twilio-sms-dto.model';
 import { TwilioWhatsAppDto } from '../models/dtos/twilio-whatsapp-dto.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'

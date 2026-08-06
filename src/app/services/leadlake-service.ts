@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LeadLake, LeadLakeIndustry, LeadIntent } from '../models/entities/leadlake.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 
 type LeadLakePayload = Omit<LeadLake, 'industry' | 'intent'> & {
   industry: number;
