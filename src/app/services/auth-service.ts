@@ -6,7 +6,7 @@ import { LoginDto } from '../models/dtos/login-dto.model';
 import { UserDto } from '../models/dtos/user-dto.model';
 import { ResetPasswordDto } from '../models/dtos/password-reset-dto.model';
 import { AuthResponse } from '../models/dtos/auth-response.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 export interface ApiMessageResponse {
   message?: string;

@@ -135,11 +135,11 @@ export class IntroService {
         intro: 'Use these controls to navigate through pages of leads. You can also change how many rows are shown per page.',
         position: 'top'
       },
-      {
+            {
         title: 'Start Prospecting!',
         intro: 'That\'s everything you need! Search for leads, filter by industry, and add the best prospects to your Contacts. Happy selling!'
       }
-    ]);
+    ], () => this.markIntroComplete());
   }
 
   startContactsTour(): void {
@@ -474,7 +474,7 @@ export class IntroService {
     ]);
   }
 
-  startKpiFabTour(onComplete?: () => void): void {
+    startKpiFabTour(onComplete?: () => void): void {
     this.launchTour([
       {
         element: '.kpi-fab',
@@ -483,5 +483,45 @@ export class IntroService {
         position: 'left'
       }
     ], onComplete);
+  }
+
+    startOpportunitiesTour(): void {
+    this.launchTour(
+      [
+        {
+          title: 'Opportunities',
+          intro: 'This is your Opportunities hub. Browse pre-qualified prospects, claim ones you\'re interested in, and track your pipeline in real time.'
+        },
+        {
+          element: '.opportunities-header',
+          title: 'Opportunity Hub',
+          intro: 'You can switch between "Available" opportunities (open for claiming) and "My Opportunities" (already claimed by you).',
+          position: 'bottom'
+        },
+        {
+          element: '.opportunity-search',
+          title: 'Search & Filter',
+          intro: 'Use this search bar to quickly find opportunities by prospect name, company, product, or notes.',
+          position: 'bottom'
+        },
+        {
+          element: '.opportunity-card',
+          title: 'Opportunity Card',
+          intro: 'Each card shows the prospect\'s details — budget, commission, product, and meeting date. Status chips show the pipeline stage.',
+          position: 'bottom'
+        },
+        {
+          element: '.claim-btn',
+          title: 'Claim Opportunity',
+          intro: 'When you see a prospect worth pursuing, click "Claim Opportunity" to assign it to yourself. It will then appear under "My Opportunities."',
+          position: 'top'
+        },
+        {
+          title: 'You\'re Ready!',
+          intro: 'Claims are team-visible. Your manager will see your claimed opportunities and can track progress through the pipeline.'
+        }
+      ],
+      () => this.markIntroComplete()
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LeadLake, LeadLakeIndustry } from 'src/app/models/entities/leadlake.model';
+import { LeadLake, LeadLakeIndustry, LeadIntent } from 'src/app/models/entities/leadlake.model';
 import { LeadlakeService } from 'src/app/services/leadlake-service';
 import { ContactService } from 'src/app/services/contact-service';
 import { ToastController } from '@ionic/angular';
@@ -14,6 +14,7 @@ import { IntroService } from 'src/app/services/intro-service';
 export class LeadlakePage implements OnInit {
 
   leadLakeIndustry = LeadLakeIndustry;
+  leadIntent = LeadIntent;
 
   leads: LeadLake[] = [];
   filteredLeads: LeadLake[] = [];
@@ -141,6 +142,23 @@ export class LeadlakePage implements OnInit {
 
   trackByLeadId(_: number, lead: LeadLake): number | string {
     return lead.id ?? lead.email;
+  }
+
+  getIntentEmoji(intent: LeadIntent | undefined | null): string {
+    switch (intent) {
+      case LeadIntent.High:
+        return '🔥';
+      case LeadIntent.Medium:
+        return '⚡';
+      case LeadIntent.Low:
+        return '🧊';
+      default:
+        return '—';
+    }
+  }
+
+  getIntentLabel(intent: LeadIntent | undefined | null): string {
+    return intent ?? '—';
   }
 
   promoteToClient(lead: LeadLake) {

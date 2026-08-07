@@ -69,22 +69,24 @@
         <ion-icon name="rocket-outline"></ion-icon>
         Start earning commission today
       </div>
-      <p class="eyebrow">Process Zero</p>
+      <p class="eyebrow">Opportunity</p>
       <h1 class="hero-title">
-        Turn sales into<br />
-        <span class="highlight">recurring income.</span>
+        Stop looking for customers.<br />
+        <span class="highlight">Start closing qualified opportunities.</span>
       </h1>
       <p class="hero-subtitle">
-        A performance-driven sales network where commission-based reps earn 20%
-        on every sale — plus recurring payouts for as long as the customer stays active.
+        Process Zero is a performance-driven sales platform that delivers qualified business
+        opportunities, provides proven products to sell, and pays recurring commission every
+        month your customers stay active.
       </p>
+      <p class="hero-tagline">No cold prospecting.<br />No product development.<br />No inventory.<br />Just selling.</p>
       <div class="hero-actions">
         <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-primary pulse-btn">
-          Start Earning Now
+          Become a Sales Partner
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/login')" size="large" shape="round" fill="outline" class="cta-secondary">
-          Sign In
+        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/products')" size="large" shape="round" fill="outline" class="cta-secondary">
+          See Available Products
         </ion-button>
         <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-primary pulse-btn">
           Go to Dashboard
@@ -101,6 +103,88 @@
           <span class="mini-avatar more">+</span>
         </div>
         <span class="trusted-text">Trusted by <strong>500+</strong> sales reps across South Africa</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Where Customers Come From -->
+  <section class="why-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Advantage</p>
+      <h2 class="section-title">Where do our customers come from?</h2>
+      <p class="section-subtitle">
+        We don't scrape lists. We don't buy cold data. We generate opportunities from real business intent.
+      </p>
+    </div>
+    <div class="why-content">
+      <div class="why-text">
+        <p>
+          Every day, businesses complete surveys across our marketing network.
+          Those surveys help us understand what businesses actually need — their pain points,
+          their budgets, and their timelines.
+        </p>
+        <p>
+          Qualified businesses become opportunities inside Process Zero, giving sales partners
+          <strong>warm prospects instead of random cold lists.</strong>
+        </p>
+      </div>
+      <div class="why-visual">
+        <div class="why-step">
+          <div class="why-icon"><ion-icon name="megaphone-outline"></ion-icon></div>
+          <div class="why-label">Online Advertising</div>
+        </div>
+        <div class="why-arrow"><ion-icon name="arrow-forward-outline"></ion-icon></div>
+        <div class="why-step">
+          <div class="why-icon"><ion-icon name="clipboard-outline"></ion-icon></div>
+          <div class="why-label">Business Survey</div>
+        </div>
+        <div class="why-arrow"><ion-icon name="arrow-forward-outline"></ion-icon></div>
+        <div class="why-step">
+          <div class="why-icon"><ion-icon name="checkmark-circle-outline"></ion-icon></div>
+          <div class="why-label">Qualified Lead</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Sales Reps Choose Process Zero -->
+  <section class="transform-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">Transformations</p>
+      <h2 class="section-title">Why sales reps choose Process Zero</h2>
+    </div>
+    <div class="transform-grid">
+      <div class="transform-card" *ngFor="let t of transformations">
+        <div class="transform-before">
+          <ion-icon name="close-circle" color="danger"></ion-icon>
+          <span>{{ t.before }}</span>
+        </div>
+        <div class="transform-arrow"><ion-icon name="arrow-down-outline"></ion-icon></div>
+        <div class="transform-after">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>{{ t.after }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Every Lead Starts Here -->
+  <section class="funnel-section reveal-on-scroll">
+    <div class="section-header">
+      <p class="section-eyebrow">The Process</p>
+      <h2 class="section-title">Every lead starts here</h2>
+      <p class="section-subtitle">
+        From the first ad impression to a recurring commission — here's how the entire company works in 6 steps.
+      </p>
+    </div>
+    <div class="funnel-track">
+      <div class="funnel-item" *ngFor="let f of funnelSteps; let i = index" [style.--delay]="i * 0.08 + 's'">
+        <div class="funnel-icon-wrap">
+          <ion-icon [name]="f.icon"></ion-icon>
+        </div>
+        <div class="funnel-step">{{ f.step }}</div>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.desc }}</p>
       </div>
     </div>
   </section>
@@ -206,13 +290,13 @@
         <div class="comparison-icon-wrap bad">
           <ion-icon name="remove-circle-outline"></ion-icon>
         </div>
-        <h3>Traditional Sales Jobs</h3>
+        <h3>The Old Way</h3>
         <ul class="comparison-list">
-          <li><ion-icon name="close-circle" color="danger"></ion-icon> Fixed salary, capped potential</li>
-          <li><ion-icon name="close-circle" color="danger"></ion-icon> Someone else's product</li>
-          <li><ion-icon name="close-circle" color="danger"></ion-icon> Office hours, rigid schedule</li>
-          <li><ion-icon name="close-circle" color="danger"></ion-icon> No recurring income</li>
-          <li><ion-icon name="close-circle" color="danger"></ion-icon> Limited growth path</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Spend hours finding prospects</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Build a product from scratch</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Chase one-time commissions</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Work alone with cold lists</li>
+          <li><ion-icon name="close-circle" color="danger"></ion-icon> Unpredictable monthly income</li>
         </ul>
       </div>
       <div class="vs-badge">VS</div>
@@ -222,11 +306,11 @@
         </div>
         <h3>Process Zero Rep</h3>
         <ul class="comparison-list">
-          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> 20% commission, unlimited ceiling</li>
-          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Proven digital products ready to sell</li>
-          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Work from anywhere, your schedule</li>
-          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Recurring income that compounds</li>
-          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Full dashboard, leads & analytics</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Warm opportunities delivered to you</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Proven products ready to sell</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Monthly recurring commission</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> AI, CRM and lead tools with you</li>
+          <li><ion-icon name="checkmark-circle" color="success"></ion-icon> Transparent, on-time payouts</li>
         </ul>
       </div>
     </div>
@@ -237,19 +321,20 @@
     <div class="value-content">
       <h2 class="section-title">Sell proven digital products.<br />Build compounding income.</h2>
       <p class="value-description">
-        Process Zero connects skilled sales reps with high-quality digital offers —
-        eliminating the need to create a product from scratch. Focus purely on what
-        you do best: <strong>selling</strong>. Every deal you close earns you a 20% commission,
-        and you keep earning for as long as the customer remains active.
+        Process Zero connects skilled sales reps with high-quality digital offers — and, more importantly,
+        with <strong>qualified businesses already looking for solutions</strong>.
+        Skip the cold calls. Skip building a product from scratch. Focus purely on what you do best:
+        <strong>selling</strong>. Every deal you close earns you a 20% commission, and you keep earning
+        for as long as the customer remains active.
       </p>
       <div class="value-highlights">
         <div class="value-chip">
           <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          <span>No product development required</span>
+          <span>Warm opportunities from our survey network</span>
         </div>
         <div class="value-chip">
           <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          <span>No complex setup</span>
+          <span>No product development required</span>
         </div>
         <div class="value-chip">
           <ion-icon name="checkmark-circle" color="success"></ion-icon>
@@ -271,7 +356,7 @@
   <section class="features-section reveal-on-scroll">
     <div class="section-header">
       <p class="section-eyebrow">Why Process Zero</p>
-      <h2 class="section-title">Everything you need to earn more</h2>
+      <h2 class="section-title">Everything you need to close more</h2>
       <p class="section-subtitle">
         A clear system, strong offers, and real earning potential — whether you're
         an experienced closer or just stepping into sales.
@@ -294,7 +379,7 @@
     <div class="section-header">
       <p class="section-eyebrow">Your Earning Journey</p>
       <h2 class="section-title">Where will you be in 6 months?</h2>
-      <p class="section-subtitle">Top reps hit these milestones faster than you think.</p>
+      <p class="section-subtitle">Start with warm opportunities. Build a book of recurring business.</p>
     </div>
     <div class="milestones-track">
       <div class="milestone-line"></div>
@@ -372,7 +457,7 @@
   <section class="how-it-works-section reveal-on-scroll">
     <div class="section-header">
       <p class="section-eyebrow">How It Works</p>
-      <h2 class="section-title">Four steps to recurring income</h2>
+      <h2 class="section-title">Four steps to closing qualified opportunities</h2>
     </div>
     <div class="steps-grid">
       <div class="step-card" *ngFor="let step of howItWorks; let i = index" [style.--delay]="i * 0.1 + 's'">
@@ -429,13 +514,13 @@
       <div class="cta-glow cta-glow-2"></div>
       <div class="cta-badge">
         <ion-icon name="diamond-outline"></ion-icon>
-        Free to Join — No Risk
+        Start free — pay only while selling
       </div>
-      <h2>Ready to turn your sales skills into recurring income?</h2>
-      <p>Join Process Zero — where your effort compounds over time.</p>
+      <h2>Ready to stop prospecting and start closing?</h2>
+      <p>Join Process Zero. Get warm opportunities, proven products, and a system built for recurring income.</p>
       <div class="cta-actions">
         <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/register')" size="large" shape="round" class="cta-light pulse-btn">
-          Create Account
+          Become a Sales Partner
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
         <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-light pulse-btn">

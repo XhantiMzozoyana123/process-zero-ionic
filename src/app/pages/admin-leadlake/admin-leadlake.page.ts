@@ -4,6 +4,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 
 import { LeadLake, LeadLakeIndustry, LeadIntent } from 'src/app/models/entities/leadlake.model';
 import { LeadlakeService } from 'src/app/services/leadlake-service';
+import { IntroService } from 'src/app/services/intro-service';
 
 
 @Component({
@@ -46,8 +47,9 @@ export class AdminLeadlakePage implements OnInit {
 
   readonly intentValues = Object.values(LeadIntent) as LeadIntent[];
 
-  constructor(
+        constructor(
     private leadService: LeadlakeService,
+    private introService: IntroService,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
   ) {}
@@ -55,6 +57,10 @@ export class AdminLeadlakePage implements OnInit {
 
   ngOnInit() {
     this.loadLeads();
+  }
+
+  startTour(): void {
+    this.introService.startLeadLakeTour();
   }
 
   // ── Data loading ──────────────────────────────────────

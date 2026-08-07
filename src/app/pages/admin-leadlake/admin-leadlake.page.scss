@@ -69,7 +69,7 @@ $muted: #607078;
     font-size: 18px;
   }
 
-  &.ghost {
+    &.ghost {
     background: transparent;
     color: $teal;
     border: 1px solid rgba($teal, 0.3);
@@ -78,6 +78,31 @@ $muted: #607078;
       background: rgba($teal, 0.08);
       box-shadow: none;
     }
+  }
+}
+
+.tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px solid $teal;
+  border-radius: 10px;
+  background: rgba(29, 120, 116, 0.08);
+  color: $teal;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, box-shadow 0.2s;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: rgba(29, 120, 116, 0.16);
+    box-shadow: 0 2px 8px rgba(29, 120, 116, 0.15);
   }
 }
 

@@ -474,6 +474,207 @@ $danger: #d94f4f;
   }
 }
 
+.hero-tagline {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: $muted;
+  font-weight: 600;
+  margin: 10px 0 0;
+}
+
+// ── Where Customers Come From ────────────────────────────
+.why-section {
+  padding: 56px 18px 40px;
+}
+
+.why-content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.why-text {
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: $muted;
+    margin: 0 0 14px;
+  }
+}
+
+.why-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.why-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.why-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba($teal, 0.12), rgba($blue, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 22px;
+    color: $teal;
+  }
+}
+
+.why-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $ink;
+}
+
+.why-arrow {
+  color: $teal;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+// ── Transformations ──────────────────────────────────────
+.transform-section {
+  padding: 48px 18px 40px;
+}
+
+.transform-grid {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.transform-card {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+
+  .revealed & {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0s);
+  }
+}
+
+.transform-before,
+.transform-after {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.transform-before {
+  color: $muted;
+}
+
+.transform-after {
+  color: $ink;
+}
+
+.transform-arrow {
+  color: $teal;
+  opacity: 0.55;
+  font-size: 1rem;
+}
+
+// ── Funnel / Every Lead Starts Here ──────────────────────
+.funnel-section {
+  padding: 48px 18px 40px;
+}
+
+.funnel-track {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.funnel-item {
+  background: rgba($paper, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 22px 20px;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(19, 31, 31, 0.07);
+  position: relative;
+
+  .revealed & {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0s);
+  }
+}
+
+.funnel-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba($teal, 0.12), rgba($blue, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+
+  ion-icon {
+    font-size: 22px;
+    color: $teal;
+  }
+}
+
+.funnel-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $teal, $blue);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.funnel-item h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: $ink;
+}
+
+.funnel-item p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: $muted;
+  margin: 0;
+}
+
 // ── Video section ───────────────────────────────────────
 .video-section {
   padding: 0 18px 32px;
@@ -1785,6 +1986,18 @@ $danger: #d94f4f;
 
   .features-grid {
     grid-template-columns: 1fr;
+  }
+
+  .why-content {
+    grid-template-columns: 1fr;
+  }
+
+  .transform-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .funnel-track {
+    grid-template-columns: 1fr 1fr;
   }
 
   .steps-grid {

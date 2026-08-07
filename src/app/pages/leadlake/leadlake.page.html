@@ -6,10 +6,12 @@
         <h1>Lead Intelligence</h1>
         <p>Discover and promote leads from the LeadLake database.</p>
       </div>
-      <button class="tour-btn" (click)="startTour()">
-        <ion-icon name="help-circle-outline"></ion-icon>
-        <span>Instructions</span>
-      </button>
+      <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+      </div>
     </div>
     <div class="search-row">
       <ion-searchbar placeholder="Search leads..." [(ngModel)]="searchTerm"
@@ -35,23 +37,30 @@
     <div class="table-card">
       <ion-grid class="lead-table">
         <ion-row class="table-header">
-          <ion-col size="12" size-md="2">First Name</ion-col>
-          <ion-col size="12" size-md="2">Last Name</ion-col>
+          <ion-col class="col-sm-4">First Name</ion-col>
+          <ion-col class="col-sm-4">Last Name</ion-col>
           <ion-col size="12" size-md="3">Email</ion-col>
-          <ion-col size="12" size-md="2">Company</ion-col>
-          <ion-col size="12" size-md="1">Role</ion-col>
-          <ion-col size="12" size-md="1">Industry</ion-col>
-          <ion-col size="12" size-md="1">Action</ion-col>
+          <ion-col class="col-sm-4">Company</ion-col>
+          <ion-col class="col-sm-4">Role</ion-col>
+          <ion-col class="col-sm-4">Industry</ion-col>
+          <ion-col class="col-sm-4">Intent</ion-col>
+          <ion-col class="col-sm-4">Action</ion-col>
         </ion-row>
 
         <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
-          <ion-col size="12" size-md="2">{{ lead.firstName || '-' }}</ion-col>
-          <ion-col size="12" size-md="2">{{ lead.lastName || '-' }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.firstName || '-' }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.lastName || '-' }}</ion-col>
           <ion-col size="12" size-md="3" class="email-col">{{ lead.email }}</ion-col>
-          <ion-col size="12" size-md="2">{{ lead.company || '-' }}</ion-col>
-          <ion-col size="12" size-md="1">{{ lead.job || '-' }}</ion-col>
-          <ion-col size="12" size-md="1">{{ getIndustryLabel(lead.industry) }}</ion-col>
-          <ion-col size="12" size-md="1">
+          <ion-col class="col-sm-4">{{ lead.company || '-' }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.job || '-' }}</ion-col>
+          <ion-col class="col-sm-4">{{ getIndustryLabel(lead.industry) }}</ion-col>
+          <ion-col class="col-sm-4">
+            <span class="intent-badge" [class.intent-high]="lead.intent === leadIntent.High" [class.intent-medium]="lead.intent === leadIntent.Medium" [class.intent-low]="lead.intent === leadIntent.Low">
+              <span class="intent-emoji">{{ getIntentEmoji(lead.intent) }}</span>
+              <span class="intent-text">{{ getIntentLabel(lead.intent) }}</span>
+            </span>
+          </ion-col>
+          <ion-col class="col-sm-4">
             <button class="promote-btn" (click)="promoteToClient(lead)">
               <ion-icon name="person-add-outline"></ion-icon> Add
             </button>

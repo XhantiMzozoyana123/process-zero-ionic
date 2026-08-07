@@ -10,7 +10,11 @@
         <h1>LeadLake</h1>
         <p>Manage and upload leads for your sales network.</p>
       </div>
-      <div class="header-actions">
+            <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
         <button class="add-btn ghost" (click)="openUploadModal()">
           <ion-icon name="cloud-upload-outline"></ion-icon>
           Upload CSV
@@ -51,27 +55,27 @@
     <div class="table-card">
       <ion-grid class="lead-table">
         <ion-row class="table-header">
-          <ion-col size="12" size-md="2">First Name</ion-col>
-          <ion-col size="12" size-md="2">Last Name</ion-col>
-          <ion-col size="12" size-md="2">Email</ion-col>
-          <ion-col size="12" size-md="2">Company</ion-col>
-          <ion-col size="12" size-md="1">Role</ion-col>
-          <ion-col size="12" size-md="1">Industry</ion-col>
-          <ion-col size="12" size-md="1">Location</ion-col>
-          <ion-col size="12" size-md="1" class="actions-col">Actions</ion-col>
+          <ion-col class="col-sm-4">First Name</ion-col>
+          <ion-col class="col-sm-4">Last Name</ion-col>
+          <ion-col class="col-sm-4">Email</ion-col>
+          <ion-col class="col-sm-4">Company</ion-col>
+          <ion-col class="col-sm-4">Role</ion-col>
+          <ion-col class="col-sm-4">Industry</ion-col>
+          <ion-col class="col-sm-4">Location</ion-col>
+          <ion-col class="col-sm-4" class="actions-col">Actions</ion-col>
         </ion-row>
 
         <ion-row *ngFor="let lead of pagedLeads; trackBy: trackByLeadId" class="table-row">
-          <ion-col size="12" size-md="2">{{ lead.firstName || '–' }}</ion-col>
-          <ion-col size="12" size-md="2">{{ lead.lastName || '–' }}</ion-col>
-          <ion-col size="12" size-md="2" class="email-col">{{ lead.email }}</ion-col>
-          <ion-col size="12" size-md="2">{{ lead.company || '–' }}</ion-col>
-          <ion-col size="12" size-md="1">{{ lead.job || '–' }}</ion-col>
-          <ion-col size="12" size-md="1">
+          <ion-col class="col-sm-4">{{ lead.firstName || '–' }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.lastName || '–' }}</ion-col>
+          <ion-col class="col-sm-4" class="email-col">{{ lead.email }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.company || '–' }}</ion-col>
+          <ion-col class="col-sm-4">{{ lead.job || '–' }}</ion-col>
+          <ion-col class="col-sm-4">
             <span class="industry-tag">{{ getIndustryLabel(lead.industry) }}</span>
           </ion-col>
-          <ion-col size="12" size-md="1">{{ lead.location || '–' }}</ion-col>
-          <ion-col size="12" size-md="1" class="actions-col">
+          <ion-col class="col-sm-4">{{ lead.location || '–' }}</ion-col>
+          <ion-col class="col-sm-4" class="actions-col">
             <button class="row-action edit" (click)="openEditModal(lead)" aria-label="Edit lead">
               <ion-icon name="create-outline"></ion-icon>
             </button>

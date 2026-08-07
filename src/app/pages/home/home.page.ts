@@ -18,42 +18,58 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   features = [
     {
-      icon: 'flash-outline',
-      title: 'No Product Development',
-      description: 'Skip the grind of building a product. We connect you with proven digital offers ready to sell.',
+      icon: 'locate-outline',
+      title: 'Qualified Opportunities',
+      description: 'Warm, survey-verified businesses land in your dashboard — no cold prospecting required.',
     },
     {
-      icon: 'cash-outline',
-      title: '20% Commission Per Sale',
-      description: 'Earn a 20% commission on every successful deal you close — simple, transparent, and rewarding.',
+      icon: 'cube-outline',
+      title: 'Proven Products',
+      description: 'Skip building a product. Sell vetted digital offers that already convert.',
     },
     {
       icon: 'sync-outline',
       title: 'Recurring Income',
-      description: 'Get paid for as long as the customer stays active. Your effort compounds into ongoing revenue.',
+      description: 'Get paid for as long as the customer stays active. Your effort compounds month after month.',
     },
     {
       icon: 'people-outline',
-      title: 'Contact & Lead Tools',
-      description: 'Manage leads, contacts, and meetings in one place — everything you need to close more deals.',
+      title: 'AI, CRM & Lead Tools',
+      description: 'Everything you need to sort, contact, and close opportunities — working with you, not against you.',
     },
     {
       icon: 'bar-chart-outline',
-      title: 'Performance Dashboard',
-      description: 'Track your revenue, close rates, retention, and growth with real-time KPI analytics.',
+      title: 'Performance Analytics',
+      description: 'Track revenue, close rates, and retention with real-time KPI insights.',
     },
     {
-      icon: 'rocket-outline',
-      title: 'Built to Scale',
-      description: 'A clear system, strong offers, and real earning potential — designed to grow with you.',
+      icon: 'shield-checkmark-outline',
+      title: 'Transparent Payouts',
+      description: 'Real-time commission tracking and on-time bank transfers. No surprises.',
     },
   ];
 
   howItWorks = [
-    { step: '1', title: 'Sign Up', description: 'Create your free account and get instant access to the platform.' },
-    { step: '2', title: 'Browse Products', description: 'Explore proven digital offers in our product catalogue.' },
-    { step: '3', title: 'Start Selling', description: 'Use our lead and contact tools to connect with prospects.' },
-    { step: '4', title: 'Earn Recurring', description: 'Close deals, earn 20% commission, and build recurring income.' },
+    { step: '1', title: 'Join Free', description: 'Create your account in minutes. No cost until you\'re ready to start selling.' },
+    { step: '2', title: 'Get Warm Leads', description: 'Qualified businesses from our survey network appear in your dashboard as opportunities.' },
+    { step: '3', title: 'Close the Deal', description: 'Use our CRM, AI and closing tools to convert warm prospects into customers.' },
+    { step: '4', title: 'Earn Recurring', description: 'Get paid 20% on every sale — plus recurring commission for as long as customers stay active.' },
+  ];
+
+  transformations = [
+    { before: 'Spend hours finding prospects', after: 'Open your dashboard and start contacting qualified businesses' },
+    { before: 'Build a product from scratch', after: 'Sell products that already convert' },
+    { before: 'One-time commission', after: 'Monthly recurring commission' },
+    { before: 'Work alone with a spreadsheet', after: 'AI, CRM and lead tools working with you' },
+  ];
+
+  funnelSteps = [
+    { step: '1', icon: 'megaphone-outline', title: 'Online Advertising', desc: 'We advertise to reach businesses looking for solutions' },
+    { step: '2', icon: 'clipboard-outline', title: 'Business Survey', desc: 'Businesses tell us exactly what they need' },
+    { step: '3', icon: 'checkmark-circle-outline', title: 'Qualified Lead', desc: 'Responses are scored and verified as real opportunities' },
+    { step: '4', icon: 'person-add-outline', title: 'Assigned to Sales Rep', desc: 'A warm prospect appears in your dashboard' },
+    { step: '5', icon: 'bag-check-outline', title: 'Product Sold', desc: 'You close the deal with a proven offer' },
+    { step: '6', icon: 'sync-outline', title: 'Recurring Commission', desc: 'You get paid every month the customer stays active' },
   ];
 
   testimonials = [
@@ -90,11 +106,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
   ];
 
   faqs = [
-    { question: 'Is it free to join?', answer: 'Yes! There are no upfront fees or hidden costs. You sign up, get access to the platform, and start selling immediately.', open: false },
+    { question: 'Is it free to join?', answer: 'Yes — joining is free. You only activate your earning workspace with credits when you\'re ready to start selling, so there are no costs until you actually use the platform to close opportunities.', open: false },
+    { question: 'Where do your leads come from?', answer: 'Businesses complete surveys across our marketing network. Those responses tell us exactly what each business needs, and qualified businesses become opportunities assigned to sales reps — warm prospects instead of cold lists.', open: false },
     { question: 'How does the 20% commission work?', answer: 'You earn 20% of every sale you close. If a customer subscribes to a R2,000/month product, you earn R400/month for as long as they stay active.', open: false },
     { question: 'What kind of products will I be selling?', answer: 'High-quality digital products and SaaS subscriptions across various industries. All products are vetted and proven to convert.', open: false },
     { question: 'How do I get paid?', answer: 'Commissions are tracked in real-time on your dashboard and paid out monthly via bank transfer. Full transparency — no surprises.', open: false },
-    { question: 'Do I need sales experience?', answer: 'Experience helps, but it\'s not required. We provide product info, lead tools, and a clear system so anyone motivated can succeed.', open: false },
+    { question: 'Do I need sales experience?', answer: 'Experience helps, but it\'s not required. We provide warm opportunities, product info, and a clear system so anyone motivated can succeed.', open: false },
   ];
 
   activeTestimonial = 0;

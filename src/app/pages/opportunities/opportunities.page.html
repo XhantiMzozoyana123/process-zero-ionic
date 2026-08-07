@@ -1,0 +1,102 @@
+<ion-content class="opportunities-page">
+  <ion-refresher slot="fixed" (ionRefresh)="loadData(); $any($event).target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+      <!-- Header -->
+  <section class="page-header opportunities-header">
+    <div class="header-row">
+      <div>
+        <h1>Opportunities</h1>
+        <p>Pre-qualified prospects ready for you to close.</p>
+      </div>
+      <div class="header-actions">
+        <button class="tour-btn" (click)="startTour()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Instructions</span>
+        </button>
+      </div>
+    </div>
+    <div class="search-row">
+            <ion-searchbar placeholder="Search opportunities..." [(ngModel)]="searchTerm" [ngModelOptions]="{ standalone: true }" class="opportunity-search"></ion-searchbar>
+    </div>
+  </section>
+
+    <!-- Tabs -->
+  <div class="segment-container">
+  <ion-segment [(ngModel)]="currentTab" [ngModelOptions]="{ standalone: true }" class="centered-segment">
+    <ion-segment-button value="available">
+      <ion-label>Available</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="my">
+      <ion-label>My Opportunities</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-wrap">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && displayList.length === 0" class="empty-state">
+    <ion-icon name="cash-outline"></ion-icon>
+    <p>{{ currentTab === 'available' ? 'No opportunities available right now.' : 'You have not claimed any opportunities yet.' }}</p>
+  </div>
+
+  <!-- Opportunity Cards -->
+  <section *ngIf="!loading && displayList.length > 0" class="cards-section">
+    <div class="cards-grid">
+      <div class="opportunity-card" *ngFor="let o of displayList">
+        <div class="card-top">
+          <div class="opportunity-avatar">
+            {{ initials(o.contactName) }}
+          </div>
+          <div class="card-title-area">
+            <h3>{{ o.contactName || 'Unknown Prospect' }}</h3>
+            <p class="company">{{ o.contactCompany || '—' }}</p>
+          </div>
+          <ion-chip [color]="getStatusColor(o.opportunityStatus)" outline class="status-chip">
+            {{ OpportunityStatusLabels[o.opportunityStatus || 0] || 'Unknown' }}
+          </ion-chip>
+        </div>
+
+        <div class="card-body">
+          <div class="meta-item">
+            <ion-icon name="pricetag-outline"></ion-icon>
+            <span class="meta-label">Product:</span>
+            <span>{{ o.product?.name || 'Unknown' }}</span>
+          </div>
+          <div class="meta-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span class="meta-label">Meeting:</span>
+            <span>{{ o.meeting.meetingDate | date:'medium' }}</span>
+          </div>
+          <div class="meta-item" *ngIf="o.meeting.notes">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <span class="meta-label">Notes:</span>
+            <span class="notes-preview">{{ o.meeting.notes }}</span>
+          </div>
+          <div class="meta-item highlight">
+            <ion-icon name="cash-outline"></ion-icon>
+            <span class="meta-label">Budget:</span>
+            <span class="budget">{{ formatCurrency(o.budget) }}</span>
+          </div>
+          <div class="meta-item highlight">
+            <ion-icon name="logo-usd"></ion-icon>
+            <span class="meta-label">Commission:</span>
+            <span class="commission">{{ formatCurrency(o.commission) }}</span>
+          </div>
+        </div>
+
+        <div class="card-actions" *ngIf="currentTab === 'available'">
+                    <ion-button expand="block" class="claim-btn" (click)="claimOpportunity(o)">
+            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+            Claim Opportunity
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </section>
+</ion-content>

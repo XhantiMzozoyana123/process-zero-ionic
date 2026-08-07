@@ -9,7 +9,7 @@ import {
   SubmissionDto,
   SubmissionResultDto
 } from '../models/dtos/assessment-dto.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'

@@ -58,6 +58,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'opportunities',
+        loadChildren: () => import('../admin-opportunities/admin-opportunities.module')
+          .then(m => m.AdminOpportunitiesPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'payroll',
         loadChildren: () => import('../admin-payroll/admin-payroll.module')
           .then(m => m.AdminPayrollPageModule),

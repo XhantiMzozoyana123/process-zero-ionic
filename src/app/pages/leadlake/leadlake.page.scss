@@ -195,6 +195,47 @@ $muted: #607078;
   font-weight: 500;
 }
 
+.intent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &.intent-high {
+    background: rgba(217, 79, 79, 0.1);
+    color: #c0392b;
+    border: 1px solid rgba(217, 79, 79, 0.25);
+  }
+
+  &.intent-medium {
+    background: rgba(215, 164, 73, 0.12);
+    color: #8a6d1b;
+    border: 1px solid rgba(215, 164, 73, 0.3);
+  }
+
+  &.intent-low {
+    background: rgba(51, 92, 103, 0.1);
+    color: $blue;
+    border: 1px solid rgba(51, 92, 103, 0.25);
+  }
+}
+
+.intent-emoji {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.intent-text {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
 .no-results {
   text-align: center;
   color: $muted;

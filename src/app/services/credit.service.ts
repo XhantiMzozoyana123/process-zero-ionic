@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { UserWalletDto } from '../models/dtos/user-wallet-dto.model';
 import { CreditTransactionDto } from '../models/dtos/credit-transaction-dto.model';
 import { CreditPackageDto } from '../models/dtos/credit-package-dto.model';

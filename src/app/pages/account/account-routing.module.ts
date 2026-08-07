@@ -48,6 +48,13 @@ const routes: Routes = [
 
       }, 
       {
+        path: 'opportunities',
+        loadChildren: () => import('./../../pages/opportunities/opportunities.module')
+        .then( m => m.OpportunitiesPageModule),
+          canActivate: [AuthGuard, AssessmentGuard]
+
+      },
+      {
         path: 'bank-account',
         loadChildren: () => import('./../../pages/bank-account/bank-account.module')
         .then( m => m.BankAccountPageModule),
