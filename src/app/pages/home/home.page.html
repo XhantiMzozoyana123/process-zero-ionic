@@ -85,7 +85,7 @@
           Become a Sales Partner
           <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="!isLoggedIn" (click)="navigateTo('/products')" size="large" shape="round" fill="outline" class="cta-secondary">
+        <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/products')" size="large" shape="round" fill="outline" class="cta-secondary">
           See Available Products
         </ion-button>
         <ion-button *ngIf="isLoggedIn" (click)="navigateTo('/account/dashboard')" size="large" shape="round" class="cta-primary pulse-btn">

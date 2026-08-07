@@ -87,6 +87,7 @@ const routes: Routes = [
   },
   {
     path: 'products',
+    canActivate: [AuthGuard, ConsumptionGuard],
     loadChildren: () => import('./pages/products/products.module').then( m => m.ProductsPageModule)
   },
   {
