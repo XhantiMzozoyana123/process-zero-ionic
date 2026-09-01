@@ -127,7 +127,15 @@ export class AgencyCrmPage implements OnInit {
       this.showToast('Contact name is required.', 'warning');
       return;
     }
-    const payload = { ...this.contactForm };
+    const payload: AgencyContact = {
+      name: this.contactForm.name.trim(),
+      company: this.contactForm.company,
+      email: this.contactForm.email,
+      phone: this.contactForm.phone,
+      position: this.contactForm.position,
+      notes: this.contactForm.notes,
+      isCompany: (this.contactForm.isCompany) === true
+    };
     if (this.editingContact?.id) {
       this.agencyService.updateContact(this.agencyId, this.editingContact.id, payload).subscribe({
         next: () => { this.contactModalOpen = false; this.loadData(); this.showToast('Contact updated.', 'success'); },
@@ -187,11 +195,23 @@ export class AgencyCrmPage implements OnInit {
       this.showToast('Deal title is required.', 'warning');
       return;
     }
-    if (!this.dealForm.contactId) {
+    const contactId = Number(this.dealForm.contactId);
+    if (!contactId) {
       this.showToast('Please select a contact for this deal.', 'warning');
       return;
     }
-    const payload = { ...this.dealForm };
+    // Ionic ion-input/ion-range can hand back strings — coerce to real numbers
+    // so the JSON payload matches the backend decimal/int models (else it 400s with
+    // "The JSON value could not be converted to ..."). Send only the writable fields.
+    const payload = {
+      title: this.dealForm.title.trim(),
+      contactId,
+      amount: Number(this.dealForm.amount) || 0,
+      stage: this.dealForm.stage || 'New',
+      probability: Number(this.dealForm.probability) ?? 50,
+      notes: this.dealForm.notes ?? undefined,
+      expectedCloseDate: this.dealForm.expectedCloseDate ?? undefined
+    };
     if (this.editingDeal?.id) {
       this.agencyService.updateDeal(this.agencyId, this.editingDeal.id, payload).subscribe({
         next: () => { this.dealModalOpen = false; this.loadData(); this.showToast('Deal updated.', 'success'); },
@@ -207,8 +227,16 @@ export class AgencyCrmPage implements OnInit {
 
   moveStage(deal: AgencyDeal, stage: string) {
     if (!this.canWrite || !deal.id) return;
-    const updated = { ...deal, stage };
-    this.agencyService.updateDeal(this.agencyId, deal.id, updated).subscribe({
+    const payload = {
+      title: deal.title,
+      contactId: Number(deal.contactId) || 0,
+      amount: Number(deal.amount) || 0,
+      stage,
+      probability: Number(deal.probability) ?? 50,
+      notes: deal.notes ?? undefined,
+      expectedCloseDate: deal.expectedCloseDate ?? undefined
+    };
+    this.agencyService.updateDeal(this.agencyId, deal.id, payload).subscribe({
       next: () => { this.loadData(); this.showToast(`Moved to ${stage}.`, 'success'); },
       error: err => this.showToast(err.error?.error ?? 'Could not move deal.', 'danger')
     });
@@ -245,7 +273,14 @@ export class AgencyCrmPage implements OnInit {
       this.showToast('Activity subject is required.', 'warning');
       return;
     }
-    this.agencyService.createActivity(this.agencyId, { ...this.activityForm }).subscribe({
+    const payload: AgencyActivity = {
+      type: this.activityForm.type || 'Note',
+      subject: this.activityForm.subject.trim(),
+      description: this.activityForm.description ?? undefined,
+      dueDate: this.activityForm.dueDate ?? undefined,
+      isCompleted: (this.activityForm.isCompleted) === true
+    };
+    this.agencyService.createActivity(this.agencyId, payload).subscribe({
       next: () => { this.activityModalOpen = false; this.loadData(); this.showToast('Activity logged.', 'success'); },
       error: err => this.showToast(err.error?.error ?? 'Could not log activity.', 'danger')
     });
