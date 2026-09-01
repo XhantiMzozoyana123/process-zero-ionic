@@ -63,6 +63,11 @@ export class AdminAgenciesPage implements OnInit {
         .filter(Boolean).join(' ').toLowerCase().includes(term)
     );
   }
+  initials(name: string): string {
+    const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    return parts.slice(0, 2).map(p => p[0]).join('').toUpperCase();
+  }
 
   // ── Create / Edit ──────────────────────────────────
   openCreate() {
