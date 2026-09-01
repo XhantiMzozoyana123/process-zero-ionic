@@ -1,0 +1,86 @@
+.agencies-content {
+  --background: #f4f5f7;
+}
+
+.page-body {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.agency-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.agency-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.agency-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-chip {
+  height: 24px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.agency-actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.agency-desc {
+  color: #555;
+  margin: 0 0 8px;
+}
+
+.login-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 12px;
+  font-size: 13px;
+  color: #444;
+}
+
+.managers {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.managers-label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.managers ion-chip {
+  margin: 0 4px 6px 0;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 48px 16px;
+  color: #777;
+}
+
+.empty-state ion-icon {
+  font-size: 56px;
+  color: #c2c2c2;
+}
+
+.modal-footer {
+  padding: 16px;
+}

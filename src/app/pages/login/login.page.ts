@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth-service';
 import { AssessmentService } from 'src/app/services/assessment-service';
+import { AgencyService } from 'src/app/services/agency-service';
 import { LoginDto } from 'src/app/models/dtos/login-dto.model';
 import { AuthResponse } from 'src/app/models/dtos/auth-response.model';
 
@@ -21,6 +22,7 @@ export class LoginPage implements OnInit {
   constructor(
     private authService: AuthService,
     private assessmentService: AssessmentService,
+    private agencyService: AgencyService,
     private route: ActivatedRoute,
     private router: Router,
     private toastController: ToastController
@@ -85,6 +87,21 @@ export class LoginPage implements OnInit {
   private redirectAfterLogin(): void {
     if (this.authService.isAdmin()) {
       this.router.navigateByUrl('/admin');
+      return;
+    }
+
+    // Agency-role users (agency login or granted managers) go straight to their CRM workspace.
+    if (this.authService.isAgency()) {
+      this.agencyService.myAgencies().subscribe({
+        next: agencies => {
+          if (agencies.length) {
+            this.router.navigateByUrl(`/agency-crm/${agencies[0].id}`);
+          } else {
+            this.router.navigateByUrl('/account/dashboard');
+          }
+        },
+        error: () => this.router.navigateByUrl('/account/dashboard')
+      });
       return;
     }
 

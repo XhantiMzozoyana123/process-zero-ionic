@@ -78,6 +78,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/agency/agency.module').then( m => m.AgencyPageModule)
   },
   {
+    path: 'agency-crm/:id',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./pages/agency-crm/agency-crm.module').then( m => m.AgencyCrmPageModule)
+  },
+  {
     path: 'replay-ai',
     loadChildren: () => import('./pages/replay-ai/replay-ai.module').then( m => m.ReplayAiPageModule)
   },

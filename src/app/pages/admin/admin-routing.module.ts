@@ -76,6 +76,12 @@ const routes: Routes = [
         canActivate: [AdminGuard]
       },
       {
+        path: 'agencies',
+        loadChildren: () => import('../admin-agencies/admin-agencies.module')
+          .then(m => m.AdminAgenciesPageModule),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'leadlake',
         loadChildren: () => import('../admin-leadlake/admin-leadlake.module')
           .then(m => m.AdminLeadlakePageModule),

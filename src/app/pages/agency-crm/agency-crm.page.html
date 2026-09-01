@@ -1,0 +1,337 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/agencies" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agency CRM</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refresh()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <div class="agency-header">
+      <div class="agency-header-left">
+        <h1>{{ agency?.name || 'Agency' }}</h1>
+        <p class="agency-subtitle">{{ agency?.description || 'CRM workspace' }}</p>
+      </div>
+      <div class="agency-header-right">
+        <ion-chip color="warning" *ngIf="!canWrite" class="readonly-chip">
+          <ion-icon name="eye-outline"></ion-icon>
+          <ion-label>Read-only</ion-label>
+        </ion-chip>
+        <ion-chip color="success" *ngIf="canWrite" class="readonly-chip">
+          <ion-icon name="create-outline"></ion-icon>
+          <ion-label>Read &amp; Write</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-segment [(ngModel)]="activeTab" color="light">
+      <ion-segment-button value="dashboard"><ion-icon name="speedometer-outline"></ion-icon>Dashboard</ion-segment-button>
+      <ion-segment-button value="contacts"><ion-icon name="people-outline"></ion-icon>Contacts</ion-segment-button>
+      <ion-segment-button value="deals"><ion-icon name="grid-outline"></ion-icon>Deals</ion-segment-button>
+      <ion-segment-button value="activities"><ion-icon name="time-outline"></ion-icon>Activities</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="readonly-banner" *ngIf="!canWrite && activeTab !== 'dashboard'">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <span>You have read-only access to this agency. Only the Admin and granted managers can make changes.</span>
+  </div>
+
+  <ng-container *ngIf="activeTab === 'dashboard'">
+    <div class="dashboard-grid">
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-label">Contacts</div>
+          <div class="stat-value">{{ contacts.length }}</div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-label">Open Deals</div>
+          <div class="stat-value">{{ openDealsCount }}</div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-label">Pipeline Value</div>
+          <div class="stat-value stat-value-success">{{ formatCurrency(totalPipelineValue) }}</div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-label">Won</div>
+          <div class="stat-value stat-value-blue">{{ formatCurrency(wonValue) }}</div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="dashboard-lower">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Pipeline Overview</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item *ngFor="let stage of stages">
+              <ion-icon [name]="stageIcon(stage)" [color]="stageColor(stage)" slot="start"></ion-icon>
+              <ion-label>
+                <h3>{{ stage }}</h3>
+                <p>{{ dealsByStage(stage).length }} deal(s)</p>
+              </ion-label>
+              <ion-badge [color]="stageColor(stage)" slot="end" *ngIf="stage === 'Won' || stage === 'Lost'">
+                {{ stageTotal(stage) | currency:'ZAR':'symbol':'1.2-2' }}
+              </ion-badge>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Recent Activity</ion-card-title>
+          <ion-buttons slot="end" *ngIf="canWrite">
+            <ion-button size="small" (click)="openNewActivity()">+ Log</ion-button>
+          </ion-buttons>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item *ngFor="let a of activities.slice(0, 5)">
+              <ion-icon [name]="activityIcon(a.type)" color="primary" slot="start"></ion-icon>
+              <ion-label>
+                <h3>{{ a.subject }}</h3>
+                <p>{{ a.type }} · {{ formatDate(a.createdAt) }}</p>
+              </ion-label>
+            </ion-item>
+            <ion-item *ngIf="!activities.length">
+              <ion-label class="muted">No activity yet.</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === 'contacts'">
+    <div class="tab-header" *ngIf="canWrite">
+      <ion-button (click)="openNewContact()">
+        <ion-icon slot="start" name="person-add-outline"></ion-icon>New Contact
+      </ion-button>
+    </div>
+
+    <ion-list lines="full">
+      <ion-item *ngFor="let c of contacts">
+        <ion-avatar slot="start">
+          <span class="avatar-initials">{{ (c.name || '?').charAt(0).toUpperCase() }}</span>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ c.name }} <span class="badge-company" *ngIf="c.isCompany">Company</span></h2>
+          <p>{{ c.company || '—' }}</p>
+          <p class="contact-detail" *ngIf="c.email"><ion-icon name="mail-outline"></ion-icon>{{ c.email }}</p>
+          <p class="contact-detail" *ngIf="c.phone"><ion-icon name="call-outline"></ion-icon>{{ c.phone }}</p>
+        </ion-label>
+        <ion-buttons slot="end" *ngIf="canWrite">
+          <ion-button size="small" fill="clear" (click)="openEditContact(c)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button size="small" fill="clear" color="danger" (click)="confirmDeleteContact(c)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item *ngIf="!contacts.length">
+        <ion-label class="muted">No contacts yet. Add your first contact to start building the pipeline.</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === 'deals'">
+    <div class="tab-header" *ngIf="canWrite">
+      <ion-button (click)="openNewDeal()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>New Deal
+      </ion-button>
+    </div>
+
+    <div class="kanban-row">
+      <div class="kanban-col" *ngFor="let stage of stages">
+        <div class="kanban-head">
+          <ion-icon [name]="stageIcon(stage)" [color]="stageColor(stage)"></ion-icon>
+          <span>{{ stage }}</span>
+          <ion-badge [color]="stageColor(stage)">{{ dealsByStage(stage).length }}</ion-badge>
+        </div>
+        <div class="kanban-col-body">
+          <div class="deal-card" *ngFor="let deal of dealsByStage(stage)"
+               (click)="canWrite && openEditDeal(deal)">
+            <h3>{{ deal.title }}</h3>
+            <p class="deal-contact">
+              <ion-icon name="person-outline"></ion-icon>{{ deal.contactName || contactById(deal.contactId)?.name || 'Unknown contact' }}
+            </p>
+            <div class="deal-amount">{{ formatCurrency(deal.amount) }}</div>
+            <ion-progress-bar [value]="(deal.probability || 0) / 100" [color]="stageColor(stage)"></ion-progress-bar>
+            <p class="deal-prob">{{ deal.probability || 0 }}%</p>
+            <div class="deal-actions" *ngIf="canWrite" (click)="$event.stopPropagation()">
+              <ion-select [value]="deal.stage" (ionChange)="moveStage(deal, $event.detail.value)" interface="popover" placeholder="Move">
+                <ion-select-option *ngFor="let s of stages" [value]="s">{{ s }}</ion-select-option>
+              </ion-select>
+              <ion-button size="small" fill="clear" color="danger" (click)="confirmDeleteDeal(deal)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <p class="muted" *ngIf="!dealsByStage(stage).length">No deals</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === 'activities'">
+    <div class="tab-header" *ngIf="canWrite">
+      <ion-button (click)="openNewActivity()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>Log Activity
+      </ion-button>
+    </div>
+
+    <ion-list lines="none">
+      <ion-item class="activity-item" *ngFor="let a of activities">
+        <div class="activity-icon" slot="start">
+          <ion-icon [name]="activityIcon(a.type)" color="primary"></ion-icon>
+        </div>
+        <ion-label>
+          <h3 [class.completed]="a.isCompleted">
+            <ion-icon name="checkmark-circle" color="success" *ngIf="a.isCompleted"></ion-icon>
+            {{ a.subject }}
+          </h3>
+          <p>
+            <ion-chip size="small">{{ a.type }}</ion-chip>
+            <span *ngIf="a.contactName"> · {{ a.contactName }}</span>
+            <span *ngIf="a.dealTitle"> · {{ a.dealTitle }}</span>
+          </p>
+          <p class="activity-desc" *ngIf="a.description">{{ a.description }}</p>
+          <p class="activity-date">{{ formatDate(a.createdAt) }}<span *ngIf="a.type === 'Task' && a.dueDate"> · Due {{ formatDate(a.dueDate) }}</span></p>
+        </ion-label>
+        <ion-buttons slot="end" *ngIf="canWrite">
+          <ion-button size="small" fill="clear" *ngIf="a.type === 'Task'" (click)="toggleComplete(a)">
+            <ion-icon [name]="a.isCompleted ? 'close-circle-outline' : 'checkmark-circle-outline'" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button size="small" fill="clear" color="danger" (click)="confirmDeleteActivity(a)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item *ngIf="!activities.length">
+        <ion-label class="muted">No activity logged yet. Add notes, calls, meetings and tasks to the timeline.</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <!-- Contact modal -->
+  <ion-modal [isOpen]="contactModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="dark">
+          <ion-title>{{ editingContact ? 'Edit Contact' : 'New Contact' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="contactModalOpen = false"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list lines="full">
+          <ion-item><ion-input label="Name" labelPlacement="stacked" [(ngModel)]="contactForm.name"></ion-input></ion-item>
+          <ion-item><ion-input label="Company" labelPlacement="stacked" [(ngModel)]="contactForm.company"></ion-input></ion-item>
+          <ion-item><ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="contactForm.email"></ion-input></ion-item>
+          <ion-item><ion-input label="Phone" labelPlacement="stacked" [(ngModel)]="contactForm.phone"></ion-input></ion-item>
+          <ion-item><ion-input label="Position" labelPlacement="stacked" [(ngModel)]="contactForm.position"></ion-input></ion-item>
+          <ion-item><ion-textarea label="Notes" labelPlacement="stacked" [(ngModel)]="contactForm.notes" [rows]="3"></ion-textarea></ion-item>
+          <ion-item><ion-toggle [(ngModel)]="contactForm.isCompany" [checked]="contactForm.isCompany">This is a company</ion-toggle></ion-item>
+        </ion-list>
+        <div class="modal-btn">
+          <ion-button expand="block" (click)="saveContact()">Save</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Deal modal -->
+  <ion-modal [isOpen]="dealModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="dark">
+          <ion-title>{{ editingDeal ? 'Edit Deal' : 'New Deal' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="dealModalOpen = false"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list lines="full">
+          <ion-item><ion-input label="Deal title" labelPlacement="stacked" [(ngModel)]="dealForm.title"></ion-input></ion-item>
+          <ion-item>
+            <ion-select label="Contact" labelPlacement="stacked" [(ngModel)]="dealForm.contactId">
+              <ion-select-option *ngFor="let c of contacts" [value]="c.id">{{ c.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item><ion-input label="Amount (ZAR)" labelPlacement="stacked" type="number" [(ngModel)]="dealForm.amount"></ion-input></ion-item>
+          <ion-item>
+            <ion-select label="Stage" labelPlacement="stacked" [(ngModel)]="dealForm.stage">
+              <ion-select-option *ngFor="let s of stages" [value]="s">{{ s }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Probability: {{ dealForm.probability }}%</ion-label>
+            <ion-range [(ngModel)]="dealForm.probability" min="0" max="100" step="5"></ion-range>
+          </ion-item>
+          <ion-item>
+            <ion-label>Expected close date</ion-label>
+            <ion-datetime [(ngModel)]="dealForm.expectedCloseDate" [preferWheel]="true" presentation="date"></ion-datetime>
+          </ion-item>
+          <ion-item><ion-textarea label="Notes" labelPlacement="stacked" [(ngModel)]="dealForm.notes" [rows]="3"></ion-textarea></ion-item>
+        </ion-list>
+        <div class="modal-btn">
+          <ion-button expand="block" (click)="saveDeal()">Save</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Activity modal -->
+  <ion-modal [isOpen]="activityModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="dark">
+          <ion-title>Log Activity</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="activityModalOpen = false"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list lines="full">
+          <ion-item>
+            <ion-select label="Type" labelPlacement="stacked" [(ngModel)]="activityForm.type">
+              <ion-select-option value="Note">Note</ion-select-option>
+              <ion-select-option value="Call">Call</ion-select-option>
+              <ion-select-option value="Meeting">Meeting</ion-select-option>
+              <ion-select-option value="Task">Task</ion-select-option>
+              <ion-select-option value="Email">Email</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item><ion-input label="Subject" labelPlacement="stacked" [(ngModel)]="activityForm.subject"></ion-input></ion-item>
+          <ion-item><ion-textarea label="Description" labelPlacement="stacked" [(ngModel)]="activityForm.description" [rows]="3"></ion-textarea></ion-item>
+          <ion-item *ngIf="activityForm.type === 'Task'">
+            <ion-label>Due date</ion-label>
+            <ion-datetime [(ngModel)]="activityForm.dueDate" [preferWheel]="true" presentation="date"></ion-datetime>
+          </ion-item>
+        </ion-list>
+        <div class="modal-btn">
+          <ion-button expand="block" (click)="saveActivity()">Log</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

@@ -1,0 +1,139 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agency Profiles</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openCreate()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        New Agency
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar color="dark">
+    <ion-searchbar placeholder="Search agencies…" [(ngModel)]="searchTerm"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="agencies-content">
+  <ion-refresher slot="fixed" (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-body">
+    <div *ngIf="loading && !agencies.length" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading agencies…</p>
+    </div>
+
+    <div *ngIf="!loading && !displayedAgencies.length" class="empty-state">
+      <ion-icon name="business-outline"></ion-icon>
+      <h2>No agencies yet</h2>
+      <p>Create an agency profile to give your partner agencies their own CRM workspace.</p>
+      <ion-button (click)="openCreate()">Create your first agency</ion-button>
+    </div>
+
+    <ion-card *ngFor="let agency of displayedAgencies" class="agency-card">
+      <ion-card-header>
+        <div class="agency-head">
+          <div class="agency-title">
+            <ion-chip [color]="agency.isActive ? 'success' : 'medium'" class="status-chip">
+              {{ agency.isActive ? 'Active' : 'Inactive' }}
+            </ion-chip>
+            <ion-card-title>{{ agency.name }}</ion-card-title>
+          </div>
+          <div class="agency-actions">
+            <ion-button size="small" fill="clear" (click)="openCrm(agency)">
+              <ion-icon slot="start" name="grid-outline"></ion-icon> CRM
+            </ion-button>
+            <ion-button size="small" fill="clear" (click)="openEdit(agency)">
+              <ion-icon slot="start" name="create-outline"></ion-icon> Edit
+            </ion-button>
+            <ion-button size="small" fill="clear" color="warning" (click)="resetPassword(agency)">
+              <ion-icon slot="start" name="key-outline"></ion-icon> Password
+            </ion-button>
+            <ion-button size="small" fill="clear" color="danger" (click)="confirmDelete(agency)">
+              <ion-icon slot="start" name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="agency-desc">{{ agency.description || 'No description.' }}</p>
+        <p class="login-line">
+          <ion-icon name="log-in-outline"></ion-icon>
+          Login account: <strong>{{ agency.linkedUserName }}</strong>
+        </p>
+        <div class="managers">
+          <span class="managers-label">
+            <ion-icon name="people-outline"></ion-icon>
+            Write access ({{ agency.managers.length }}):
+          </span>
+          <ion-chip *ngFor="let m of agency.managers" size="small" color="primary">
+            <ion-icon name="person-outline"></ion-icon>
+            <ion-label>{{ m.userName || m.email || m.userId }}</ion-label>
+          </ion-chip>
+          <ion-chip *ngIf="!agency.managers.length" color="medium">
+            <ion-label>Read-only for everyone except admin</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Create / Edit modal -->
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeEditor()">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ editingAgency ? 'Edit Agency' : 'New Agency' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeEditor()">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list lines="full">
+          <ion-item>
+            <ion-input label="Agency name" labelPlacement="stacked" [(ngModel)]="form.name" placeholder="e.g. Acme Digital"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea label="Description" labelPlacement="stacked" [(ngModel)]="form.description" [rows]="3" placeholder="What does this agency do?"></ion-textarea>
+          </ion-item>
+          <ng-container *ngIf="!editingAgency">
+            <ion-item>
+              <ion-input label="Login email (optional)" labelPlacement="stacked" [(ngModel)]="form.email" type="email" placeholder="Auto-generated if blank"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Password" labelPlacement="stacked" [(ngModel)]="form.password" type="password" placeholder="Login password for the agency account"></ion-input>
+            </ion-item>
+          </ng-container>
+          <ion-item *ngIf="editingAgency">
+            <ion-toggle [(ngModel)]="form.isActive">Active</ion-toggle>
+          </ion-item>
+
+          <ion-item-divider color="light">
+            <ion-label>
+              <h2>Write access</h2>
+              <p>Select which existing users get read &amp; write access. Everyone else is read-only.</p>
+            </ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let u of users">
+            <ion-checkbox [checked]="isSelected(u.id)" (ionChange)="toggleManager(u.id, $event.detail.checked)">
+              <ion-label>{{ u.userName || u.email }}</ion-label>
+            </ion-checkbox>
+          </ion-item>
+        </ion-list>
+
+        <div class="modal-footer">
+          <ion-button expand="block" (click)="save()">
+            {{ editingAgency ? 'Save changes' : 'Create agency' }}
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

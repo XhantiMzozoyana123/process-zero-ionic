@@ -113,6 +113,10 @@ export class AuthService {
     return this.getUserRole() === 'Admin';
   }
 
+  isAgency(): boolean {
+    return this.getUserRole() === 'Agency';
+  }
+
   refreshToken(): Observable<ApiMessageResponse> {
     const token = this.getToken();
     if (!token) {

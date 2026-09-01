@@ -1,0 +1,248 @@
+.agency-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.agency-header h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #fff;
+}
+
+.agency-subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.readonly-chip {
+  --background: rgba(255, 255, 255, 0.2);
+  --color: #fff;
+}
+
+.readonly-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid #ffeaa7;
+}
+
+.tab-header {
+  padding: 12px 16px 0;
+}
+
+ion-content {
+  --background: #f4f5f7;
+}
+
+.muted {
+  color: #999;
+  font-size: 13px;
+}
+
+/* Dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.stat-card ion-card-content {
+  text-align: center;
+}
+
+.stat-label {
+  color: #777;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.stat-value-success { color: #2dd36f; }
+
+.stat-value-blue { color: #3880ff; }
+
+.dashboard-lower {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-lower { grid-template-columns: 1fr 1fr; }
+}
+
+/* Contacts */
+.avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3880ff;
+  color: #fff;
+  font-weight: 700;
+}
+
+.badge-company {
+  font-size: 10px;
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+/* Kanban deals */
+.kanban-row {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px 20px;
+  overflow-x: auto;
+  align-items: flex-start;
+}
+
+.kanban-col {
+  min-width: 240px;
+  max-width: 280px;
+  flex: 1;
+  background: #ebeef1;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.kanban-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #333;
+  font-size: 13px;
+  padding: 4px 4px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.kanban-col-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deal-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.deal-card h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.deal-contact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 6px;
+}
+
+.deal-amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3880ff;
+  margin-bottom: 4px;
+}
+
+.deal-prob {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #888;
+}
+
+.deal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.deal-actions ion-select {
+  font-size: 12px;
+}
+
+/* Activities */
+.activity-item {
+  align-items: flex-start;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.activity-item h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 15px;
+}
+
+.activity-item h3.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.activity-desc {
+  color: #555;
+  margin: 4px 0 0;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.activity-date {
+  font-size: 11px;
+  color: #999;
+  margin: 4px 0 0;
+}
+
+.modal-btn {
+  padding: 16px;
+}
